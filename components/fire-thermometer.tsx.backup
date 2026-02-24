@@ -1,0 +1,344 @@
+"use client"
+
+import { useState, useEffect, useRef } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Flame, Thermometer, Zap, TrendingUp } from "lucide-react"
+
+interface Product {
+  id?: number
+  name: string
+  description: string
+  price: number
+  image?: string
+  image_url?: string
+  heatLevel: number
+  rating: number
+  badge?: string
+  origin?: string
+  category?: string
+  stock?: number
+}
+
+interface FireThermometerProps {
+  onHeatLevelChange?: (level: number) => void
+  onProductRecommend?: (products: Product[]) => void
+  products?: Product[]
+}
+
+export default function FireThermometer({ 
+  onHeatLevelChange = () => {}, 
+  onProductRecommend = () => {},
+  products = []
+}: FireThermometerProps) {
+  const [selectedHeat, setSelectedHeat] = useState(1)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [showParticles, setShowParticles] = useState(false)
+  const [thermometerFill, setThermometerFill] = useState(20)
+  const thermometerRef = useRef<HTMLDivElement>(null)
+  const particlesRef = useRef<HTMLDivElement>(null)
+
+  // Heat level configurations
+  const heatLevels = [
+    { 
+      level: 1, 
+      name: "Mild", 
+      emoji: "🌿", 
+      color: "from-green-400 to-green-600",
+      textColor: "text-green-700",
+      bgColor: "bg-green-100",
+      temp: "10°C",
+      description: "Für Anfänger - Geschmack ohne die Schärfe"
+    },
+    { 
+      level: 2, 
+      name: "Medium", 
+      emoji: "🌶️", 
+      color: "from-yellow-400 to-orange-500",
+      textColor: "text-orange-700", 
+      bgColor: "bg-orange-100",
+      temp: "25°C",
+      description: "Ein Hauch von Wärme - perfekt für die meisten"
+    },
+    { 
+      level: 3, 
+      name: "Scharf", 
+      emoji: "🔥", 
+      color: "from-orange-500 to-red-600",
+      textColor: "text-red-700",
+      bgColor: "bg-red-100", 
+      temp: "40°C",
+      description: "Für Mutige - du fängst an zu schwitzen"
+    },
+    { 
+      level: 4, 
+      name: "Höllisch", 
+      emoji: "🌋", 
+      color: "from-red-600 to-red-800",
+      textColor: "text-red-800",
+      bgColor: "bg-red-200",
+      temp: "60°C", 
+      description: "Nur für Experten - bereite dich auf das Feuer vor"
+    },
+    { 
+      level: 5, 
+      name: "Teuflisch", 
+      emoji: "👹", 
+      color: "from-red-800 to-black",
+      textColor: "text-red-900",
+      bgColor: "bg-red-300",
+      temp: "100°C",
+      description: "EXTREM - nur für die Mutigsten"
+    }
+  ]
+
+  const currentLevel = heatLevels.find(h => h.level === selectedHeat) || heatLevels[0]
+
+  // Update thermometer fill and trigger animations
+  useEffect(() => {
+    setIsAnimating(true)
+    setThermometerFill((selectedHeat / 5) * 100)
+    
+    // Show particles for levels 3+
+    setShowParticles(selectedHeat >= 3)
+    
+    // Create floating particles for high heat levels
+    if (selectedHeat >= 4) {
+      createFloatingParticles()
+    }
+
+    setTimeout(() => setIsAnimating(false), 600)
+  }, [selectedHeat])
+
+  // NO useEffect for callbacks - call directly in handleHeatLevelClick
+
+  // Create floating fire particles
+  const createFloatingParticles = () => {
+    if (!particlesRef.current) return
+
+    // Clear existing particles
+    particlesRef.current.innerHTML = ''
+
+    const particleCount = selectedHeat * 3
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div')
+      particle.className = 'floating-particle'
+      particle.style.left = `${Math.random() * 100}%`
+      particle.style.animationDelay = `${Math.random() * 2}s`
+      particle.style.animationDuration = `${2 + Math.random() * 2}s`
+      
+      // Different particle types based on heat level
+      if (selectedHeat === 5) {
+        particle.innerHTML = '🔥'
+        particle.style.fontSize = '16px'
+      } else if (selectedHeat === 4) {
+        particle.innerHTML = '✨'
+        particle.style.fontSize = '14px'
+      } else {
+        particle.innerHTML = '💫'
+        particle.style.fontSize = '12px'
+      }
+      
+      particlesRef.current.appendChild(particle)
+    }
+  }
+
+  const handleHeatLevelClick = (level: number) => {
+    setSelectedHeat(level)
+    
+    // Call callbacks directly instead of useEffect
+    onHeatLevelChange(level)
+    const recommendedProducts = products.filter(p => p.heatLevel === level)
+    onProductRecommend(recommendedProducts)
+    
+    // Add haptic feedback if available
+    if ('vibrate' in navigator) {
+      navigator.vibrate(level * 50)
+    }
+  }
+
+  return (
+    <Card className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black border-gray-700 shadow-2xl">
+      <CardContent className="p-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-sm px-6 py-3 rounded-full border border-red-500/30 mb-6">
+            <Thermometer className="w-6 h-6 text-red-400" />
+            <span className="text-white font-bold text-lg">Schärfe-Messer</span>
+            <Flame className="w-6 h-6 text-orange-400" />
+          </div>
+          
+          <h2 className="text-3xl font-black text-white mb-2">
+            Wie viel Schärfe verträgst du?
+          </h2>
+          <p className="text-gray-400 text-lg">
+            Entdecke dein perfektes Schärfe-Level und finde deine ideale Sauce
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
+          {/* Thermometer Visualization */}
+          <div className="relative">
+            {/* Floating particles container */}
+            <div 
+              ref={particlesRef}
+              className="absolute inset-0 pointer-events-none z-10 overflow-hidden"
+            />
+            
+            {/* Main thermometer */}
+            <div className="relative mx-auto w-32 h-80 bg-gray-800 rounded-full border-4 border-gray-600 shadow-inner overflow-hidden">
+              {/* Thermometer bulb at bottom */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gray-700 rounded-full border-4 border-gray-600 -mb-4 z-20">
+                <div className={`w-full h-full rounded-full bg-gradient-to-t ${currentLevel.color} animate-pulse shadow-lg`}>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-t from-white/20 to-transparent"></div>
+                </div>
+              </div>
+              
+              {/* Temperature fill */}
+              <div 
+                ref={thermometerRef}
+                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${currentLevel.color} transition-all duration-1000 ease-out rounded-full ${
+                  isAnimating ? 'animate-pulse' : ''
+                }`}
+                style={{ 
+                  height: `${thermometerFill}%`,
+                  boxShadow: selectedHeat >= 4 ? '0 0 30px rgba(255, 0, 0, 0.6)' : 'none'
+                }}
+              >
+                {/* Heat wave effect for high levels */}
+                {selectedHeat >= 4 && (
+                  <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-white/20 animate-pulse rounded-full"></div>
+                )}
+              </div>
+              
+              {/* Temperature markings */}
+              {[1, 2, 3, 4, 5].map((mark) => (
+                <div 
+                  key={mark}
+                  className="absolute right-0 w-4 h-0.5 bg-gray-500"
+                  style={{ bottom: `${(mark / 5) * 80 + 10}%` }}
+                />
+              ))}
+            </div>
+
+            {/* Temperature display */}
+            <div className="text-center mt-6">
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${currentLevel.bgColor} backdrop-blur-sm border border-gray-600`}>
+                <span className="text-2xl">{currentLevel.emoji}</span>
+                <span className={`font-bold text-lg ${currentLevel.textColor}`}>
+                  {currentLevel.temp}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Heat Level Selector */}
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Wähle dein Level
+              </h3>
+              <Badge 
+                className={`text-lg px-4 py-2 ${currentLevel.bgColor} ${currentLevel.textColor} border-0`}
+              >
+                {currentLevel.name} {currentLevel.emoji}
+              </Badge>
+            </div>
+
+            {/* Heat level buttons */}
+            <div className="space-y-3">
+              {heatLevels.map((level) => (
+                <Button
+                  key={level.level}
+                  onClick={() => handleHeatLevelClick(level.level)}
+                  variant={selectedHeat === level.level ? "default" : "outline"}
+                  className={`w-full p-4 h-auto text-left transition-all duration-300 group ${
+                    selectedHeat === level.level 
+                      ? `bg-gradient-to-r ${level.color} text-white border-0 shadow-lg transform scale-105` 
+                      : 'bg-gray-800/50 border-gray-600 text-gray-300 hover:bg-gray-700/50 hover:border-gray-500'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{level.emoji}</span>
+                      <div>
+                        <div className="font-bold text-lg">{level.name}</div>
+                        <div className={`text-sm ${selectedHeat === level.level ? 'text-white/80' : 'text-gray-500'}`}>
+                          {level.description}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {selectedHeat === level.level && (
+                        <div className="flex space-x-1">
+                          {Array.from({ length: level.level }, (_, i) => (
+                            <Flame key={i} className="w-4 h-4 text-orange-300 animate-pulse" />
+                          ))}
+                        </div>
+                      )}
+                      <TrendingUp className={`w-5 h-5 transition-transform duration-300 ${
+                        selectedHeat === level.level ? 'text-white' : 'text-gray-500'
+                      } group-hover:scale-110`} />
+                    </div>
+                  </div>
+                </Button>
+              ))}
+            </div>
+
+            {/* Current selection info */}
+            <div className={`p-4 rounded-lg ${currentLevel.bgColor} border border-gray-600 backdrop-blur-sm`}>
+              <h4 className={`font-bold ${currentLevel.textColor} mb-2`}>Aktuelles Level:</h4>
+              <p className={`${currentLevel.textColor} text-sm leading-relaxed`}>
+                {currentLevel.description}
+              </p>
+              {selectedHeat >= 4 && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Flame className="w-4 h-4 text-red-600" />
+                  <span className="text-red-700 text-xs font-medium">
+                    WARNUNG: Extremes Level!
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* CSS for animations */}
+        <style jsx>{`
+          @keyframes float-up {
+            0% {
+              opacity: 1;
+              transform: translateY(100px) translateX(0px) scale(1);
+            }
+            50% {
+              opacity: 0.8;
+              transform: translateY(50px) translateX(10px) scale(1.1);
+            }
+            100% {
+              opacity: 0;
+              transform: translateY(-20px) translateX(-5px) scale(0.8);
+            }
+          }
+          
+          .floating-particle {
+            position: absolute;
+            animation: float-up infinite ease-out;
+            pointer-events: none;
+            z-index: 10;
+          }
+          
+          @keyframes thermometer-fill {
+            0% {
+              height: 0%;
+            }
+            100% {
+              height: var(--fill-height);
+            }
+          }
+        `}</style>
+      </CardContent>
+    </Card>
+  )
+}
