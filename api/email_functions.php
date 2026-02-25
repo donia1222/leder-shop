@@ -13,16 +13,16 @@ function sendInvoiceConfirmationEmail($data) {
     $orderNumber = $data['orderNumber'];
     
     // Configuración de emails
-    $toStore = 'info@lweb.ch';
+    $toStore = 'info@leder-shop.ch';
     $toCustomer = $customerInfo['email'];
-    $fromEmail = 'info@lweb.ch';
-    
+    $fromEmail = 'info@leder-shop.ch';
+
     // ===== EMAIL PARA LA TIENDA (Factura) =====
-    $storeSubject = '🎣 NEUE BESTELLUNG - US Fishing & Huntingshop - ' . $orderNumber;
+    $storeSubject = '🛍️ NEUE BESTELLUNG - Leder-Shop - ' . $orderNumber;
     $storeEmailContent = generateStoreInvoiceEmail($customerInfo, $billingAddress, $cart, $total, $orderNumber);
 
     // ===== EMAIL PARA EL CLIENTE (Factura) =====
-    $customerSubject = '✅ Bestellbestätigung - US Fishing & Huntingshop';
+    $customerSubject = '✅ Bestellbestätigung - Leder-Shop';
     $customerEmailContent = generateCustomerInvoiceEmail($customerInfo, $billingAddress, $cart, $total, $orderNumber);
     
     // Headers para emails HTML
@@ -76,9 +76,8 @@ function generateStoreInvoiceEmail($customerInfo, $billingAddress, $cart, $total
     </head>
     <body>
         <div class='header'>
-            <img src='https://online-shop-seven-delta.vercel.app/Security_n.png' alt='US - Fishing &amp; Huntingshop' />
-            <h1>🎣 NEUE BESTELLUNG - US Fishing &amp; Huntingshop</h1>
-            <p>Kauf auf Rechnung &amp; Vorkasse — Bitte Kunden kontaktieren!</p>
+            <h1>🛍️ NEUE BESTELLUNG - Leder-Shop</h1>
+            <p>HANDGEMACHT · SCHWEIZ — Kauf auf Rechnung &amp; Vorkasse</p>
         </div>
 
         <div class='content'>
@@ -162,8 +161,8 @@ function generateStoreInvoiceEmail($customerInfo, $billingAddress, $cart, $total
             </div>
 
             <div class='footer'>
-                <p><strong>US - Fishing &amp; Huntingshop</strong></p>
-                <p>info@lweb.ch</p>
+                <p><strong>Leder-Shop</strong> — HANDGEMACHT · SCHWEIZ</p>
+                <p>9468 Sax (SG) &nbsp;|&nbsp; 📞 077 416 73 75 &nbsp;|&nbsp; info@leder-shop.ch</p>
             </div>
         </div>
     </body>
@@ -200,16 +199,15 @@ function generateCustomerInvoiceEmail($customerInfo, $billingAddress, $cart, $to
     </head>
     <body>
         <div class='header'>
-            <img src='https://online-shop-seven-delta.vercel.app/Security_n.png' alt='US - Fishing &amp; Huntingshop' />
-            <h1>🎣 US - Fishing &amp; Huntingshop</h1>
-            <p>Bestellbestätigung — Kauf auf Rechnung &amp; Vorkasse</p>
+            <h1>🛍️ Leder-Shop</h1>
+            <p>HANDGEMACHT · SCHWEIZ</p>
         </div>
 
         <div class='content'>
             <div class='thank-you'>
                 <h2>✅ Bestellung bestätigt!</h2>
                 <p>Liebe/r {$customerInfo['firstName']},</p>
-                <p>Vielen Dank für Ihre Bestellung bei <strong>US - Fishing &amp; Huntingshop</strong>!<br>
+                <p>Vielen Dank für Ihre Bestellung bei <strong>Leder-Shop</strong>!<br>
                 Ihre Bestellung wurde erfolgreich aufgenommen.</p>
             </div>
 
@@ -223,7 +221,8 @@ function generateCustomerInvoiceEmail($customerInfo, $billingAddress, $cart, $to
                 <p><strong>Bestellnummer:</strong> {$orderNumber}</p>
                 <p><strong>Datum:</strong> " . date('d.m.Y H:i') . "</p>
                 <p><strong>Zahlungsart:</strong> Kauf auf Rechnung &amp; Vorkasse</p>
-                <p><strong>Status:</strong> ✅ Bestätigt — Kontaktaufnahme ausstehend</p>
+                <p><strong>Verwendungszweck:</strong> <strong style='font-size:16px;'>{$orderNumber}</strong></p>
+                <p><strong>Status:</strong> ✅ Bestätigt — Zahlung ausstehend</p>
                 <p><strong>Betrag:</strong> <span class='total'>{$total} CHF</span></p>
             </div>
 
@@ -268,8 +267,8 @@ function generateCustomerInvoiceEmail($customerInfo, $billingAddress, $cart, $to
 
     $content .= "
             <div class='footer'>
-                <p><strong>US - Fishing &amp; Huntingshop</strong></p>
-                <p>info@lweb.ch</p>
+                <p><strong>Leder-Shop</strong> — HANDGEMACHT · SCHWEIZ</p>
+                <p>9468 Sax (SG) &nbsp;|&nbsp; 📞 077 416 73 75 &nbsp;|&nbsp; info@leder-shop.ch</p>
                 <p style='margin-top: 8px; font-size: 12px; color: #b8a080;'>Bei Fragen stehen wir Ihnen gerne zur Verfügung.</p>
             </div>
         </div>
@@ -288,16 +287,16 @@ function sendPayPalConfirmationEmail($data) {
     $paypalPayerID = $data['paypalPayerID'];
     
     // Configuración de emails
-    $toStore = 'info@lweb.ch';
+    $toStore = 'info@leder-shop.ch';
     $toCustomer = $customerInfo['email'];
-    $fromEmail = 'info@lweb.ch';
-    
+    $fromEmail = 'info@leder-shop.ch';
+
     // ===== EMAIL PARA LA TIENDA (PayPal) =====
-    $storeSubject = '🎣 NEUE BESTELLUNG - US Fishing & Huntingshop - PayPal ID: ' . $paypalPayerID;
+    $storeSubject = '🛍️ NEUE BESTELLUNG - Leder-Shop - PayPal ID: ' . $paypalPayerID;
     $storeEmailContent = generateStorePayPalEmail($customerInfo, $billingAddress, $cart, $total, $orderNumber, $paypalPayerID);
-    
+
     // ===== EMAIL PARA EL CLIENTE (PayPal) =====
-    $customerSubject = '✅ Bestellbestätigung - US Fishing & Huntingshop';
+    $customerSubject = '✅ Bestellbestätigung - Leder-Shop';
     $customerEmailContent = generateCustomerPayPalEmail($customerInfo, $billingAddress, $cart, $total, $orderNumber, $paypalPayerID);
     
     // Headers para emails HTML
@@ -349,8 +348,8 @@ function generateStorePayPalEmail($customerInfo, $billingAddress, $cart, $total,
     </head>
     <body>
         <div class='header'>
-            <h1>🎣 NEUE BESTELLUNG - US Fishing &amp; Huntingshop</h1>
-            <p>Zahlung erfolgreich über PayPal verarbeitet!</p>
+            <h1>🛍️ NEUE BESTELLUNG - Leder-Shop</h1>
+            <p>HANDGEMACHT · SCHWEIZ — Zahlung erfolgreich über PayPal verarbeitet!</p>
         </div>
         
         <div class='content'>
@@ -466,16 +465,15 @@ function generateCustomerPayPalEmail($customerInfo, $billingAddress, $cart, $tot
     </head>
     <body>
         <div class='header'>
-            <img src='https://online-shop-seven-delta.vercel.app/Security_n.png' alt='US - Fishing &amp; Huntingshop' style='max-height:60px; margin-bottom:10px;' />
-            <h1>🎣 US - Fishing &amp; Huntingshop</h1>
-            <p>Vielen Dank für Ihre Bestellung!</p>
+            <h1>🛍️ Leder-Shop</h1>
+            <p>HANDGEMACHT · SCHWEIZ — Vielen Dank für Ihre Bestellung!</p>
         </div>
 
         <div class='content'>
             <div class='thank-you'>
                 <h2>✅ Bestellung bestätigt!</h2>
                 <p>Liebe/r {$customerInfo['firstName']},</p>
-                <p>Vielen Dank für Ihre Bestellung bei <strong>US - Fishing &amp; Huntingshop</strong>! Ihre Zahlung wurde erfolgreich verarbeitet.</p>
+                <p>Vielen Dank für Ihre Bestellung bei <strong>Leder-Shop</strong>! Ihre Zahlung wurde erfolgreich verarbeitet.</p>
             </div>
 
             <div class='order-details'>
@@ -538,18 +536,109 @@ function generateCustomerPayPalEmail($customerInfo, $billingAddress, $cart, $tot
                 <p>📦 Wir bereiten Ihre Bestellung vor</p>
                 <p>🚚 Versand in 2-3 Werktagen</p>
                 <p>📧 Sie erhalten eine Tracking-Nummer per E-Mail</p>
-                <p>📞 Bei Fragen: info@lweb.ch</p>
+                <p>📞 Bei Fragen: <a href='tel:0774167375' style='color:#dc3545;'>077 416 73 75</a> | info@leder-shop.ch</p>
             </div>
 
             <div class='footer'>
-                <p><strong>Vielen Dank für Ihr Vertrauen!</strong></p>
-                <p>🎣 US - Fishing &amp; Huntingshop Team</p>
-                <p>info@lweb.ch</p>
+                <p><strong>Leder-Shop</strong> — HANDGEMACHT · SCHWEIZ</p>
+                <p>9468 Sax (SG) &nbsp;|&nbsp; 077 416 73 75 &nbsp;|&nbsp; info@leder-shop.ch</p>
             </div>
         </div>
     </body>
     </html>";
-    
+
     return $content;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TWINT emails
+// ─────────────────────────────────────────────────────────────────────────────
+
+function sendTwintConfirmationEmail($data) {
+    $customerInfo = $data['customerInfo'];
+    $cart = $data['cart'];
+    $total = $data['total'];
+    $orderNumber = $data['orderNumber'];
+
+    // Read TWINT phone from payment_settings table
+    $twintPhone = '';
+    try {
+        require_once __DIR__ . '/config.php';
+        $pdo = getDBConnection();
+        $row = $pdo->query("SELECT twint_phone FROM payment_settings WHERE id = 1")->fetch();
+        if ($row) $twintPhone = $row['twint_phone'];
+    } catch (Exception $e) {}
+
+    $toStore    = 'info@leder-shop.ch';
+    $toCustomer = $customerInfo['email'];
+    $fromEmail  = 'info@leder-shop.ch';
+
+    // Store email
+    $storeSubject = '📱 NEUE TWINT-BESTELLUNG - ' . $orderNumber;
+    $storeBody = "
+    <!DOCTYPE html><html><head><meta charset='UTF-8'>
+    <style>
+        body{font-family:Arial,sans-serif;background:#f4f4f4;color:#1a1a1a}
+        .wrap{max-width:600px;margin:0 auto;padding:24px}
+        .hdr{background:#1a1a1a;color:#fff;padding:20px;border-radius:8px 8px 0 0;text-align:center}
+        .box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px;margin:12px 0}
+        .ref{font-size:22px;font-weight:900;font-family:monospace;color:#1a1a1a}
+        .foot{text-align:center;color:#888;font-size:12px;margin-top:16px}
+    </style></head><body><div class='wrap'>
+    <div class='hdr'><h2>📱 NEUE TWINT-BESTELLUNG</h2><p>Zahlung ausstehend — bitte prüfen</p></div>
+    <div class='box'>
+        <p><strong>Bestellnummer:</strong> <span class='ref'>{$orderNumber}</span></p>
+        <p><strong>Betrag:</strong> {$total} CHF</p>
+        <p><strong>Kunde:</strong> {$customerInfo['firstName']} {$customerInfo['lastName']}</p>
+        <p><strong>E-Mail:</strong> {$customerInfo['email']}</p>
+        <p><strong>Telefon:</strong> {$customerInfo['phone']}</p>
+    </div>
+    <div class='box'>
+        <p>Der Kunde wurde angewiesen, per TWINT (<strong>{$twintPhone}</strong>) zu bezahlen.<br>
+        Referenz: <strong>{$orderNumber}</strong></p>
+    </div>
+    <div class='foot'>Leder-Shop · HANDGEMACHT · SCHWEIZ · 9468 Sax (SG) · 077 416 73 75 · info@leder-shop.ch</div>
+    </div></body></html>";
+
+    // Customer email
+    $customerSubject = '✅ Bestellbestätigung – Bitte TWINT-Zahlung durchführen';
+    $customerBody = "
+    <!DOCTYPE html><html><head><meta charset='UTF-8'>
+    <style>
+        body{font-family:Arial,sans-serif;background:#f4f4f4;color:#1a1a1a}
+        .wrap{max-width:600px;margin:0 auto;padding:24px}
+        .hdr{background:#1a1a1a;color:#fff;padding:20px;border-radius:8px 8px 0 0;text-align:center}
+        .box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px;margin:12px 0}
+        .twint{background:#111;color:#fff;border-radius:8px;padding:16px;margin:12px 0}
+        .phone{font-size:28px;font-weight:900;letter-spacing:2px}
+        .ref{display:inline-block;background:#fff;color:#000;font-family:monospace;font-weight:900;font-size:18px;padding:6px 12px;border-radius:4px;margin-top:4px}
+        .foot{text-align:center;color:#888;font-size:12px;margin-top:16px}
+    </style></head><body><div class='wrap'>
+    <div class='hdr'><h2>✅ Bestellung bestätigt!</h2><p>Bitte TWINT-Zahlung durchführen</p></div>
+    <div class='box'>
+        <p>Liebe/r <strong>{$customerInfo['firstName']}</strong>,</p>
+        <p>Ihre Bestellung wurde erfolgreich aufgenommen. Bitte führen Sie die Zahlung per TWINT durch:</p>
+    </div>
+    <div class='twint'>
+        <p style='margin:0 0 8px'>📱 TWINT-Empfänger:</p>
+        <p class='phone'>{$twintPhone}</p>
+        <p style='margin:12px 0 4px'>Betrag: <strong>{$total} CHF</strong></p>
+        <p style='margin:4px 0'>Bestellnummer als Verwendungszweck:</p>
+        <span class='ref'>{$orderNumber}</span>
+    </div>
+    <div class='box' style='font-size:13px;color:#555'>
+        <p><strong>Bestellnummer:</strong> {$orderNumber}</p>
+        <p>Ihre Bestellung wird nach Eingang der Zahlung bearbeitet.</p>
+    </div>
+    <div class='foot'>Leder-Shop · HANDGEMACHT · SCHWEIZ · 9468 Sax (SG) · 077 416 73 75 · info@leder-shop.ch</div>
+    </div></body></html>";
+
+    $headers = "MIME-Version: 1.0\r\nContent-type: text/html; charset=UTF-8\r\nFrom: {$fromEmail}\r\n";
+    $cHeaders = $headers . "Reply-To: {$fromEmail}\r\n";
+    $sHeaders = $headers . "Reply-To: {$customerInfo['email']}\r\n";
+
+    return [
+        'success' => mail($toStore, $storeSubject, $storeBody, $sHeaders) && mail($toCustomer, $customerSubject, $customerBody, $cHeaders)
+    ];
 }
 ?>

@@ -61,8 +61,8 @@ function generateRandomPassword($length = 8) {
 // Función para enviar email
 function sendPasswordResetEmail($email, $firstName, $newPassword) {
     $to = $email;
-    $subject = "Ihr neues Passwort - Hot Sauce Store";
-    $from = "info@lweb.ch";
+    $subject = "Ihr neues Passwort - Leder-Shop";
+    $from = "info@leder-shop.ch";
     
     // Crear el mensaje HTML
     $message = "
@@ -85,7 +85,7 @@ function sendPasswordResetEmail($email, $firstName, $newPassword) {
     <body>
         <div class='container'>
             <div class='header'>
-                <h1>🌶️ Hot Sauce Store</h1>
+                <h1>🛍️ Leder-Shop</h1>
                 <h2>Passwort zurückgesetzt</h2>
             </div>
             <div class='content'>
@@ -118,11 +118,11 @@ function sendPasswordResetEmail($email, $firstName, $newPassword) {
                 <p>Falls Sie diese Passwort-Zurücksetzung nicht angefordert haben, kontaktieren Sie uns bitte umgehend.</p>
                 
                 <p>Mit freundlichen Grüßen,<br>
-                Ihr Hot Sauce Store Team</p>
+                Ihr Leder-Shop Team</p>
             </div>
             <div class='footer'>
                 <p>Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese E-Mail.</p>
-                <p>© 2024 Hot Sauce Store - info@lweb.ch</p>
+                <p>© 2026 Leder-Shop — info@leder-shop.ch</p>
             </div>
         </div>
     </body>

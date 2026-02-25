@@ -25,7 +25,7 @@ export function Footer({ onAdminOpen }: FooterProps = {}) {
         const reader = new FileReader()
         reader.onloadend = function () {
           const base64data = (reader.result as string).split(",")[1]
-          const vCardContent = `BEGIN:VCARD\nVERSION:3.0\nFN:US - Fishing & Huntingshop\nORG:US - Fishing & Huntingshop\nTITLE:LEDER · HANDWERK · QUALITÄT\nADR:;;Bahnhofstrasse 2;Sevelen;;9475;Switzerland\nTEL:+41786066105\nEMAIL:info@usfh.ch\nURL:https://usfh.ch\nPHOTO;ENCODING=b;TYPE=PNG:${base64data}\nEND:VCARD`
+          const vCardContent = `BEGIN:VCARD\nVERSION:3.0\nFN:Leder-Shop\nORG:Leder-Shop\nTITLE:HANDGEMACHT · SCHWEIZ\nADR:;;9468 Sax (SG);;;Switzerland\nTEL:+41774167375\nEMAIL:info@leder-shop.ch\nURL:https://leder-shop.ch\nPHOTO;ENCODING=b;TYPE=PNG:${base64data}\nEND:VCARD`
           const blob2 = new Blob([vCardContent], { type: "text/vcard;charset=utf-8" })
           const link = document.createElement("a")
           link.href = URL.createObjectURL(blob2)
@@ -37,7 +37,7 @@ export function Footer({ onAdminOpen }: FooterProps = {}) {
         reader.readAsDataURL(blob)
       })
       .catch(() => {
-        const vCardContent = `BEGIN:VCARD\nVERSION:3.0\nFN:US - Fishing & Huntingshop\nORG:US - Fishing & Huntingshop\nTITLE:LEDER · HANDWERK · QUALITÄT\nADR:;;Bahnhofstrasse 2;Sevelen;;9475;Switzerland\nTEL:+41786066105\nEMAIL:info@usfh.ch\nURL:https://usfh.ch\nEND:VCARD`
+        const vCardContent = `BEGIN:VCARD\nVERSION:3.0\nFN:Leder-Shop\nORG:Leder-Shop\nTITLE:HANDGEMACHT · SCHWEIZ\nADR:;;9468 Sax (SG);;;Switzerland\nTEL:+41774167375\nEMAIL:info@leder-shop.ch\nURL:https://leder-shop.ch\nEND:VCARD`
         const blob2 = new Blob([vCardContent], { type: "text/vcard;charset=utf-8" })
         const link = document.createElement("a")
         link.href = URL.createObjectURL(blob2)
@@ -51,7 +51,7 @@ export function Footer({ onAdminOpen }: FooterProps = {}) {
   const legalContent = {
     agb: {
       title: "Allgemeine Geschäftsbedingungen (AGB)",
-      content: `Leder-Shop | Bahnhofstrasse 2, 9475 Sevelen | info@usfh.ch
+      content: `Leder-Shop | 9468 Sax (SG) | info@leder-shop.ch
 
 1. GELTUNGSBEREICH
 Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Bestellungen, die über den Online-Shop von Leder-Shop abgeschlossen werden. Abweichende Bedingungen des Käufers werden nicht anerkannt, es sei denn, wir stimmen ihrer Geltung ausdrücklich schriftlich zu.
@@ -78,22 +78,22 @@ Es gelten die gesetzlichen Gewährleistungsrechte nach Schweizer OR. Bei Sachmä
 Wir haften unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Im Übrigen ist unsere Haftung auf den vorhersehbaren, vertragstypischen Schaden beschränkt. Die Haftung für leichte Fahrlässigkeit ist ausgeschlossen, soweit keine wesentlichen Vertragspflichten verletzt werden.
 
 9. ANWENDBARES RECHT & GERICHTSSTAND
-Es gilt ausschliesslich Schweizer Recht. Gerichtsstand für alle Streitigkeiten ist Sevelen, Kanton St. Gallen, Schweiz.
+Es gilt ausschliesslich Schweizer Recht. Gerichtsstand für alle Streitigkeiten ist Sax, Kanton St. Gallen, Schweiz.
 
 10. SCHLUSSBESTIMMUNGEN
 Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt. Stand: Februar 2026.`,
     },
     datenschutz: {
       title: "Datenschutzerklärung",
-      content: `Leder-Shop | Bahnhofstrasse 2, 9475 Sevelen | info@usfh.ch
+      content: `Leder-Shop | 9468 Sax (SG) | info@leder-shop.ch
 
 Diese Datenschutzerklärung informiert Sie gemäss dem Schweizer Datenschutzgesetz (DSG) sowie der EU-Datenschutz-Grundverordnung (DSGVO) über die Verarbeitung Ihrer personenbezogenen Daten.
 
 1. VERANTWORTLICHE STELLE
 Leder-Shop
-Bahnhofstrasse 2, 9475 Sevelen, Schweiz
-Telefon: 078 606 61 05
-E-Mail: info@usfh.ch
+9468 Sax (SG), Schweiz
+Telefon: 077 416 73 75
+E-Mail: info@leder-shop.ch
 
 2. WELCHE DATEN WIR ERHEBEN
 Im Rahmen der Bestellabwicklung erheben wir folgende Daten: Vor- und Nachname, Lieferadresse, E-Mail-Adresse, Telefonnummer sowie Zahlungsinformationen. Beim Besuch unserer Website werden technische Daten wie IP-Adresse, Browsertyp, Besuchsdauer und aufgerufene Seiten automatisch erfasst.
@@ -114,7 +114,7 @@ Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Da
 Ihre Daten werden nur so lange gespeichert, wie es für den jeweiligen Zweck notwendig ist oder gesetzliche Aufbewahrungsfristen (in der Regel 10 Jahre für Buchhaltungsunterlagen) es erfordern.
 
 8. IHRE RECHTE
-Sie haben jederzeit das Recht auf: Auskunft über Ihre gespeicherten Daten, Berichtigung unrichtiger Daten, Löschung Ihrer Daten (sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen), Einschränkung der Verarbeitung sowie Datenübertragbarkeit. Zur Ausübung Ihrer Rechte wenden Sie sich an: info@usfh.ch
+Sie haben jederzeit das Recht auf: Auskunft über Ihre gespeicherten Daten, Berichtigung unrichtiger Daten, Löschung Ihrer Daten (sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen), Einschränkung der Verarbeitung sowie Datenübertragbarkeit. Zur Ausübung Ihrer Rechte wenden Sie sich an: info@leder-shop.ch
 
 9. COOKIES
 Unsere Website verwendet technisch notwendige Cookies, die für den Betrieb des Shops erforderlich sind. Analytische oder Marketing-Cookies werden nur mit Ihrer ausdrücklichen Einwilligung gesetzt.
@@ -141,7 +141,7 @@ Bezahlen Sie über Ihr bestehendes PayPal-Konto. PayPal bietet einen integrierte
 Allgemeine Hinweise
 — Alle Preise verstehen sich in Schweizer Franken (CHF) inkl. MwSt.
 — Der Kaufbetrag wird erst nach Versandbestätigung belastet.
-— Bei Fragen zur Zahlung erreichen Sie uns unter info@usfh.ch oder 078 606 61 05.`,
+— Bei Fragen zur Zahlung erreichen Sie uns unter info@leder-shop.ch oder 077 416 73 75.`,
     },
     cookies: {
       title: "Cookie Manager",
@@ -165,7 +165,7 @@ Gemäss Schweizer DSG und EU-DSGVO haben Sie das Recht, Cookies abzulehnen oder 
 — Firefox: Einstellungen → Datenschutz → Cookies
 — Safari: Einstellungen → Datenschutz → Cookies verwalten
 
-Bei Fragen: info@usfh.ch`,
+Bei Fragen: info@leder-shop.ch`,
     },
     ueberuns: {
       title: "Über uns",
@@ -173,7 +173,7 @@ Bei Fragen: info@usfh.ch`,
 Ihr Schweizer Spezialist für handgemachte Lederartikel
 
 Wer wir sind
-Leder-Shop ist ein familiengeführtes Fachgeschäft mit Sitz in Sevelen, Kanton St. Gallen. Wir sind Ihr verlässlicher Partner für hochwertige handgemachte Lederartikel – mit persönlicher Beratung und einem sorgfältig kuratierten Sortiment aus echtem Leder.
+Leder-Shop ist ein familiengeführtes Fachgeschäft mit Sitz in Sax, Kanton St. Gallen. Wir sind Ihr verlässlicher Partner für hochwertige handgemachte Lederartikel – mit persönlicher Beratung und einem sorgfältig kuratierten Sortiment aus echtem Leder.
 
 Was uns auszeichnet
 Unser Team besteht aus passionierten Handwerkern und Lederliebhabern, die ihre Produkte selbst kennen und lieben. Jedes Stück wird mit Sorgfalt und Leidenschaft gefertigt – Qualität vor Quantität.
@@ -191,9 +191,9 @@ Unsere Werte
 Wir legen grössten Wert auf Schweizer Qualitätsstandards, seriöse Beratung und echte Handwerkskunst.
 
 Besuchen Sie uns
-Bahnhofstrasse 2, 9475 Sevelen
+9468 Sax (SG)
 Mo – Fr: 13:30 – 18:30 | Sa: 10:00 – 16:00
-📞 078 606 61 05 | info@usfh.ch`,
+📞 077 416 73 75 | info@leder-shop.ch`,
     },
     impressum: {
       title: "Impressum",
@@ -201,13 +201,12 @@ Mo – Fr: 13:30 – 18:30 | Sa: 10:00 – 16:00
 
 BETREIBER DES ONLINE-SHOPS
 Leder-Shop
-Bahnhofstrasse 2
-9475 Sevelen
+9468 Sax (SG)
 Kanton St. Gallen, Schweiz
 
 KONTAKT
-Telefon: 078 606 61 05
-E-Mail: info@usfh.ch
+Telefon: 077 416 73 75
+E-Mail: info@leder-shop.ch
 Website: www.usfh.ch
 
 ÖFFNUNGSZEITEN
@@ -223,7 +222,7 @@ MEHRWERTSTEUER
 Alle Preise verstehen sich in CHF inklusive der gesetzlichen Schweizer Mehrwertsteuer (MwSt.).
 
 VERANTWORTLICH FÜR DEN INHALT
-Leder-Shop, Bahnhofstrasse 2, 9475 Sevelen
+Leder-Shop, 9468 Sax (SG)
 
 WEBDESIGN & UMSETZUNG
 lweb.ch – Webdesign & Digitalagentur
@@ -233,19 +232,19 @@ HAFTUNGSAUSSCHLUSS
 Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschliesslich deren Betreiber verantwortlich. Alle Inhalte dieser Website sind urheberrechtlich geschützt.
 
 ANWENDBARES RECHT
-Es gilt ausschliesslich Schweizer Recht. Gerichtsstand ist Sevelen, Kanton St. Gallen.
+Es gilt ausschliesslich Schweizer Recht. Gerichtsstand ist Sax, Kanton St. Gallen.
 
 Stand: Februar 2026`,
     },
     rueckgabe: {
       title: "Versand & Rückgabe",
-      content: `Leder-Shop | Bahnhofstrasse 2, 9475 Sevelen | info@usfh.ch
+      content: `Leder-Shop | 9468 Sax (SG) | info@leder-shop.ch
 
 1. VERSAND
 Wir liefern ausschliesslich innerhalb der Schweiz. Bestellungen werden in der Regel innerhalb von 1–3 Werktagen nach Zahlungseingang versandt. Der Versand erfolgt mit einem zuverlässigen Schweizer Paketdienstleister. Sie erhalten nach dem Versand eine E-Mail mit Ihrer Sendungsverfolgungsnummer. Versandkosten werden transparent im Bestellprozess ausgewiesen.
 
 2. RÜCKGABERECHT
-Sie können bestellte Artikel innerhalb von 14 Tagen ab Erhalt ohne Angabe von Gründen zurückgeben. Bitte kontaktieren Sie uns vor der Rücksendung per E-Mail an info@usfh.ch oder telefonisch unter 078 606 61 05.
+Sie können bestellte Artikel innerhalb von 14 Tagen ab Erhalt ohne Angabe von Gründen zurückgeben. Bitte kontaktieren Sie uns vor der Rücksendung per E-Mail an info@leder-shop.ch oder telefonisch unter 077 416 73 75.
 
 3. ZUSTAND DER WARE
 Die Ware muss sich in originalem, unbenutztem Zustand befinden und in der Originalverpackung zurückgesendet werden. Bei Produkten wie Messern, Armbrüsten oder Outdoor-Ausrüstung dürfen keine Gebrauchsspuren vorhanden sein.
@@ -256,8 +255,7 @@ Vom Rückgaberecht ausgenommen sind: auf Kundenwunsch angefertigte oder graviert
 5. RÜCKSENDEPROZESS
 Bitte senden Sie die Ware gut verpackt an folgende Adresse zurück:
 Leder-Shop
-Bahnhofstrasse 2
-9475 Sevelen
+9468 Sax (SG)
 
 Die Rücksendekosten trägt der Käufer. Wir empfehlen, die Sendung versichert zu verschicken.
 
@@ -341,18 +339,18 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
               </div>
 
               {/* Contact pills */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                <a href="https://maps.google.com/?q=Bahnhofstrasse+2+9475+Sevelen" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#F5F5F5] hover:bg-[#EBEBEB] text-[#444] text-sm px-3 py-1.5 rounded-full transition-colors">
-                  <span className="text-base">📍</span> Bahnhofstrasse 2, 9475 Sevelen
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px", marginBottom: "24px" }}>
+                <a href="https://maps.google.com/?q=9468+Sax+SG" target="_blank" rel="noopener noreferrer"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#F5F5F5", color: "#444", fontSize: "14px", padding: "6px 12px", borderRadius: "999px", whiteSpace: "nowrap", textDecoration: "none" }}>
+                  <span>📍</span> 9468 Sax (SG)
                 </a>
-                <a href="tel:0786066105"
-                  className="inline-flex items-center gap-2 bg-[#F5F5F5] hover:bg-[#8B5E3C] hover:text-white text-[#8B5E3C] font-semibold text-sm px-3 py-1.5 rounded-full transition-colors">
-                  <span className="text-base">📞</span> 078 606 61 05
+                <a href="tel:0774167375"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#F5F5F5", color: "#8B5E3C", fontWeight: 600, fontSize: "14px", padding: "6px 12px", borderRadius: "999px", whiteSpace: "nowrap", textDecoration: "none" }}>
+                  <span>📞</span> 077 416 73 75
                 </a>
-                <a href="mailto:info@usfh.ch"
-                  className="inline-flex items-center gap-2 bg-[#F5F5F5] hover:bg-[#8B5E3C] hover:text-white text-[#8B5E3C] font-semibold text-sm px-3 py-1.5 rounded-full transition-colors">
-                  <span className="text-base">✉️</span> info@usfh.ch
+                <a href="mailto:info@leder-shop.ch"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#F5F5F5", color: "#8B5E3C", fontWeight: 600, fontSize: "14px", padding: "6px 12px", borderRadius: "999px", whiteSpace: "nowrap", textDecoration: "none" }}>
+                  <span>✉️</span> info@leder-shop.ch
                 </a>
               </div>
  
@@ -363,7 +361,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
               <h3 className="font-black text-[#1A1A1A] text-base mb-5 uppercase tracking-widest">Service</h3>
               <ul className="space-y-3">
                 <li>
-                  <a href="mailto:info@usfh.ch" className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors">Kontakt</a>
+                  <a href="mailto:info@leder-shop.ch" className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors">Kontakt</a>
                 </li>
                 <li>
                   <Dialog open={openModal === "rueckgabe"} onOpenChange={(open) => setOpenModal(open ? "rueckgabe" : null)}>

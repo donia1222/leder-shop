@@ -299,7 +299,9 @@ function PremiumHotSauceStoreInner() {
       <CheckoutPage
         cart={cart}
         onBackToStore={backToStore}
-        onClearCart={clearCart} // Pasar función para limpiar carrito
+        onClearCart={clearCart}
+        onAddToCart={(product) => addToCart(product)}
+        onRemoveFromCart={removeFromCart}
       />
     )
   }

@@ -72,9 +72,10 @@ try {
         // Convertir tipos de datos
         $product['id'] = intval($product['id']);
         $product['price'] = floatval($product['price']);
-        $product['stock'] = intval($product['stock'] ?? 0); // Asegurar que stock no sea null
+        $product['stock'] = intval($product['stock'] ?? 0);
         $product['heat_level'] = intval($product['heat_level']);
         $product['rating'] = floatval($product['rating']);
+        $product['weight_kg'] = floatval($product['weight_kg'] ?? 0);
         
         echo json_encode([
             'success' => true,
@@ -162,6 +163,7 @@ try {
             $product['stock'] = intval($product['stock'] ?? 0);
             $product['heat_level'] = intval($product['heat_level']);
             $product['rating'] = floatval($product['rating']);
+            $product['weight_kg'] = floatval($product['weight_kg'] ?? 0);
             
             // Asegurar que category no sea null
             if (empty($product['category'])) {

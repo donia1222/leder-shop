@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
+const HERO_IMAGES = [
+  "/images/ledershop/IMG_0007.JPG",
+  "/images/ledershop/51ba66c7-69d5-4a5a-84d1-2640d7997fa6 2.JPG",
+  "/images/ledershop/588ac1f5-d4cf-4171-a057-4bf8c45a227b.JPG",
+  "/images/ledershop/c89bb77c-1d22-4e31-9dd3-516cc71e2fc3 2.JPG",
+]
+
 interface Category { id: number; slug: string; name: string }
 interface Product { id: number; category?: string; image_url?: string; image_urls?: (string | null)[] }
 
@@ -12,6 +19,14 @@ export function HeroSection() {
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [catImages, setCatImages] = useState<Record<string, string>>({})
+  const [heroIndex, setHeroIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroIndex(i => (i + 1) % HERO_IMAGES.length)
+    }, 3500)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const load = async () => {
@@ -28,7 +43,6 @@ export function HeroSection() {
         const cats: Category[] = catData.categories
         const products: Product[] = prodData.products
 
-        // Build map: slug → random product image from that category
         const imgMap: Record<string, string> = {}
         for (const cat of cats) {
           const matching = products.filter(
@@ -48,126 +62,133 @@ export function HeroSection() {
   }, [])
 
   return (
-    <div className="bg-white">
+    <div className="bg-[#FAF7F4]">
 
-      {/* ── Trust bar ── */}
-      <div className="border-b border-[#E0E0E0] bg-white">
-        <div className="container mx-auto px-4 py-2.5">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-1 text-sm text-[#333333]">
-            {[
-              "100% Handgemacht",
-              "Schnelle Lieferung",
-              "14 Tage Rückgaberecht",
-              "200+ Lederartikel",
-            ].map((item) => (
-              <span key={item} className="flex items-center gap-1.5">
-                <span className="text-[#8B5E3C] font-bold">✓</span>
-                <span>{item}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* ── Hero editorial split ── */}
+      <div id="hero" className="border-b border-[#E8D9C8]">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-6 items-center">
 
-      {/* ── Hero banner ── */}
-      <div
-        id="hero"
-        className="relative w-full overflow-hidden"
-        style={{ minHeight: "520px" }}
-      >
-        {/* Background photo — leather craft */}
-        <img
-          src="https://images.unsplash.com/photo-1473188588951-666fce8e7c68?w=1600&h=600&fit=crop&auto=format"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: "scale(1.04)", transformOrigin: "center center" }}
-          onError={(e) => {
-            const el = e.currentTarget
-            el.style.display = "none"
-            if (el.parentElement) {
-              el.parentElement.style.background =
-                "linear-gradient(135deg, #2D1206 0%, #6B4226 50%, #8B5E3C 100%)"
-            }
-          }}
-        />
-        {/* Cinematic overlay — dark left, fade right */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.58) 45%, rgba(0,0,0,0.18) 100%)",
-          }}
-        />
-        {/* Vignette bottom */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)" }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-6 flex items-center" style={{ minHeight: "520px" }}>
-          <div className="max-w-2xl">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2.5 mb-6">
-              <span className="bg-[#8B5E3C] text-white text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
-                ✦ Neue Kollektion
-              </span>
-              <span className="text-white/55 text-xs font-medium tracking-wide">Handgemacht & Einzigartig</span>
-            </div>
-
-            <h1
-              className="text-white font-black leading-[1.05] mb-5"
-              style={{
-                fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-                textShadow: "0 2px 24px rgba(0,0,0,0.45)",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Premium Leder-<br />
-              <span className="text-[#C49A6C]">artikel & Taschen</span>
-            </h1>
-
-            <p className="text-white/75 text-lg mb-8 leading-relaxed max-w-lg">
-              Handgemachte Taschen, Portemonnaies & Accessoires<br />
-              aus echtem Leder — für jeden Anlass.
-            </p>
-
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => router.push("/shop")}
-                className="bg-white text-[#1A1A1A] font-bold px-8 py-3.5 text-sm hover:bg-[#F0F0F0] transition-all rounded-full inline-flex items-center gap-2 shadow-xl"
-              >
-                Kollektion entdecken <span className="text-base">→</span>
-              </button>
-              <button
-                onClick={() => router.push("/shop")}
-                className="border-2 border-white/40 hover:border-white text-white font-semibold px-8 py-3.5 text-sm transition-all rounded-full hover:bg-white/10"
-              >
-                Alle Kategorien
-              </button>
-            </div>
-
-            {/* Stats row */}
-            <div className="flex items-center gap-8 mt-10 pt-8 border-t border-white/12">
-              {[
-                { val: "200+", label: "Artikel" },
-                { val: "1–3 Tage", label: "Lieferung" },
-                { val: "100%", label: "Echtes Leder" },
-              ].map(({ val, label }) => (
-                <div key={label}>
-                  <div className="text-white font-black text-xl leading-none">{val}</div>
-                  <div className="text-white/45 text-xs mt-1 tracking-wide">{label}</div>
-                </div>
+            {/* Mobile image — above text */}
+            <div className="lg:hidden w-full relative overflow-hidden bg-[#2D1206]" style={{ height: "260px" }}>
+              {HERO_IMAGES.map((src, idx) => (
+                <img key={src} src={src} alt="Premium Lederartikel"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ opacity: idx === heroIndex ? 1 : 0, transition: "opacity 0.7s ease" }}
+                />
               ))}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#FAF7F4] to-transparent" />
+              <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
+                <span className="text-[11px] font-black text-[#2D1206] uppercase tracking-wide">Leder-Shop</span>
+              </div>
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                {HERO_IMAGES.map((_, idx) => (
+                  <button key={idx} onClick={() => setHeroIndex(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${idx === heroIndex ? "bg-[#2D1206] w-5" : "bg-[#2D1206]/30 w-2"}`}
+                  />
+                ))}
+              </div>
             </div>
+
+            {/* LEFT: Text */}
+            <div className="py-8 lg:py-20">
+
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-px bg-[#8B5E3C]" />
+                <span className="text-[#8B5E3C] text-[11px] font-black uppercase tracking-[0.25em]">Neue Kollektion 2026</span>
+              </div>
+
+              {/* Heading */}
+              <h1
+                className="font-black text-[#1A1A1A] leading-[1.02] mb-5"
+                style={{ fontSize: "clamp(2.6rem, 4.5vw, 4.2rem)", letterSpacing: "-0.03em" }}
+              >
+                Premium<br />
+                <span className="text-[#8B5E3C]">Lederartikel</span><br />
+                & Taschen
+              </h1>
+
+              {/* Description */}
+              <p className="text-[#777] text-base leading-relaxed mb-8 max-w-md">
+                Handgemachte Taschen, Portemonnaies & Accessoires
+                aus echtem Leder — für jeden Anlass.
+              </p>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-3 mb-10">
+                <button
+                  onClick={() => router.push("/shop")}
+                  className="bg-[#2D1206] hover:bg-[#8B5E3C] text-white font-bold px-7 py-3 text-sm rounded-full inline-flex items-center gap-2 transition-all duration-200 shadow-md"
+                >
+                  Kollektion entdecken <span>→</span>
+                </button>
+                <button
+                  onClick={() => router.push("/shop")}
+                  className="border border-[#C49A6C] text-[#8B5E3C] hover:bg-[#8B5E3C] hover:text-white hover:border-[#8B5E3C] font-semibold px-7 py-3 text-sm rounded-full transition-all duration-200"
+                >
+                  Alle Kategorien
+                </button>
+              </div>
+
+              {/* Decorative tags */}
+              <div className="flex flex-wrap gap-2 mb-8">
+                {["Handgemacht", "Echtes Leder", "Swiss Quality", "Seit 2018"].map(tag => (
+                  <span key={tag} className="inline-flex items-center gap-1.5 bg-[#F5EDE0] text-[#8B5E3C] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#E8D9C8]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8B5E3C] inline-block" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div className="flex items-center gap-8 pt-8 border-t border-[#E8D9C8]">
+                {[
+                  { val: "200+", label: "Artikel" },
+                  { val: "1–3 Tage", label: "Lieferung" },
+                  { val: "100%", label: "Echtes Leder" },
+                ].map(({ val, label }) => (
+                  <div key={label}>
+                    <div className="font-black text-[#1A1A1A] text-xl leading-none">{val}</div>
+                    <div className="text-[#AAA] text-xs mt-1 tracking-wide uppercase">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT: Collage (desktop only) */}
+            <div className="hidden lg:flex items-center justify-start h-full py-6">
+              <div className="relative" style={{ width: "520px", height: "580px" }}>
+                {/* Image 1 — top-left */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
+                  style={{ width: "240px", height: "300px", top: "0", left: "0", transform: "rotate(-4deg)", zIndex: 1 }}>
+                  <img src={HERO_IMAGES[0]} alt="Premium Leder" className="w-full h-full object-cover" />
+                </div>
+                {/* Image 2 — top-right */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
+                  style={{ width: "240px", height: "255px", top: "40px", right: "0", transform: "rotate(3deg)", zIndex: 2 }}>
+                  <img src={HERO_IMAGES[1]} alt="Premium Leder" className="w-full h-full object-cover" />
+                </div>
+                {/* Image 3 — bottom-left */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
+                  style={{ width: "240px", height: "255px", bottom: "0", left: "15px", transform: "rotate(2.5deg)", zIndex: 3 }}>
+                  <img src={HERO_IMAGES[2]} alt="Premium Leder" className="w-full h-full object-cover" />
+                </div>
+                {/* Image 4 — bottom-right */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
+                  style={{ width: "240px", height: "295px", bottom: "10px", right: "0", transform: "rotate(-3deg)", zIndex: 4 }}>
+                  <img src={HERO_IMAGES[3]} alt="Premium Leder" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-3 right-3 bg-[#2D1206]/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-md">
+                    <div className="text-white font-black text-xs leading-none">Swiss</div>
+                    <div className="text-[#C49A6C] text-[9px] tracking-wide mt-0.5">Qualität</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-
-        {/* Right accent line */}
-        <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-transparent via-[#8B5E3C]/70 to-transparent" />
       </div>
-
-     
 
       {/* ── Unsere Leder-Kategorien ── */}
       <div id="leder-kategorien" className="bg-white border-b border-[#E0E0E0] py-14">

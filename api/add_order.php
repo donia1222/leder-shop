@@ -85,8 +85,11 @@ try {
         throw new Exception("Database table 'orders' does not exist. Please run the SQL setup script first.");
     }
     
-    // Generar número de pedido único
-    $orderNumber = 'ORDER_' . date('Ymd') . '_' . strtoupper(substr(uniqid(), -6));
+    // Generar número de pedido único (6 dígitos)
+    do {
+        $orderNumber = (string) mt_rand(100000, 999999);
+        $exists = $pdo->query("SELECT COUNT(*) FROM orders WHERE order_number = '$orderNumber'")->fetchColumn();
+    } while ($exists > 0);
     error_log("Generated order number: $orderNumber");
     
     // Iniciar transacción
@@ -173,8 +176,9 @@ try {
     
     // Determinar método de pago y estado
     $paymentMethod = $data['paymentMethod'] ?? 'paypal';
-    $paymentStatus = $data['paymentStatus'] ?? ($paymentMethod === 'invoice' ? 'pending' : 'completed');
-    $orderStatus = $paymentMethod === 'invoice' ? 'pending' : 'completed';
+    $pendingMethods = ['invoice', 'twint'];
+    $paymentStatus = $data['paymentStatus'] ?? (in_array($paymentMethod, $pendingMethods) ? 'pending' : 'completed');
+    $orderStatus = in_array($paymentMethod, $pendingMethods) ? 'pending' : 'completed';
     
     // Log para debugging
     error_log("Payment method received: " . $paymentMethod);
@@ -280,13 +284,15 @@ try {
             'paypalPayerID' => $paypalPayerID
         ];
         
-        if ($paymentMethod === 'invoice') {
+        if ($paymentMethod === 'twint') {
+            $emailResponse = sendTwintConfirmationEmail($emailData);
+            error_log("TWINT email sent: " . json_encode($emailResponse));
+        } elseif ($paymentMethod === 'invoice') {
             $emailResponse = sendInvoiceConfirmationEmail($emailData);
             error_log("Invoice email sent: " . json_encode($emailResponse));
         } else {
-            // PayPal - llamar al endpoint de confirmación existente
             $emailResponse = sendPayPalConfirmationEmail($emailData);
-            error_log("PayPal email sent: " . json_encode($emailResponse));
+            error_log("PayPal/Stripe email sent: " . json_encode($emailResponse));
         }
     } catch (Exception $emailError) {
         error_log("Error sending confirmation email: " . $emailError->getMessage());

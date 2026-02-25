@@ -42,6 +42,7 @@ interface Product {
   rating: number
   badge?: string
   origin?: string
+  weight_kg?: number
 }
 
 interface CartItem extends Product {
@@ -67,6 +68,7 @@ interface CustomerInfo {
   city: string
   postalCode: string
   canton: string
+  country: string
   notes: string
 }
 
@@ -102,14 +104,25 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
     city: "",
     postalCode: "",
     canton: "",
+    country: "CH",
     notes: "",
   })
+
+  const [shippingCost, setShippingCost] = useState(0)
+  const [shippingInfo, setShippingInfo] = useState({ zone: "", range: "" })
+  const [enabledCountries, setEnabledCountries] = useState<string[]>(["CH"])
 
   const [orderStatus, setOrderStatus] = useState<"pending" | "processing" | "completed" | "error">("pending")
   const [orderDetails, setOrderDetails] = useState<any>(null)
   const [formErrors, setFormErrors] = useState<Partial<CustomerInfo>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "invoice" | "stripe">("invoice")
+  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "invoice" | "stripe" | "twint">("invoice")
+  const [paymentSettings, setPaymentSettings] = useState<{
+    paypal_email: string; twint_phone: string
+    bank_iban: string; bank_holder: string; bank_name: string
+    enable_paypal: boolean; enable_stripe: boolean; enable_twint: boolean; enable_invoice: boolean
+  }>({ paypal_email: "", twint_phone: "", bank_iban: "", bank_holder: "", bank_name: "",
+       enable_paypal: false, enable_stripe: false, enable_twint: false, enable_invoice: true })
 
   // Billing address states
   const [useDifferentBillingAddress, setUseDifferentBillingAddress] = useState(false)
@@ -190,6 +203,47 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
     }
 
     initializeAuth()
+
+    // Load payment settings
+    const API = process.env.NEXT_PUBLIC_API_BASE_URL
+    fetch(`${API}/get_payment_settings.php`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          const s = data.settings
+          setPaymentSettings(s)
+          if (s.enable_invoice) setPaymentMethod("invoice")
+          else if (s.enable_paypal) setPaymentMethod("paypal")
+          else if (s.enable_stripe) setPaymentMethod("stripe")
+          else if (s.enable_twint) setPaymentMethod("twint")
+        }
+      })
+      .catch(() => {})
+
+    // Load enabled shipping zones to build country dropdown
+    fetch(`${API}/get_shipping_settings.php`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.zones) {
+          const countries: string[] = []
+          let hasWildcard = false
+          for (const z of data.zones) {
+            if (!z.enabled) continue
+            if (z.countries === "*") { hasWildcard = true; continue }
+            z.countries.split(",").map((c: string) => c.trim()).forEach((c: string) => {
+              if (c && !countries.includes(c)) countries.push(c)
+            })
+          }
+          if (hasWildcard) countries.push("OTHER")
+          if (countries.length > 0) setEnabledCountries(countries)
+          // If current country not in list, reset to first available
+          setCustomerInfo(prev => ({
+            ...prev,
+            country: countries.includes(prev.country) ? prev.country : (countries[0] || "CH")
+          }))
+        }
+      })
+      .catch(() => {})
   }, [])
 
   const verifyAndLoadUser = async (sessionToken: string): Promise<boolean> => {
@@ -304,13 +358,33 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
     return cart.reduce((total, item) => total + item.price * item.quantity, 0)
   }
 
-  const getShippingCost = () => {
-    return 0 // Free shipping
-  }
+  const getShippingCost = () => shippingCost
 
-  const getFinalTotal = () => {
-    return getTotalPrice() + getShippingCost()
-  }
+  const getFinalTotal = () => getTotalPrice() + shippingCost
+
+  // Recalculate shipping when cart or country changes
+  useEffect(() => {
+    const totalWeight = cart.reduce((sum, item) => sum + (item.weight_kg ?? 0.5) * item.quantity, 0)
+    if (cart.length === 0) {
+      setShippingCost(0)
+      setShippingInfo({ zone: "", range: "" })
+      return
+    }
+    const API = process.env.NEXT_PUBLIC_API_BASE_URL
+    fetch(`${API}/calculate_shipping.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ country: customerInfo.country, weight_kg: totalWeight }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          setShippingCost(data.price ?? 0)
+          setShippingInfo({ zone: data.zone ?? "", range: data.range ?? "" })
+        }
+      })
+      .catch(() => {})
+  }, [cart, customerInfo.country])
 
   const createUserAccount = async () => {
     try {
@@ -510,7 +584,8 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
 
 
     const total = getFinalTotal()
-    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=info@cantinatexmex.ch&amount=${total.toFixed(2)}&currency_code=CHF&item_name=FEUER KÖNIGREICH Order&custom=${orderId}&return=${window.location.origin}/success&cancel_return=${window.location.origin}/cancel`
+    const paypalEmail = paymentSettings.paypal_email || "info@usfh.ch"
+    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${paypalEmail}&amount=${total.toFixed(2)}&currency_code=CHF&item_name=Leder-Shop Order&custom=${orderId}&return=${window.location.origin}/success&cancel_return=${window.location.origin}/cancel`
 
     setOrderStatus("processing")
     // USAR LA MISMA PESTAÑA para que localStorage esté disponible
@@ -549,6 +624,34 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
         onClearCart()
       }
 
+      localStorage.removeItem("cantina-cart")
+    } catch (error: any) {
+      console.error("Error saving order:", error)
+      alert(`Error al guardar el pedido: ${error.message}`)
+      setOrderStatus("error")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleTwintPayment = async () => {
+    if (!validateForm()) return
+    if (!validateBillingAddress()) return
+    if (showCreateAccount && !validateAccountCreation()) return
+
+    setIsSubmitting(true)
+    try {
+      const savedOrder = await saveOrderToDatabase()
+      setOrderStatus("completed")
+      setOrderDetails({
+        id: savedOrder.orderNumber,
+        status: "TWINT_PENDING",
+        customerInfo: customerInfo,
+        cart: cart,
+        total: getFinalTotal(),
+        createdAt: savedOrder.createdAt,
+      })
+      if (onClearCart) onClearCart()
       localStorage.removeItem("cantina-cart")
     } catch (error: any) {
       console.error("Error saving order:", error)
@@ -1014,25 +1117,54 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
             <CheckCircle className="w-24 h-24 text-[#2C5F2E] mx-auto mb-6" />
             <h1 className="text-4xl font-black text-[#2C5F2E] mb-4">Bestellung erfolgreich!</h1>
             <p className="text-xl text-gray-600 mb-6">
-              {orderDetails?.status === "INVOICE_SENT" 
-                ? "Vielen Dank für Ihre Bestellung! Wir senden Ihnen die Rechnung per Post an Ihre Adresse."
-                : "Vielen Dank für Ihre Bestellung! Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+              {orderDetails?.status === "TWINT_PENDING"
+                ? "Bitte führen Sie jetzt die TWINT-Zahlung durch."
+                : orderDetails?.status === "INVOICE_SENT"
+                  ? "Vielen Dank! Bitte überweisen Sie den Betrag mit Ihrer Bestellnummer als Referenz."
+                  : "Vielen Dank für Ihre Bestellung! Sie erhalten in Kürze eine Bestätigungs-E-Mail."
               }
             </p>
 
-            <div className="bg-green-50 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold text-green-700 mb-2">Bestelldetails</h3>
-              <p className="text-green-600">Bestellnummer: {orderDetails?.id}</p>
-              <p className="text-green-600">Betrag: {orderDetails?.total?.toFixed(2) || "0.00"} CHF</p>
-              <p className="text-green-600">Status: {orderDetails?.status === "INVOICE_SENT" ? "Rechnung wird gesendet" : "Bezahlt"}</p>
+            <div className="bg-green-50 rounded-lg p-6 mb-4">
+              <h3 className="text-lg font-semibold text-green-700 mb-3">Bestelldetails</h3>
+              <p className="text-green-600 font-bold text-lg">Bestellnummer: <span className="font-mono">{orderDetails?.id}</span></p>
+              <p className="text-green-600">Betrag: <strong>{orderDetails?.total?.toFixed(2) || "0.00"} CHF</strong></p>
               {isLoggedIn && <p className="text-green-600">Konto: Gespeichert ✅</p>}
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-left">
-              <p className="text-sm text-blue-700">
-                Nach Abschluss der Bestellung wird der Verkäufer Sie so bald wie möglich per E-Mail oder Telefon kontaktieren, um die Bestellung abzuschließen.
-              </p>
-            </div>
+            {/* TWINT payment instructions */}
+            {orderDetails?.status === "TWINT_PENDING" && paymentSettings.twint_phone && (
+              <div className="bg-gray-900 text-white rounded-xl p-5 mb-4 text-left">
+                <p className="font-bold text-lg mb-3">📱 TWINT-Zahlung</p>
+                <div className="space-y-2 text-sm">
+                  <p>Empfänger-Nummer: <span className="font-black text-xl block mt-0.5">{paymentSettings.twint_phone}</span></p>
+                  <p>Betrag: <strong>{orderDetails?.total?.toFixed(2)} CHF</strong></p>
+                  <p>Verwendungszweck / Referenz: <strong className="font-mono">{orderDetails?.id}</strong></p>
+                </div>
+                <p className="text-gray-400 text-xs mt-3">Bitte geben Sie die Bestellnummer als Verwendungszweck an, damit wir Ihre Zahlung zuordnen können.</p>
+              </div>
+            )}
+
+            {/* Bank transfer instructions */}
+            {orderDetails?.status === "INVOICE_SENT" && (
+              <div className="bg-white border-2 border-green-300 rounded-xl p-5 mb-4 text-left">
+                <p className="font-bold text-green-800 text-lg mb-3">🏦 Banküberweisung</p>
+                {paymentSettings.bank_iban ? (
+                  <div className="space-y-1.5 text-sm">
+                    <p className="text-gray-600">Kontoinhaber: <strong className="text-gray-900">{paymentSettings.bank_holder}</strong></p>
+                    {paymentSettings.bank_name && <p className="text-gray-600">Bank: <strong className="text-gray-900">{paymentSettings.bank_name}</strong></p>}
+                    <p className="text-gray-600">IBAN: <strong className="font-mono text-gray-900 tracking-wider">{paymentSettings.bank_iban}</strong></p>
+                    <p className="text-gray-600">Betrag: <strong className="text-gray-900">{orderDetails?.total?.toFixed(2)} CHF</strong></p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-600 mb-3">Die Bankdaten wurden Ihnen per E-Mail zugesandt.</p>
+                )}
+                <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-yellow-800 font-bold text-xs uppercase tracking-wide mb-1">⚠️ Verwendungszweck (Pflichtfeld)</p>
+                  <p className="font-mono font-black text-gray-900 text-base">{orderDetails?.id}</p>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-4">
               <p className="text-gray-600">Ihre Bestellung wird innerhalb von 2-3 Werktagen versendet.</p>
@@ -1388,6 +1520,33 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                 </div>
 
                 <div>
+                  <Label htmlFor="country">Land *</Label>
+                  <select
+                    id="country"
+                    value={customerInfo.country}
+                    onChange={(e) => handleInputChange("country", e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {(["CH","DE","AT","FR","IT","NL","BE","ES","PL","PT","CZ","DK","SE","FI","NO","HU","RO","HR","SK","SI","LU","LI","OTHER"] as const)
+                      .filter(c => enabledCountries.includes(c))
+                      .map(c => {
+                        const labels: Record<string, string> = {
+                          CH:"🇨🇭 Schweiz", DE:"🇩🇪 Deutschland", AT:"🇦🇹 Österreich",
+                          FR:"🇫🇷 Frankreich", IT:"🇮🇹 Italien", NL:"🇳🇱 Niederlande",
+                          BE:"🇧🇪 Belgien", ES:"🇪🇸 Spanien", PL:"🇵🇱 Polen",
+                          PT:"🇵🇹 Portugal", CZ:"🇨🇿 Tschechien", DK:"🇩🇰 Dänemark",
+                          SE:"🇸🇪 Schweden", FI:"🇫🇮 Finnland", NO:"🇳🇴 Norwegen",
+                          HU:"🇭🇺 Ungarn", RO:"🇷🇴 Rumänien", HR:"🇭🇷 Kroatien",
+                          SK:"🇸🇰 Slowakei", SI:"🇸🇮 Slowenien", LU:"🇱🇺 Luxemburg",
+                          LI:"🇱🇮 Liechtenstein", OTHER:"🌍 Andere",
+                        }
+                        return <option key={c} value={c}>{labels[c] ?? c}</option>
+                      })
+                    }
+                  </select>
+                </div>
+
+                <div>
                   <Label htmlFor="notes">Anmerkungen (optional)</Label>
                   <Textarea
                     id="notes"
@@ -1732,9 +1891,17 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                     <span>{getTotalPrice().toFixed(2)} CHF</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Versand:</span>
                     <span>
-                      <Badge className="bg-green-100 text-green-700">Kostenlos</Badge>
+                      Versand
+                      {shippingInfo.zone && shippingInfo.range && (
+                        <span className="text-xs text-gray-500 ml-1">({shippingInfo.zone} · {shippingInfo.range})</span>
+                      )}:
+                    </span>
+                    <span>
+                      {shippingCost === 0
+                        ? <Badge className="bg-green-100 text-green-700">Kostenlos</Badge>
+                        : <span className="font-semibold">{shippingCost.toFixed(2)} CHF</span>
+                      }
                     </span>
                   </div>
                   <Separator />
@@ -1751,9 +1918,8 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
               <CardContent className="p-6">
                 <h3 className="font-semibold text-[#2C5F2E] mb-2">📦 Versandinformationen</h3>
                 <ul className="text-sm text-[#2C5F2E]/80 space-y-1">
-                  <li>• Versand nur innerhalb der Schweiz</li>
+                  {shippingInfo.zone && <li>• Zone: {shippingInfo.zone}{shippingInfo.range ? ` · ${shippingInfo.range}` : ""}</li>}
                   <li>• Lieferzeit: 2-3 Werktage</li>
-                  <li>• Kostenloser Versand für alle Bestellungen</li>
                   <li>• Versand aus 9745 Sevelen</li>
                 </ul>
               </CardContent>
@@ -1770,7 +1936,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
               <CardContent>
                 <div className="space-y-4 mb-6">
                   {/* PayPal Option */}
-                  {/* <div
+                  {paymentSettings.enable_paypal && <div
                     className={`border rounded-xl p-4 cursor-pointer transition-all ${
                       paymentMethod === "paypal"
                         ? "border-blue-500 bg-blue-50"
@@ -1779,7 +1945,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                     onClick={() => setPaymentMethod("paypal")}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className={`w-4 h-4 rounded-full border-2 ${
+                      <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
                         paymentMethod === "paypal" ? "border-blue-500 bg-blue-500" : "border-gray-400"
                       }`}>
                         {paymentMethod === "paypal" && <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>}
@@ -1790,15 +1956,15 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                           <span className="font-semibold text-gray-900">PayPal</span>
                         </div>
                         <p className="text-sm text-gray-600 mt-1">
-                          Sofortige Zahlung mit PayPal - Sie werden weitergeleitet
+                          Sofortige Zahlung mit PayPal – Sie werden weitergeleitet
                         </p>
                       </div>
-                      <div className="text-xl">💳</div>
+                      <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" className="h-6 w-auto" />
                     </div>
-                  </div> */}
+                  </div>}
 
                   {/* Stripe Option */}
-                  {/* <div
+                  {paymentSettings.enable_stripe && <div
                     className={`border rounded-xl p-4 cursor-pointer transition-all ${
                       paymentMethod === "stripe"
                         ? "border-purple-500 bg-purple-50"
@@ -1807,7 +1973,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                     onClick={() => setPaymentMethod("stripe")}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className={`w-4 h-4 rounded-full border-2 ${
+                      <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
                         paymentMethod === "stripe" ? "border-purple-500 bg-purple-500" : "border-gray-400"
                       }`}>
                         {paymentMethod === "stripe" && <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>}
@@ -1818,15 +1984,43 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                           <span className="font-semibold text-gray-900">Kreditkarte</span>
                         </div>
                         <p className="text-sm text-gray-600 mt-1">
-                          Sichere Zahlung mit Kreditkarte - Visa, Mastercard, AMEX
+                          Visa, Mastercard, AMEX – sichere SSL-Zahlung
                         </p>
                       </div>
                       <div className="text-xl">💳</div>
                     </div>
-                  </div> */}
+                  </div>}
+
+                  {/* TWINT Option */}
+                  {paymentSettings.enable_twint && <div
+                    className={`border rounded-xl p-4 cursor-pointer transition-all ${
+                      paymentMethod === "twint"
+                        ? "border-black bg-gray-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                    onClick={() => setPaymentMethod("twint")}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
+                        paymentMethod === "twint" ? "border-black bg-black" : "border-gray-400"
+                      }`}>
+                        {paymentMethod === "twint" && <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-black text-black text-sm bg-black text-white px-1.5 py-0.5 rounded">TWINT</span>
+                          <span className="font-semibold text-gray-900">TWINT</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Bezahlen per TWINT – Schweizer Mobile-Payment
+                        </p>
+                      </div>
+                      <img src="/twint-logo.svg" alt="TWINT" className="h-6 w-auto" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
+                    </div>
+                  </div>}
 
                   {/* Invoice Option */}
-                  <div
+                  {paymentSettings.enable_invoice && <div
                     className={`border rounded-xl p-4 cursor-pointer transition-all ${
                       paymentMethod === "invoice"
                         ? "border-[#2C5F2E] bg-[#F0F9F0]"
@@ -1851,32 +2045,70 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                       </div>
                       <div className="text-xl">📄</div>
                     </div>
-                  </div>
+                  </div>}
                 </div>
 
                 {/* Payment Method Specific Content */}
-                {/* {paymentMethod === "paypal" && (
-                  <div className="mb-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Shield className="w-5 h-5 text-green-600" />
-                      <span className="text-sm text-gray-600">Sichere Zahlung mit PayPal</span>
+                {paymentMethod === "paypal" && (
+                  <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <Shield className="w-5 h-5 text-blue-600" />
+                      <h4 className="font-semibold text-blue-800">Zahlung mit PayPal</h4>
                     </div>
-                    <p className="text-xs text-gray-500">
-                      Sie werden zu PayPal weitergeleitet um die Zahlung abzuschließen.
-                    </p>
-                  </div>
-                )} */}
-
-                {paymentMethod === "invoice" && (
-                  <div className="mb-4 bg-green-50 border border-green-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-green-800 mb-2">📄 Kauf auf Rechnung & Vorkasse</h4>
-                    <p className="text-sm text-green-700">
-                      Nach Abschluss der Bestellung wird der Verkäufer Sie so bald wie möglich per E-Mail oder Telefon kontaktieren, um die Bestellung abzuschließen.
+                    <p className="text-sm text-blue-700">
+                      Sie werden nach der Bestellung zu PayPal weitergeleitet, um die Zahlung abzuschließen.
                     </p>
                   </div>
                 )}
 
-                {/* {paymentMethod === "stripe" && (
+                {paymentMethod === "invoice" && (
+                  <div className="mb-4 bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
+                    <h4 className="font-semibold text-green-800">📄 Kauf auf Rechnung & Vorkasse</h4>
+                    {paymentSettings.bank_iban ? (
+                      <>
+                        <p className="text-sm text-green-700">Bitte überweisen Sie den Betrag auf folgendes Konto:</p>
+                        <div className="bg-white border border-green-200 rounded-lg p-3 text-sm space-y-1">
+                          <p><span className="text-gray-500">Kontoinhaber:</span> <strong>{paymentSettings.bank_holder}</strong></p>
+                          {paymentSettings.bank_name && <p><span className="text-gray-500">Bank:</span> <strong>{paymentSettings.bank_name}</strong></p>}
+                          <p><span className="text-gray-500">IBAN:</span> <strong className="font-mono tracking-wider">{paymentSettings.bank_iban}</strong></p>
+                          <p className="text-xs text-gray-500 mt-1">Verwendungszweck: Ihre Bestellnummer erhalten Sie nach der Bestellung</p>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm text-green-700">
+                        Nach Abschluss der Bestellung wird der Verkäufer Sie so bald wie möglich per E-Mail oder Telefon kontaktieren, um die Bestellung abzuschließen.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {paymentMethod === "twint" && (
+                  <div className="mb-4 bg-gray-900 text-white rounded-xl p-4">
+                    <h4 className="font-bold text-white mb-3">📱 Zahlung per TWINT</h4>
+                    {paymentSettings.twint_phone ? (
+                      <div className="space-y-3 text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400">1. Betrag eingeben</span>
+                          <strong className="text-white text-base">{getFinalTotal().toFixed(2)} CHF</strong>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">2. TWINT-Nummer</span>
+                          <p className="text-white font-black text-2xl tracking-wider mt-0.5">{paymentSettings.twint_phone}</p>
+                        </div>
+                        <div className="bg-white/10 rounded-lg p-3">
+                          <p className="text-gray-300 text-xs mb-1">3. Verwendungszweck / Referenz</p>
+                          <p className="text-gray-200 text-xs">Nach der Bestellung erhalten Sie Ihre <strong className="text-white">Bestellnummer</strong> — diese bitte als Verwendungszweck angeben, damit wir Ihre Zahlung zuordnen können.</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-300">
+                        Nach Bestellabschluss erhalten Sie die TWINT-Zahlungsdaten per E-Mail.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {paymentMethod === "stripe" && (
                   <div className="mb-4">
                     <StripePayment
                       amount={getFinalTotal()}
@@ -1900,27 +2132,54 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                       </div>
                     )}
                   </div>
-                )} */}
+                )}
 
-                <div className="space-y-4">
-                  <Button
-                    onClick={handleInvoicePayment}
-                    disabled={isSubmitting}
-                    className="w-full min-h-14 h-auto py-3 text-base font-bold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 whitespace-normal leading-snug"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Bestellung wird verarbeitet...
-                      </>
-                    ) : (
-                      <span className="text-center">📄 Kauf auf Rechnung & Vorkasse<br/>{getFinalTotal().toFixed(2)} CHF</span>
+                {paymentMethod !== "stripe" && (
+                  <div className="space-y-4">
+                    {paymentMethod === "paypal" && (
+                      <Button
+                        onClick={handlePayPalPayment}
+                        disabled={isSubmitting}
+                        className="w-full min-h-14 h-auto py-3 text-base font-bold bg-[#0070BA] hover:bg-[#005ea6] text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+                      >
+                        {isSubmitting ? (
+                          <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Weiterleitung zu PayPal…</>
+                        ) : (
+                          <span>💳 Mit PayPal bezahlen – {getFinalTotal().toFixed(2)} CHF</span>
+                        )}
+                      </Button>
                     )}
-                  </Button>
-                </div>
+                    {paymentMethod === "twint" && (
+                      <Button
+                        onClick={handleTwintPayment}
+                        disabled={isSubmitting}
+                        className="w-full min-h-14 h-auto py-3 text-base font-bold bg-black hover:bg-gray-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+                      >
+                        {isSubmitting ? (
+                          <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Bestellung wird verarbeitet…</>
+                        ) : (
+                          <span>📱 Bestellung aufgeben – {getFinalTotal().toFixed(2)} CHF</span>
+                        )}
+                      </Button>
+                    )}
+                    {paymentMethod === "invoice" && (
+                      <Button
+                        onClick={handleInvoicePayment}
+                        disabled={isSubmitting}
+                        className="w-full min-h-14 h-auto py-3 text-base font-bold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 whitespace-normal leading-snug"
+                      >
+                        {isSubmitting ? (
+                          <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Bestellung wird verarbeitet...</>
+                        ) : (
+                          <span className="text-center">📄 Kauf auf Rechnung & Vorkasse<br/>{getFinalTotal().toFixed(2)} CHF</span>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                )}
 
                 <p className="text-xs text-gray-500 mt-4 text-center">
-                  Mit dem Klick auf "Kauf auf Rechnung & Vorkasse" akzeptieren Sie unsere AGB und Datenschutzbestimmungen.
+                  Mit dem Klick auf den Bestellbutton akzeptieren Sie unsere AGB und Datenschutzbestimmungen.
                 </p>
               </CardContent>
             </Card>

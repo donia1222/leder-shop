@@ -29,6 +29,8 @@ import {
   ImageIcon,
   Download,
   Images,
+  Settings,
+  Save,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,6 +41,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/hooks/use-toast"
 import { ProductImage } from "@/components/product-image"
 
@@ -105,6 +108,7 @@ interface Product {
   badge: string
   origin: string
   supplier: string
+  weight_kg: number
   image_url: string
   image_url_candidates?: string[]
   created_at: string
@@ -138,6 +142,64 @@ export default function AdminPage() {
 export function Admin({ onClose }: AdminProps) {
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("orders")
+
+  // Payment Settings
+  const [paySettings, setPaySettings] = useState({
+    paypal_email: "", stripe_secret_key: "", stripe_publishable_key: "", stripe_webhook_secret: "",
+    twint_phone: "", bank_iban: "", bank_holder: "", bank_name: "",
+    enable_paypal: false, enable_stripe: false, enable_twint: false, enable_invoice: true,
+  })
+  const [isSavingSettings, setIsSavingSettings] = useState(false)
+  const [settingsSavedMsg, setSettingsSavedMsg] = useState("")
+
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  const getPaymentChip = (method: string, status?: string) => {
+    const map: Record<string, { label: string; bg: string; color: string }> = {
+      paypal:  { label: "PayPal",    bg: "#e8f0fe", color: "#0070BA" },
+      stripe:  { label: "Kreditkarte", bg: "#f3e8ff", color: "#7c3aed" },
+      twint:   { label: "TWINT",     bg: "#1a1a1a", color: "#ffffff" },
+      invoice: { label: "Rechnung",  bg: "#f0fdf4", color: "#166534" },
+    }
+    const cfg = map[method?.toLowerCase()] ?? { label: method || "—", bg: "#f3f4f6", color: "#555" }
+    const isPending = status === "pending"
+    return (
+      <span style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}33` }}
+        className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full">
+        {cfg.label}
+        {isPending && <span className="ml-1 text-orange-500">⏳</span>}
+      </span>
+    )
+  }
+
+  const loadPaymentSettings = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/get_payment_settings.php`)
+      const data = await res.json()
+      if (data.success && data.settings) {
+        setPaySettings(prev => ({ ...prev, ...data.settings }))
+      }
+    } catch {}
+  }
+
+  const savePaymentSettings = async () => {
+    setIsSavingSettings(true)
+    setSettingsSavedMsg("")
+    try {
+      const res = await fetch(`${API_BASE}/save_payment_settings.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(paySettings),
+      })
+      const data = await res.json()
+      setSettingsSavedMsg(data.success ? "✅ Einstellungen gespeichert!" : `❌ ${data.error}`)
+    } catch (e: any) {
+      setSettingsSavedMsg(`❌ Fehler: ${e.message}`)
+    } finally {
+      setIsSavingSettings(false)
+      setTimeout(() => setSettingsSavedMsg(""), 4000)
+    }
+  }
 
   // Orders State
   const [orders, setOrders] = useState<Order[]>([])
@@ -241,6 +303,80 @@ export function Admin({ onClose }: AdminProps) {
   const [gallerySaving, setGallerySaving] = useState(false)
   const [deleteGalleryId, setDeleteGalleryId] = useState<number | null>(null)
 
+  // Shipping Settings State
+  interface ShippingZone { id: number; name: string; countries: string; enabled: boolean }
+  interface ShippingRange { id: number; min_kg: number; max_kg: number; label: string }
+  interface ShippingRate { zone_id: number; range_id: number; price: number }
+  const [shippingZones, setShippingZones] = useState<ShippingZone[]>([])
+  const [shippingRanges, setShippingRanges] = useState<ShippingRange[]>([])
+  const [shippingRates, setShippingRates] = useState<ShippingRate[]>([])
+  const [shippingLoading, setShippingLoading] = useState(false)
+  const [shippingSavedMsg, setShippingSavedMsg] = useState("")
+  const [isSavingShipping, setIsSavingShipping] = useState(false)
+
+  const loadShippingSettings = async () => {
+    setShippingLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/get_shipping_settings.php`)
+      const data = await res.json()
+      if (data.success) {
+        setShippingZones(data.zones.map((z: any) => ({ ...z, enabled: z.enabled !== false && z.enabled !== 0 && z.enabled !== "0" })))
+        setShippingRanges(data.ranges)
+        setShippingRates(data.rates.map((r: any) => ({
+          zone_id: Number(r.zone_id),
+          range_id: Number(r.range_id),
+          price: Number(r.price),
+        })))
+      }
+    } catch {}
+    setShippingLoading(false)
+  }
+
+  const getRate = (zoneId: number, rangeId: number) =>
+    shippingRates.find(r => r.zone_id === zoneId && r.range_id === rangeId)?.price ?? 0
+
+  const setRate = (zoneId: number, rangeId: number, price: number) => {
+    setShippingRates(prev => {
+      const idx = prev.findIndex(r => r.zone_id === zoneId && r.range_id === rangeId)
+      if (idx >= 0) {
+        const next = [...prev]; next[idx] = { zone_id: zoneId, range_id: rangeId, price }; return next
+      }
+      return [...prev, { zone_id: zoneId, range_id: rangeId, price }]
+    })
+  }
+
+  const saveShippingSettingsData = async (zones: any[], ranges: any[], rates: any[]) => {
+    try {
+      await fetch(`${API_BASE}/save_shipping_settings.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ zones, ranges, rates }),
+      })
+    } catch {}
+  }
+
+  const saveShippingSettings = async () => {
+    setIsSavingShipping(true)
+    setShippingSavedMsg("")
+    try {
+      const res = await fetch(`${API_BASE}/save_shipping_settings.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ zones: shippingZones, ranges: shippingRanges, rates: shippingRates }),
+      })
+      const data = await res.json()
+      setShippingSavedMsg(data.success ? "✅ Versandeinstellungen gespeichert!" : `❌ ${data.error}`)
+    } catch (e: any) {
+      setShippingSavedMsg(`❌ Fehler: ${e.message}`)
+    } finally {
+      setIsSavingShipping(false)
+      setTimeout(() => setShippingSavedMsg(""), 4000)
+    }
+  }
+
+  const nextShippingId = (arr: { id: number }[]) =>
+    arr.length > 0 ? Math.max(...arr.map(x => x.id)) + 1 : 1
+
   // Filter Orders
   const [orderFilters, setOrderFilters] = useState({
     search: "",
@@ -279,6 +415,10 @@ export function Admin({ onClose }: AdminProps) {
       loadBlogPosts()
     } else if (activeTab === "gallery") {
       loadGalleryImages()
+    } else if (activeTab === "settings") {
+      loadPaymentSettings()
+    } else if (activeTab === "versand") {
+      loadShippingSettings()
     }
   }, [activeTab, currentOrderPage, orderFilters])
 
@@ -475,9 +615,10 @@ export function Admin({ onClose }: AdminProps) {
     }
   }
 
-  const loadCategories = async () => {
+  const loadCategories = async (bust = false) => {
     try {
-      const response = await fetch(`/api/categories`)
+      const url = bust ? `/api/categories?bust=1` : `/api/categories`
+      const response = await fetch(url)
       const data = await response.json()
       if (data.success) {
         setCategories(data.categories)
@@ -500,7 +641,7 @@ export function Admin({ onClose }: AdminProps) {
         toast({ title: "Erfolg", description: isEditing ? "Kategorie aktualisiert" : "Kategorie erstellt" })
         setIsCategoryModalOpen(false)
         setEditingCategory(null)
-        loadCategories()
+        loadCategories(true)
         ;(e.target as HTMLFormElement).reset()
       } else {
         throw new Error(data.error || "Fehler")
@@ -520,7 +661,7 @@ export function Admin({ onClose }: AdminProps) {
       const data = await response.json()
       if (data.success) {
         toast({ title: "Erfolg", description: "Kategorie gelöscht" })
-        loadCategories()
+        loadCategories(true)
       } else {
         toast({ title: "Nicht möglich", description: data.error, variant: "destructive" })
       }
@@ -879,10 +1020,10 @@ export function Admin({ onClose }: AdminProps) {
     doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(139, 94, 60)
     doc.text("Leder-Shop", margin, 36)
     doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(80, 80, 80)
-    doc.text("LEDER · HANDWERK · QUALITÄT", margin, 41)
-    doc.text("Bahnhofstrasse 2, 9475 Sevelen", margin, 46)
-    doc.text("Tel: 078 606 61 05", margin, 51)
-    doc.text("info@lweb.ch", margin, 56)
+    doc.text("HANDGEMACHT · SCHWEIZ", margin, 41)
+    doc.text("9468 Sax (SG)", margin, 46)
+    doc.text("Tel: 077 416 73 75", margin, 51)
+    doc.text("info@leder-shop.ch", margin, 56)
 
     // Titel Rechnung
     doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(139, 94, 60)
@@ -912,7 +1053,10 @@ export function Admin({ onClose }: AdminProps) {
     // Bestellstatus
     doc.setFont("helvetica", "bold"); doc.setFontSize(10)
     doc.text(`Status: ${getStatusText(order.status)}`, pageW - margin, 70, { align: "right" })
-    doc.text(`Zahlung: ${order.payment_method}`, pageW - margin, 76, { align: "right" })
+    const methodLabels: Record<string, string> = { paypal: "PayPal", stripe: "Kreditkarte", twint: "TWINT", invoice: "Rechnung/Vorkasse" }
+    const methodLabel = methodLabels[order.payment_method?.toLowerCase()] ?? order.payment_method
+    const statusLabel = order.payment_status === "completed" ? "✓ Bezahlt" : order.payment_status === "pending" ? "⏳ Ausstehend" : order.payment_status
+    doc.text(`Zahlung: ${methodLabel} — ${statusLabel}`, pageW - margin, 76, { align: "right" })
 
     // Artikeltabelle
     let y = 118
@@ -1113,7 +1257,7 @@ export function Admin({ onClose }: AdminProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-white border border-[#EBEBEB] rounded-2xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-6 mb-8 bg-white border border-[#EBEBEB] rounded-2xl p-1 shadow-sm">
             <TabsTrigger
               value="orders"
               className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
@@ -1128,12 +1272,20 @@ export function Admin({ onClose }: AdminProps) {
               <Package className="w-4 h-4" />
               <span>Produkte</span>
             </TabsTrigger>
-            <TabsTrigger
-              value="blog"
+  
+                        <TabsTrigger
+              value="versand"
               className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Blog</span>
+              <Package className="w-4 h-4" />
+              <span>Versand</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="settings"
+              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+            >
+              <Settings className="w-4 h-4" />
+              <span>Zahlungen</span>
             </TabsTrigger>
             <TabsTrigger
               value="gallery"
@@ -1141,6 +1293,13 @@ export function Admin({ onClose }: AdminProps) {
             >
               <Images className="w-4 h-4" />
               <span>Galerie</span>
+            </TabsTrigger>
+          <TabsTrigger
+              value="blog"
+              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Blog</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1987,6 +2146,271 @@ export function Admin({ onClose }: AdminProps) {
               ))}
             </div>
           </TabsContent>
+
+          {/* ── Settings Tab ── */}
+          <TabsContent value="settings">
+            <div className="max-w-2xl mx-auto space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-1 h-8 bg-[#8B5E3C] rounded-full" />
+                <div>
+                  <h2 className="text-2xl font-black text-[#1A1A1A]">Zahlungseinstellungen</h2>
+                  <p className="text-sm text-[#888]">API-Schlüssel und Konten für Zahlungsmethoden</p>
+                </div>
+              </div>
+
+              {/* PayPal */}
+              <Card className={`rounded-2xl shadow-sm transition-all ${paySettings.enable_paypal ? "border-blue-300" : "border-[#EBEBEB] opacity-75"}`}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <div className="flex items-center gap-2"><span className="text-xl">💳</span> PayPal</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-normal text-[#888]">{paySettings.enable_paypal ? "Aktiv" : "Deaktiviert"}</span>
+                      <Switch checked={paySettings.enable_paypal} onCheckedChange={v => setPaySettings(p => ({ ...p, enable_paypal: v }))} />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <Label htmlFor="paypal_email">PayPal E-Mail (Empfänger)</Label>
+                    <Input
+                      id="paypal_email"
+                      type="email"
+                      placeholder="shop@example.com"
+                      value={paySettings.paypal_email}
+                      onChange={e => setPaySettings(p => ({ ...p, paypal_email: e.target.value }))}
+                      className="mt-1 bg-white"
+                      disabled={!paySettings.enable_paypal}
+                    />
+                    <p className="text-xs text-[#999] mt-1">E-Mail des PayPal-Kontos, das Zahlungen empfängt</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Stripe */}
+              <Card className={`rounded-2xl shadow-sm transition-all ${paySettings.enable_stripe ? "border-purple-300" : "border-[#EBEBEB] opacity-75"}`}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <div className="flex items-center gap-2"><span className="text-xl">💜</span> Stripe (Kreditkarte)</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-normal text-[#888]">{paySettings.enable_stripe ? "Aktiv" : "Deaktiviert"}</span>
+                      <Switch checked={paySettings.enable_stripe} onCheckedChange={v => setPaySettings(p => ({ ...p, enable_stripe: v }))} />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <Label htmlFor="stripe_pub">Publishable Key (pk_...)</Label>
+                    <Input id="stripe_pub" placeholder="pk_live_..." value={paySettings.stripe_publishable_key}
+                      onChange={e => setPaySettings(p => ({ ...p, stripe_publishable_key: e.target.value }))}
+                      className="mt-1 bg-white font-mono text-sm" disabled={!paySettings.enable_stripe} />
+                  </div>
+                  <div>
+                    <Label htmlFor="stripe_sec">Secret Key (sk_...)</Label>
+                    <Input id="stripe_sec" type="password" placeholder="sk_live_..." value={paySettings.stripe_secret_key}
+                      onChange={e => setPaySettings(p => ({ ...p, stripe_secret_key: e.target.value }))}
+                      className="mt-1 bg-white font-mono text-sm" disabled={!paySettings.enable_stripe} />
+                  </div>
+                  <div>
+                    <Label htmlFor="stripe_wh">Webhook Secret (whsec_...)</Label>
+                    <Input id="stripe_wh" type="password" placeholder="whsec_..." value={paySettings.stripe_webhook_secret}
+                      onChange={e => setPaySettings(p => ({ ...p, stripe_webhook_secret: e.target.value }))}
+                      className="mt-1 bg-white font-mono text-sm" disabled={!paySettings.enable_stripe} />
+                    <p className="text-xs text-[#999] mt-1">Zu finden im Stripe Dashboard → Webhooks</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* TWINT */}
+              <Card className={`rounded-2xl shadow-sm transition-all ${paySettings.enable_twint ? "border-gray-700" : "border-[#EBEBEB] opacity-75"}`}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <div className="flex items-center gap-2"><span className="text-xl">📱</span> TWINT</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-normal text-[#888]">{paySettings.enable_twint ? "Aktiv" : "Deaktiviert"}</span>
+                      <Switch checked={paySettings.enable_twint} onCheckedChange={v => setPaySettings(p => ({ ...p, enable_twint: v }))} />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <Label htmlFor="twint_phone">TWINT Telefonnummer</Label>
+                    <Input id="twint_phone" placeholder="+41 79 123 45 67" value={paySettings.twint_phone}
+                      onChange={e => setPaySettings(p => ({ ...p, twint_phone: e.target.value }))}
+                      className="mt-1 bg-white" disabled={!paySettings.enable_twint} />
+                    <p className="text-xs text-[#999] mt-1">Diese Nummer wird dem Kunden beim Checkout angezeigt</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Invoice / Vorkasse */}
+              <Card className={`rounded-2xl shadow-sm transition-all ${paySettings.enable_invoice ? "border-green-300" : "border-[#EBEBEB] opacity-75"}`}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <div className="flex items-center gap-2"><span className="text-xl">📄</span> Rechnung / Vorkasse</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-normal text-[#888]">{paySettings.enable_invoice ? "Aktiv" : "Deaktiviert"}</span>
+                      <Switch checked={paySettings.enable_invoice} onCheckedChange={v => setPaySettings(p => ({ ...p, enable_invoice: v }))} />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+
+              {/* Bank Transfer */}
+              <Card className="rounded-2xl border-[#EBEBEB] shadow-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <span className="text-xl">🏦</span> Banküberweisung / Vorkasse
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <Label htmlFor="bank_holder">Kontoinhaber</Label>
+                    <Input
+                      id="bank_holder"
+                      placeholder="Max Mustermann / Firmenname"
+                      value={paySettings.bank_holder}
+                      onChange={e => setPaySettings(p => ({ ...p, bank_holder: e.target.value }))}
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="bank_name">Bank</Label>
+                    <Input
+                      id="bank_name"
+                      placeholder="Raiffeisen / PostFinance / UBS …"
+                      value={paySettings.bank_name}
+                      onChange={e => setPaySettings(p => ({ ...p, bank_name: e.target.value }))}
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="bank_iban">IBAN</Label>
+                    <Input
+                      id="bank_iban"
+                      placeholder="CH56 0483 5012 3456 7800 9"
+                      value={paySettings.bank_iban}
+                      onChange={e => setPaySettings(p => ({ ...p, bank_iban: e.target.value }))}
+                      className="mt-1 bg-white font-mono"
+                    />
+                    <p className="text-xs text-[#999] mt-1">Wird dem Kunden bei Kauf auf Rechnung / Vorkasse angezeigt</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Save button */}
+              <div className="flex items-center gap-4 pt-2">
+                <Button
+                  onClick={savePaymentSettings}
+                  disabled={isSavingSettings}
+                  className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white font-bold px-8 py-2.5 rounded-xl flex items-center gap-2"
+                >
+                  {isSavingSettings ? (
+                    <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> Speichern…</>
+                  ) : (
+                    <><Save className="w-4 h-4" /> Einstellungen speichern</>
+                  )}
+                </Button>
+                {settingsSavedMsg && (
+                  <span className="text-sm font-semibold">{settingsSavedMsg}</span>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* ── Versand Tab ── */}
+          <TabsContent value="versand">
+            <div className="max-w-4xl mx-auto space-y-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-1 h-8 bg-[#8B5E3C] rounded-full" />
+                <div>
+                  <h2 className="text-2xl font-black text-[#1A1A1A]">Versandkosten</h2>
+                  <p className="text-sm text-[#888]">Preis pro Zone und Gewicht in CHF. 0 = kostenlos.</p>
+                </div>
+              </div>
+
+              {shippingLoading ? (
+                <div className="text-center py-12 text-[#888]">Laden...</div>
+              ) : shippingZones.length === 0 || shippingRanges.length === 0 ? (
+                <div className="text-center py-12 text-[#888]">Keine Daten. Seite neu laden.</div>
+              ) : (
+                <>
+                  {shippingZones.map((zone, i) => (
+                    <Card key={zone.id} className={`rounded-2xl shadow-sm transition-all ${zone.enabled ? "border-[#2C5F2E]/40" : "border-[#EBEBEB] opacity-50"}`}>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-base font-semibold">
+                            <span>📦</span>
+                            <span>{zone.name}</span>
+                            <span className="text-xs font-normal text-[#999] font-mono">{zone.countries === "*" ? "Alle anderen Länder" : zone.countries}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-[#888]">{zone.enabled ? "Aktiv" : "Deaktiviert"}</span>
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={zone.enabled}
+                              onClick={async () => {
+                                const newEnabled = !zone.enabled
+                                setShippingZones(prev => prev.map((z, j) => j === i ? { ...z, enabled: newEnabled } : z))
+                                try {
+                                  await fetch(`${API_BASE}/toggle_shipping_zone.php`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ id: zone.id, enabled: newEnabled }),
+                                  })
+                                } catch (e) {
+                                  setShippingZones(prev => prev.map((z, j) => j === i ? { ...z, enabled: !newEnabled } : z))
+                                }
+                              }}
+                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                                zone.enabled ? "bg-[#2C5F2E]" : "bg-[#ccc]"
+                              }`}
+                            >
+                              <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                                zone.enabled ? "translate-x-6" : "translate-x-1"
+                              }`} />
+                            </button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      {zone.enabled && (
+                        <CardContent>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {shippingRanges.map(range => (
+                              <div key={range.id} className="flex flex-col gap-1">
+                                <label className="text-xs font-semibold text-[#555]">{range.label}</label>
+                                <div className="flex items-center gap-1">
+                                  <Input
+                                    type="number" step="0.01" min="0"
+                                    value={getRate(zone.id, range.id)}
+                                    className="bg-white text-sm"
+                                    onChange={e => setRate(zone.id, range.id, parseFloat(e.target.value) || 0)}
+                                  />
+                                  <span className="text-xs text-[#888] whitespace-nowrap">CHF</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      )}
+                    </Card>
+                  ))}
+
+                  <div className="flex items-center gap-4">
+                    <Button
+                      onClick={saveShippingSettings}
+                      disabled={isSavingShipping}
+                      className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full px-6"
+                    >
+                      {isSavingShipping ? "Speichern..." : <><Save className="w-4 h-4 mr-2" /> Speichern</>}
+                    </Button>
+                    {shippingSavedMsg && <span className="text-sm font-semibold">{shippingSavedMsg}</span>}
+                  </div>
+                </>
+              )}
+            </div>
+          </TabsContent>
+
         </Tabs>
 
         {/* Order Detail Modal */}
@@ -2045,12 +2469,10 @@ export function Admin({ onClose }: AdminProps) {
                       <span className="font-medium">Versandkosten:</span>{" "}
                       {(Number.parseFloat(selectedOrder.shipping_cost.toString()) || 0).toFixed(2)} CHF
                     </p>
-                    <p>
-                      <span className="font-medium">Zahlungsmethode:</span> {selectedOrder.payment_method}
-                    </p>
-                    <p>
-                      <span className="font-medium">Zahlungsstatus:</span> {selectedOrder.payment_status}
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium">Zahlungsmethode:</span>
+                      {getPaymentChip(selectedOrder.payment_method, selectedOrder.payment_status)}
+                    </div>
                     <p>
                       <span className="font-medium">Erstellungsdatum:</span> {formatDate(selectedOrder.created_at)}
                     </p>
@@ -2128,6 +2550,22 @@ export function Admin({ onClose }: AdminProps) {
                     required
                     defaultValue={currentEditingProduct?.price || ""}
                     className="bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="weight_kg">Gewicht (kg)</Label>
+                  <Input
+                    id="weight_kg"
+                    name="weight_kg"
+                    type="number"
+                    step="0.001"
+                    min="0"
+                    defaultValue={currentEditingProduct?.weight_kg ?? "0.500"}
+                    className="bg-white"
+                    placeholder="z.B. 0.350"
                   />
                 </div>
               </div>

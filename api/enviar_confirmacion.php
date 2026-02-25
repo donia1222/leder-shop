@@ -41,9 +41,9 @@ if (empty($payerID) || empty($customerInfo) || empty($cart)) {
 }
 
 // Configuración de emails
-$toStore = 'info@lweb.ch';
+$toStore = 'info@leder-shop.ch';
 $toCustomer = $customerInfo['email'] ?? '';
-$fromEmail = 'info@cantinatexmex.ch';
+$fromEmail = 'info@leder-shop.ch';
 
 if (empty($toCustomer)) {
     http_response_code(400);
