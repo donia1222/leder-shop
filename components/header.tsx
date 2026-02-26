@@ -93,12 +93,36 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
                   <Menu className="w-5 h-5 text-[#444]" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-white p-0 flex flex-col h-full">
-                <div className="bg-[#2D1206] px-4 py-4 flex items-center gap-2.5 flex-shrink-0">
-                  <img src="/logo.png" alt="Logo" className="h-8 w-auto object-contain" />
-                  <div>
-                    <div className="font-black text-white text-sm leading-none">Leder-Shop</div>
-                    <div className="text-[#C49A6C] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
+              <SheetContent side="left" className="w-full sm:w-72 bg-white p-0 flex flex-col h-full">
+                <div className="bg-[#2D1206] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-12">
+                  <div className="flex items-center gap-2.5">
+                    <img src="/logo.png" alt="Logo" className="h-8 w-auto object-contain" />
+                    <div>
+                      <div className="font-black text-white text-sm leading-none">Leder-Shop</div>
+                      <div className="text-[#C49A6C] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="[&_span]:hidden flex items-center">
+                      <LoginAuth
+                        onLoginSuccess={handleLoginSuccess}
+                        onLogout={handleLogout}
+                        onShowProfile={handleShowProfile}
+                        isLightSection={false}
+                        variant="button"
+                      />
+                    </div>
+                    <button
+                      onClick={() => { onCartOpen?.(); setIsMenuOpen(false) }}
+                      className="p-2 rounded-lg hover:bg-[#3D2010] text-white relative"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      {cartCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 bg-[#C49A6C] text-[#2D1206] text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                          {cartCount > 9 ? "9+" : cartCount}
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </div>
                 <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
@@ -133,23 +157,6 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
                       <Download className="w-4 h-4" />
                       Digitale Visitenkarte
                     </button>
-                    <div className="flex items-center gap-1 pt-1 px-1 justify-end">
-                      <div className="[&_span]:hidden flex items-center">
-                        <LoginAuth
-                          onLoginSuccess={handleLoginSuccess}
-                          onLogout={handleLogout}
-                          onShowProfile={handleShowProfile}
-                          isLightSection={true}
-                          variant="button"
-                        />
-                      </div>
-                      <button
-                        onClick={() => { onCartOpen?.(); setIsMenuOpen(false) }}
-                        className="p-2 rounded-lg hover:bg-[#F5EDE0] text-[#555]"
-                      >
-                        <ShoppingCart className="w-5 h-5" />
-                      </button>
-                    </div>
                   </div>
                 </nav>
               </SheetContent>

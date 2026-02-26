@@ -1366,7 +1366,7 @@ export function Admin({ onClose }: AdminProps) {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#8B5E3C]/30 text-[#8B5E3C] hover:bg-[#8B5E3C] hover:text-white hover:border-[#8B5E3C] transition-all">
+              <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all">
                 <ArrowLeft className="w-4 h-4" />
               </button>
               <div className="w-px h-6 bg-[#E0E0E0]" />

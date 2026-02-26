@@ -1206,19 +1206,19 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
   }
 
   return (
-    <div className="min-h-screen bg-[#F0F1F3] py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen bg-[#F0F1F3]">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-[#E0E0E0] sticky top-0 z-30 flex-shrink-0">
+        <div className="container mx-auto px-4 max-w-7xl py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={onBackToStore}
-              className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#2C5F2E]/30 text-[#2C5F2E] hover:bg-[#2C5F2E] hover:text-white hover:border-[#2C5F2E] transition-all"
+              className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-2xl font-black text-[#1A1A1A] tracking-tight">Kasse</h1>
+              <h1 className="text-2xl font-black text-[#6B4226] tracking-tight">Warenkorb</h1>
               <p className="text-xs text-[#888] mt-0.5">Sicher & verschlüsselt</p>
             </div>
           </div>
@@ -1227,6 +1227,8 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
             <span>SSL gesichert</span>
           </div>
         </div>
+      </div>
+      <div className="container mx-auto px-4 max-w-7xl py-8">
 
           {isLoggedIn && currentUser && (
             <div className="flex items-center space-x-4 bg-white rounded-2xl p-4 shadow-sm border border-[#2C5F2E]/20 mb-8">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react"
+import { ArrowLeft, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react"
 
 interface GalleryImage {
   id: number
@@ -96,9 +96,9 @@ export default function GaleriePage() {
         <div className="container mx-auto px-4 h-16 flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
-            className="w-9 h-9 flex items-center justify-center rounded-full border border-[#E0E0E0] hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-all flex-shrink-0"
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all flex-shrink-0"
           >
-            <ChevronLeft className="w-4 h-4 text-[#555]" />
+            <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="w-px h-6 bg-[#E0E0E0]" />
           <img src="/logo.png" alt="Leder-Shop" className="h-10 w-auto object-contain" />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, Calendar, X, ChevronRight } from "lucide-react"
+import { ArrowLeft, ChevronLeft, Calendar, X, ChevronRight } from "lucide-react"
 
 interface BlogPost {
   id: number
@@ -208,12 +208,9 @@ export default function BlogPage() {
         <div className="max-w-5xl mx-auto px-4 h-20 flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
-            className="flex items-center gap-2 text-[#555] hover:text-[#8B5E3C] transition-colors group flex-shrink-0"
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all flex-shrink-0"
           >
-            <div className="w-8 h-8 rounded-full border border-[#E5E5E5] group-hover:border-[#8B5E3C]/60 group-hover:bg-[#8B5E3C]/5 flex items-center justify-center transition-all">
-              <ChevronLeft className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-bold">Blog</span>
+            <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="w-px h-6 bg-[#E5E5E5]" />
           <img src="/logo.png" alt="Leder-Shop" className="h-12 w-auto object-contain" />
@@ -228,7 +225,7 @@ export default function BlogPage() {
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-2">
         <div className="flex items-center gap-3 mb-1">
           <div className="w-1 h-7 bg-[#8B5E3C] rounded-full" />
-          <h1 className="text-3xl font-black text-[#1A1A1A] tracking-tight">Aktuelles & Tipps</h1>
+          <h1 className="text-3xl font-black text-[#6B4226] tracking-tight">Aktuelles & Tipps</h1>
         </div>
         <p className="text-sm text-[#888] ml-4">Neuigkeiten, Pflegetipps und Wissenswertes rund um echtes Leder.</p>
       </div>

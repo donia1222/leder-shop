@@ -36,7 +36,7 @@ try {
         ':image' => $image_name,
     ]);
 
-    $base = SITE_BASE_URL . '/upload/';
+    $base = getUploadBaseUrl();
     $image_url = preg_match('/^https?:\/\//', $image_name) ? $image_name : $base . $image_name;
 
     echo json_encode([

@@ -1,32 +1,9 @@
 <?php
-// Configurar headers CORS DINÁMICOS
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+require_once 'config.php';
 
-// Lista de orígenes permitidos
-$allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:3001', 
-    'http://localhost:3002',
-    'http://localhost:3003',
-    'http://localhost:3004',
-    'http://localhost:3005',
-    'https://hot-sauce-store-pink.vercel.app', // Agregar tu dominio aquí
-    'https://www.your-domain.com'
-];
-
-// Si el origen está en la lista permitida, usarlo; sino usar *
-if (in_array($origin, $allowedOrigins)) {
-    header("Access-Control-Allow-Origin: $origin");
-} else {
-    header('Access-Control-Allow-Origin: *');
-}
-
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control');
-header('Access-Control-Allow-Credentials: false');
+setCORSHeaders();
 header('Content-Type: application/json');
 
-// Manejar preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -35,10 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Log inicial para debugging
 error_log("=== CREATE USER REQUEST START ===");
 error_log("Method: " . $_SERVER['REQUEST_METHOD']);
-error_log("Origin: " . ($origin ?? 'not set'));
+error_log("Origin: " . ($_SERVER['HTTP_ORIGIN'] ?? 'not set'));
 error_log("Headers: " . print_r(getallheaders(), true));
-
-require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

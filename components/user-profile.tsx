@@ -15,6 +15,7 @@ import {
   Trash2,
   AlertTriangle,
   Lock,
+  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   Search,
@@ -850,20 +851,17 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
               <div className="flex items-center space-x-3 sm:space-x-4">
                 <button
                   onClick={onClose}
-                  className="flex items-center gap-2 text-[#555] hover:text-[#8B5E3C] transition-colors group flex-shrink-0"
+                  className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all flex-shrink-0"
                   type="button"
                 >
-                  <div className="w-8 h-8 rounded-full border border-[#E5E5E5] group-hover:border-[#8B5E3C]/60 group-hover:bg-[#8B5E3C]/5 flex items-center justify-center transition-all">
-                    <ChevronLeft className="w-4 h-4" />
-                  </div>
-                  <span className="text-sm font-bold hidden sm:block">Zurück</span>
+                  <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div className="w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8B5E3C] rounded-full flex items-center justify-center">
                   <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Mein Profil</h1>
+                  <h1 className="text-xl sm:text-2xl font-bold text-[#6B4226]">Mein Profil</h1>
       
                 </div>
               </div>

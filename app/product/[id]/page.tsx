@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter, useParams, useSearchParams } from "next/navigation"
-import { ChevronLeft, ChevronRight, ShoppingCart, Check, MapPin, X, ZoomIn } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingCart, Check, MapPin, X, ZoomIn } from "lucide-react"
 import { ProductImage } from "@/components/product-image"
 
 interface Product {
@@ -193,12 +193,9 @@ export default function ProductPage() {
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={() => backTo ? router.push(`/${backTo}`) : router.back()}
-            className="flex items-center gap-2 text-[#555] hover:text-[#2C5F2E] transition-colors group flex-shrink-0"
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all flex-shrink-0"
           >
-            <div className="w-8 h-8 rounded-full border border-[#E5E5E5] group-hover:border-[#2C5F2E]/60 group-hover:bg-[#2C5F2E]/5 flex items-center justify-center transition-all">
-              <ChevronLeft className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-bold hidden sm:block">Zurück</span>
+            <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
           <p className="text-sm font-semibold text-[#1A1A1A] truncate">{product.name}</p>
@@ -316,7 +313,7 @@ export default function ProductPage() {
                 )
               })()}
 
-              <h1 className="text-2xl md:text-3xl font-black text-[#1A1A1A] leading-tight tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-black text-[#6B4226] leading-tight tracking-tight">
                 {product.name}
               </h1>
 

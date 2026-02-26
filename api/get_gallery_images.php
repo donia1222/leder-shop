@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') { http_response_code(405); echo json_e
 
 try {
     $pdo = getDBConnection();
-    $base = SITE_BASE_URL . '/upload/';
+    $base = getUploadBaseUrl();
 
     $stmt = $pdo->query("SELECT * FROM gallery_images ORDER BY created_at DESC");
     $images = $stmt->fetchAll();

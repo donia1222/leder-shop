@@ -112,7 +112,7 @@ try {
     // Construir URLs de imágenes
     $image_urls = [];
     for ($i = 0; $i < 4; $i++) {
-        $image_urls[] = $image_names[$i] ? SITE_BASE_URL . '/upload/' . $image_names[$i] : null;
+        $image_urls[] = $image_names[$i] ? getUploadBaseUrl() . $image_names[$i] : null;
     }
     
     echo json_encode([
