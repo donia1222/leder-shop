@@ -13,8 +13,21 @@ import { GalleryBanner } from "@/components/gallery-banner"
 import { ShoppingCartComponent } from "@/components/shopping-cart"
 import { CheckoutPage } from "@/components/checkout-page"
 import { Footer } from "@/components/footer"
-import { Admin } from "@/components/admin"
 import  Bot  from "@/components/bot"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { X } from "lucide-react"
+
+interface Announcement {
+  id: number
+  type: 'general' | 'product'
+  title: string
+  subtitle: string | null
+  image1_url: string | null
+  image2_url: string | null
+  product_url: string | null
+  is_active: boolean
+  show_once: boolean
+}
 interface Product {
   id: number
   name: string
@@ -55,8 +68,10 @@ function PremiumHotSauceStoreInner() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [purchasedItems, setPurchasedItems] = useState<Set<number>>(new Set())
   const [purchasedCombos, setPurchasedCombos] = useState<Set<string>>(new Set())
-  const [currentPage, setCurrentPage] = useState<"store" | "checkout" | "admin">("store")
+  const [currentPage, setCurrentPage] = useState<"store" | "checkout">("store")
   const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const [announcement, setAnnouncement] = useState<Announcement | null>(null)
+  const [isAnnOpen, setIsAnnOpen] = useState(false)
 
   const searchParams = useSearchParams()
 
@@ -76,6 +91,26 @@ function PremiumHotSauceStoreInner() {
     }
   }, [])
 
+
+  // 📢 Cargar anuncio activo
+  useEffect(() => {
+    const fetchAnnouncement = async () => {
+      try {
+        const res = await fetch("/api/announcement?active=1")
+        const d = await res.json()
+        if (d.success && d.announcement) {
+          const ann: Announcement = d.announcement
+          if (ann.show_once) {
+            const key = `seen-announcement-${ann.id}`
+            if (localStorage.getItem(key)) return
+          }
+          setAnnouncement(ann)
+          setIsAnnOpen(true)
+        }
+      } catch {}
+    }
+    fetchAnnouncement()
+  }, [])
 
   // 🔄 Guardar carrito en localStorage cada vez que cambie (pero no durante la carga inicial)
   useEffect(() => {
@@ -276,23 +311,6 @@ function PremiumHotSauceStoreInner() {
     // No limpiar carrito aquí automáticamente - se limpia cuando el pago se confirma
   }
 
-  // 🔐 Funciones para el admin
-  const goToAdmin = () => {
-    console.log("Navigating to admin panel...")
-    setCurrentPage("admin")
-    setIsCartOpen(false)
-  }
-
-  const backFromAdmin = () => {
-    console.log("Returning from admin panel...")
-    setCurrentPage("store")
-  }
-
-  // 📊 Renderizar página de admin
-  if (currentPage === "admin") {
-    return <Admin onClose={backFromAdmin} />
-  }
-
   // 🛒 Renderizar página de checkout
   if (currentPage === "checkout") {
     return (
@@ -306,11 +324,56 @@ function PremiumHotSauceStoreInner() {
     )
   }
 
+  const handleCloseAnnouncement = () => {
+    if (announcement?.show_once) {
+      localStorage.setItem(`seen-announcement-${announcement.id}`, "1")
+    }
+    setIsAnnOpen(false)
+  }
+
   // 🏪 Renderizar página principal del store
   return (
     <div className="bg-white">
 
-      <Header onAdminOpen={goToAdmin} onCartOpen={() => setIsCartOpen(true)} cartCount={getTotalItems()} />
+      {/* 📢 Announcement modal */}
+      {announcement && (
+        <Dialog open={isAnnOpen} onOpenChange={open => { if (!open) handleCloseAnnouncement() }}>
+          <DialogContent className="max-w-md bg-white p-0 overflow-hidden rounded-2xl border-0 shadow-2xl">
+   
+            {announcement.image1_url && (
+              <div className="relative w-full">
+                {announcement.type === 'general' && announcement.image2_url ? (
+                  <div className="grid grid-cols-2">
+                    <img src={announcement.image1_url} alt="" className="w-full h-48 object-cover" />
+                    <img src={announcement.image2_url} alt="" className="w-full h-48 object-cover" />
+                  </div>
+                ) : (
+                  <img src={announcement.image1_url} alt="" className="w-full h-52 object-cover" />
+                )}
+              </div>
+            )}
+            <div className="p-6">
+              <h2 className="text-xl font-black text-[#1A1A1A] leading-tight">{announcement.title}</h2>
+              {announcement.subtitle && (
+                <p className="text-[#666] mt-2 text-sm leading-relaxed">{announcement.subtitle}</p>
+              )}
+              {announcement.type === 'product' && announcement.product_url && (
+                <a
+                  href={announcement.product_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleCloseAnnouncement}
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#8B5E3C] hover:bg-[#6B4A2F] text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                >
+                  Produkt ansehen →
+                </a>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      <Header onCartOpen={() => setIsCartOpen(true)} cartCount={getTotalItems()} />
 
       <HeroSection />
 
@@ -334,7 +397,7 @@ function PremiumHotSauceStoreInner() {
         onClearCart={clearCart}
       />
 
-      <Footer onAdminOpen={goToAdmin} />
+      <Footer />
     </div>
   )
 }

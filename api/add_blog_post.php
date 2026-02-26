@@ -47,7 +47,7 @@ try {
         ':img4'    => $image_names[3],
     ]);
 
-    $base = 'https://web.lweb.ch/templettedhop/upload/';
+    $base = getUploadBaseUrl();
     echo json_encode([
         'success' => true,
         'message' => 'Post creado',

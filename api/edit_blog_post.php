@@ -11,7 +11,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     $pdo = getDBConnection();
     $upload_dir = 'upload/';
-    $base = 'https://web.lweb.ch/templettedhop/upload/';
+    $base = getUploadBaseUrl();
     $allowed = ['jpg','jpeg','png','gif','webp'];
 
     // ── DELETE ──────────────────────────────────────────────────────────────

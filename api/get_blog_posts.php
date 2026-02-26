@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') { http_response_code(405); echo json_e
 
 try {
     $pdo = getDBConnection();
-    $base = 'https://web.lweb.ch/templettedhop/upload/';
+    $base = getUploadBaseUrl();
 
     if (isset($_GET['id'])) {
         $id = intval($_GET['id']);

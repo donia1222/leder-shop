@@ -7,12 +7,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { LoginAuth } from "./login-auth"
 
 interface HeaderProps {
-  onAdminOpen: () => void
   onCartOpen?: () => void
   cartCount?: number
 }
 
-export function Header({ onAdminOpen, onCartOpen, cartCount = 0 }: HeaderProps) {
+export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLightSection] = useState(true)

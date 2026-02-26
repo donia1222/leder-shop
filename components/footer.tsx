@@ -6,11 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AdminLoginButton } from "@/components/admin-auth"
 import { Facebook, Twitter, Instagram, Newspaper, ArrowRight, Download, ShieldCheck } from "lucide-react"
 
-interface FooterProps {
-  onAdminOpen?: () => void
-}
-
-export function Footer({ onAdminOpen }: FooterProps = {}) {
+export function Footer() {
   const router = useRouter()
   const [openModal, setOpenModal] = useState<string | null>(null)
 
@@ -487,9 +483,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
             <span className="font-semibold text-xs text-[#555]">Copyright © 2026 Leder-Shop. Alle Rechte vorbehalten.</span>
             <span className="flex items-center gap-2">
               Design:&nbsp;<a href="https://lweb.ch" target="_blank" rel="noopener noreferrer" className="text-[#8B5E3C] font-semibold hover:underline">lweb.ch</a>
-              {onAdminOpen && (
-                <AdminLoginButton onAdminOpen={onAdminOpen} className="text-[#CCC] hover:text-[#888] ml-2" />
-              )}
+              <AdminLoginButton className="text-[#CCC] hover:text-[#888] ml-2" />
             </span>
           </div>
         </div>

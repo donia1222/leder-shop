@@ -31,6 +31,8 @@ import {
   Images,
   Settings,
   Save,
+  Megaphone,
+  Bell,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -210,6 +212,9 @@ export function Admin({ onClose }: AdminProps) {
   const [totalOrderPages, setTotalOrderPages] = useState(1)
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
+  const [markingPaidId, setMarkingPaidId] = useState<number | null>(null)
+  const [sendingShipId, setSendingShipId] = useState<number | null>(null)
+  const [shipConfirmOrder, setShipConfirmOrder] = useState<Order | null>(null)
 
   // Products State
   const [products, setProducts] = useState<Product[]>([])
@@ -302,6 +307,21 @@ export function Admin({ onClose }: AdminProps) {
   const [galleryImagePreview, setGalleryImagePreview] = useState<string | null>(null)
   const [gallerySaving, setGallerySaving] = useState(false)
   const [deleteGalleryId, setDeleteGalleryId] = useState<number | null>(null)
+
+  // Announcements State
+  interface Announcement { id: number; type: 'general' | 'product'; title: string; subtitle: string | null; image1: string | null; image1_url: string | null; image2: string | null; image2_url: string | null; product_url: string | null; is_active: boolean; show_once: boolean; created_at: string }
+  const [announcements, setAnnouncements] = useState<Announcement[]>([])
+  const [annLoading, setAnnLoading] = useState(false)
+  const [isAnnModalOpen, setIsAnnModalOpen] = useState(false)
+  const [editingAnn, setEditingAnn] = useState<Announcement | null>(null)
+  const [annSaving, setAnnSaving] = useState(false)
+  const [deleteAnnId, setDeleteAnnId] = useState<number | null>(null)
+  const [annForm, setAnnForm] = useState({ type: 'general' as 'general' | 'product', title: '', subtitle: '', product_url: '', show_once: false })
+  const [annImageFiles, setAnnImageFiles] = useState<[File | null, File | null]>([null, null])
+  const [annImagePreviews, setAnnImagePreviews] = useState<[string | null, string | null]>([null, null])
+  const [annImageUrls, setAnnImageUrls] = useState<[string, string]>(["", ""])
+  const [annRemovedImages, setAnnRemovedImages] = useState<[boolean, boolean]>([false, false])
+  const [togglingAnnId, setTogglingAnnId] = useState<number | null>(null)
 
   // Shipping Settings State
   interface ShippingZone { id: number; name: string; countries: string; enabled: boolean }
@@ -419,6 +439,8 @@ export function Admin({ onClose }: AdminProps) {
       loadPaymentSettings()
     } else if (activeTab === "versand") {
       loadShippingSettings()
+    } else if (activeTab === "anuncios") {
+      loadAnnouncements()
     }
   }, [activeTab, currentOrderPage, orderFilters])
 
@@ -545,7 +567,137 @@ export function Admin({ onClose }: AdminProps) {
     }
   }
 
+  // Announcement Functions
+  const loadAnnouncements = async () => {
+    setAnnLoading(true)
+    try {
+      const res = await fetch("/api/announcement")
+      const d = await res.json()
+      if (d.success) setAnnouncements(d.announcements ?? [])
+    } catch {}
+    finally { setAnnLoading(false) }
+  }
+
+  const openAnnModal = (ann?: Announcement) => {
+    setEditingAnn(ann ?? null)
+    setAnnForm({
+      type: ann?.type ?? 'general',
+      title: ann?.title ?? '',
+      subtitle: ann?.subtitle ?? '',
+      product_url: ann?.product_url ?? '',
+      show_once: ann?.show_once ?? false,
+    })
+    setAnnImagePreviews([ann?.image1_url ?? null, ann?.image2_url ?? null])
+    setAnnImageFiles([null, null])
+    setAnnImageUrls(["", ""])
+    setAnnRemovedImages([false, false])
+    setIsAnnModalOpen(true)
+  }
+
+  const saveAnnouncement = async () => {
+    if (!annForm.title.trim()) {
+      toast({ title: "Fehler", description: "Titel ist erforderlich", variant: "destructive" }); return
+    }
+    setAnnSaving(true)
+    try {
+      const fd = new FormData()
+      fd.append("action", "save")
+      if (editingAnn) fd.append("id", String(editingAnn.id))
+      fd.append("type", annForm.type)
+      fd.append("title", annForm.title)
+      fd.append("subtitle", annForm.subtitle)
+      fd.append("product_url", annForm.product_url)
+      fd.append("show_once", annForm.show_once ? "1" : "")
+      ;([0, 1] as const).forEach(i => {
+        const key = i === 0 ? "image1" : "image2"
+        if (annRemovedImages[i]) fd.append(`remove_${key}`, "1")
+        if (annImageFiles[i]) fd.append(key, annImageFiles[i]!)
+        else if (annImageUrls[i]) fd.append(`${key}_url`, annImageUrls[i])
+      })
+      const res = await fetch("/api/announcement/save", { method: "POST", body: fd })
+      const d = await res.json()
+      if (!d.success) throw new Error(d.error)
+      toast({ title: editingAnn ? "Aktualisiert" : "Erstellt" })
+      setIsAnnModalOpen(false)
+      await loadAnnouncements()
+    } catch (e: any) {
+      toast({ title: "Fehler", description: e.message, variant: "destructive" })
+    } finally { setAnnSaving(false) }
+  }
+
+  const deleteAnnouncement = async (id: number) => {
+    try {
+      const res = await fetch(`/api/announcement/save?id=${id}`, { method: "DELETE" })
+      const d = await res.json()
+      if (!d.success) throw new Error(d.error)
+      toast({ title: "Anzeige gelöscht" })
+      setDeleteAnnId(null)
+      await loadAnnouncements()
+    } catch (e: any) {
+      toast({ title: "Fehler", description: e.message, variant: "destructive" })
+    }
+  }
+
+  const toggleAnnouncement = async (id: number) => {
+    setTogglingAnnId(id)
+    try {
+      const fd = new FormData()
+      fd.append("action", "toggle")
+      fd.append("id", String(id))
+      const res = await fetch("/api/announcement/save", { method: "POST", body: fd })
+      const d = await res.json()
+      if (!d.success) throw new Error(d.error)
+      await loadAnnouncements()
+    } catch (e: any) {
+      toast({ title: "Fehler", description: e.message, variant: "destructive" })
+    } finally { setTogglingAnnId(null) }
+  }
+
   // Orders Functions
+  const sendShippingNotification = async (order: Order) => {
+    setSendingShipId(order.id)
+    try {
+      const res = await fetch("/api/orders/ship", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: order.id }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "processing" } : o))
+        toast({ title: "📦 Versandbenachrichtigung gesendet", description: `Email an ${order.customer_email} gesendet.` })
+      } else {
+        toast({ title: "Fehler", description: data.error, variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Verbindungsfehler", variant: "destructive" })
+    } finally {
+      setSendingShipId(null)
+    }
+  }
+
+  const markAsPaid = async (order: Order) => {
+    setMarkingPaidId(order.id)
+    try {
+      const res = await fetch("/api/orders/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: order.id, payment_status: "completed", status: "completed" }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setOrders(prev => prev.map(o => o.id === order.id ? { ...o, payment_status: "completed", status: "completed" } : o))
+        toast({ title: "Als bezahlt markiert" })
+      } else {
+        toast({ title: "Fehler", description: data.error, variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Verbindungsfehler", variant: "destructive" })
+    } finally {
+      setMarkingPaidId(null)
+    }
+  }
+
   const loadOrders = async () => {
     try {
       setOrdersLoading(true)
@@ -1257,51 +1409,59 @@ export function Admin({ onClose }: AdminProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-8 bg-white border border-[#EBEBEB] rounded-2xl p-1 shadow-sm">
+          <div className="overflow-x-auto mb-8 -mx-2 px-2 pb-1">
+          <TabsList className="flex w-max lg:grid lg:grid-cols-7 lg:w-full bg-white border border-[#EBEBEB] rounded-2xl p-1 shadow-sm gap-1">
             <TabsTrigger
               value="orders"
-              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <ShoppingBag className="w-4 h-4" />
               <span>Bestellungen</span>
             </TabsTrigger>
             <TabsTrigger
               value="products"
-              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Package className="w-4 h-4" />
               <span>Produkte</span>
             </TabsTrigger>
-  
-                        <TabsTrigger
+            <TabsTrigger
               value="versand"
-              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Package className="w-4 h-4" />
               <span>Versand</span>
             </TabsTrigger>
             <TabsTrigger
               value="settings"
-              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Settings className="w-4 h-4" />
               <span>Zahlungen</span>
             </TabsTrigger>
             <TabsTrigger
               value="gallery"
-              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 data-[state=active]:bg-green-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Images className="w-4 h-4" />
               <span>Galerie</span>
             </TabsTrigger>
-          <TabsTrigger
+            <TabsTrigger
               value="blog"
-              className="flex items-center gap-2 rounded-xl font-semibold data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 data-[state=active]:bg-green-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <BookOpen className="w-4 h-4" />
               <span>Blog</span>
             </TabsTrigger>
+            <TabsTrigger
+              value="anuncios"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 data-[state=active]:bg-green-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+            >
+              <Megaphone className="w-4 h-4" />
+              <span>Anzeigen</span>
+            </TabsTrigger>
           </TabsList>
+          </div>
 
           {/* Orders Tab */}
           <TabsContent value="orders">
@@ -1442,64 +1602,102 @@ export function Admin({ onClose }: AdminProps) {
             </Card>
 
             {/* Orders List */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="flex flex-col gap-2">
               {orders.map((order) => (
-                <Card key={order.id} className="rounded-2xl border-[#EBEBEB] shadow-sm hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Package className="w-6 h-6 text-gray-600" />
-                        <span>{order.order_number}</span>
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-gray-600 text-sm">Kunde</p>
-                        <p className="text-lg font-bold text-gray-800">
-                          {order.customer_first_name} {order.customer_last_name}
-                        </p>
-                        <p className="text-gray-600 text-sm">E-Mail: {order.customer_email}</p>
-                        <p className="text-gray-600 text-sm">Telefon: {order.customer_phone}</p>
-                        <p className="text-gray-600 text-sm">Adresse: {order.customer_address}</p>
-                        <p className="text-gray-600 text-sm">Stadt: {order.customer_city}</p>
-                        <p className="text-gray-600 text-sm">Kanton: {order.customer_canton}</p>
-                        {order.customer_notes && <p className="text-gray-600 text-sm">Notizen: {order.customer_notes}</p>}
-                      </div>
-                      <div>
-                        <p className="text-gray-600 text-sm">Gesamt</p>
-                        <p className="text-2xl font-bold text-gray-800">
-                          {(Number.parseFloat(order.total_amount.toString()) || 0).toFixed(2)} CHF
-                        </p>
-                        <p className="text-gray-600 text-sm">Versandkosten</p>
-                        <p className="text-lg font-bold text-gray-800">
-                          {(Number.parseFloat(order.shipping_cost.toString()) || 0).toFixed(2)} CHF
-                        </p>
-                        <p className="text-gray-600 text-sm">Erstellungsdatum</p>
-                        <p className="text-gray-600 text-sm">{formatDate(order.created_at)}</p>
-                        <p className="text-gray-600 text-sm">Aktualisierungsdatum</p>
-                        <p className="text-gray-600 text-sm">{formatDate(order.updated_at)}</p>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2">
-                      <Button
-                        onClick={() => showOrderDetail(order)}
-                        className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full px-5 text-sm"
-                      >
-                        Details anzeigen
-                      </Button>
-                      <Button
-                        onClick={() => downloadInvoicePDF(order)}
-                        variant="outline"
-                        className="rounded-full px-4 text-sm border-[#8B5E3C] text-[#8B5E3C] hover:bg-[#8B5E3C]/10"
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        PDF
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div key={order.id} className="bg-white border border-[#EBEBEB] rounded-2xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-center gap-3">
+                  {/* Order number + payment chips */}
+                  <div className="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
+                    <Package className="w-4 h-4 text-gray-400 shrink-0" />
+                    <span className="font-bold text-[#1A1A1A] text-sm truncate">{order.order_number}</span>
+                    {order.payment_method && (
+                      <span className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#8B5E3C]/10 text-[#8B5E3C] uppercase tracking-wide">
+                        {(() => {
+                          const m = (order.payment_method || "").toLowerCase()
+                          if (m.includes("twint")) return "TWINT"
+                          if (m.includes("paypal")) return "PayPal"
+                          if (m === "stripe" || m.includes("stripe_card") || m.includes("card") || m.includes("stripe")) return "Kreditkarte"
+                          if (m.includes("invoice") || m.includes("rechnung")) return "Auf Rechnung"
+                          return order.payment_method
+                        })()}
+                      </span>
+                    )}
+                    {(() => {
+                      const m = (order.payment_method || "").toLowerCase()
+                      const isInvoice = m.includes("invoice") || m.includes("rechnung") || m.includes("faktura")
+                      const isTwint = m.includes("twint")
+                      const paid = order.payment_status === "completed"
+                      if ((isInvoice || isTwint) && !paid) {
+                        return <span className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 uppercase tracking-wide">Offen</span>
+                      }
+                      if (paid) {
+                        return <span className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700 uppercase tracking-wide">Bezahlt</span>
+                      }
+                      return null
+                    })()}
+                  </div>
+                  {/* Customer */}
+                  <div className="sm:w-40 shrink-0">
+                    <p className="text-sm font-semibold text-gray-800 truncate">{order.customer_first_name} {order.customer_last_name}</p>
+                    <p className="text-xs text-gray-400 truncate">{order.customer_email}</p>
+                  </div>
+                  {/* Total */}
+                  <div className="sm:w-28 shrink-0">
+                    <p className="text-sm font-bold text-gray-800">{(Number.parseFloat(order.total_amount.toString()) || 0).toFixed(2)} CHF</p>
+                    <p className="text-xs text-gray-400">{formatDate(order.created_at)}</p>
+                  </div>
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    {(() => {
+                      const m = (order.payment_method || "").toLowerCase()
+                      const isInvoice = m.includes("invoice") || m.includes("rechnung")
+                      const isTwint = m.includes("twint")
+                      const notPaid = order.payment_status !== "completed"
+                      if ((isInvoice || isTwint) && notPaid) {
+                        return (
+                          <Button
+                            onClick={() => markAsPaid(order)}
+                            disabled={markingPaidId === order.id}
+                            className="bg-amber-500 hover:bg-amber-600 text-white rounded-full px-4 text-xs h-8"
+                          >
+                            {markingPaidId === order.id ? "..." : "✓ Bezahlt"}
+                          </Button>
+                        )
+                      }
+                      return null
+                    })()}
+                    <Button
+                      onClick={() => showOrderDetail(order)}
+                      className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full px-4 text-xs h-8"
+                    >
+                      Details
+                    </Button>
+                    <Button
+                      onClick={() => downloadInvoicePDF(order)}
+                      variant="outline"
+                      className="rounded-full px-3 text-xs h-8 border-[#8B5E3C] text-[#8B5E3C] hover:bg-[#8B5E3C]/10"
+                    >
+                      <Download className="w-3 h-3 mr-1" />
+                      PDF
+                    </Button>
+                    {(() => {
+                      const m = (order.payment_method || "").toLowerCase()
+                      const isInvoice = m.includes("invoice") || m.includes("rechnung")
+                      const isTwint = m.includes("twint")
+                      const notPaid = order.payment_status !== "completed"
+                      if ((isInvoice || isTwint) && notPaid) return null
+                      return (
+                        <Button
+                          onClick={() => setShipConfirmOrder(order)}
+                          disabled={sendingShipId === order.id}
+                          variant="outline"
+                          className="rounded-full px-3 text-xs h-8 border-blue-400 text-blue-600 hover:bg-blue-50"
+                        >
+                          📦 {sendingShipId === order.id ? "..." : "Versandt"}
+                        </Button>
+                      )
+                    })()}
+                  </div>
+                </div>
               ))}
             </div>
 
@@ -2411,6 +2609,70 @@ export function Admin({ onClose }: AdminProps) {
             </div>
           </TabsContent>
 
+          {/* ── Anzeigen (Announcements) Tab ── */}
+          <TabsContent value="anuncios">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-black text-[#1A1A1A]">Anzeigen & Aktionen</h2>
+                <p className="text-sm text-[#888] mt-0.5">Anzeigen verwalten, die beim Öffnen der Website erscheinen</p>
+              </div>
+              <Button onClick={() => openAnnModal()} className="bg-[#8B5E3C] hover:bg-[#6B4A2F] text-white rounded-xl gap-2">
+                <Plus className="w-4 h-4" />
+                Neue Anzeige
+              </Button>
+            </div>
+
+            {annLoading ? (
+              <div className="text-center py-16 text-[#888]">Laden...</div>
+            ) : announcements.length === 0 ? (
+              <div className="text-center py-16">
+                <Megaphone className="w-10 h-10 text-[#DDD] mx-auto mb-3" />
+                <p className="text-[#888] font-medium">Keine Anzeigen vorhanden</p>
+                <p className="text-sm text-[#BBB] mt-1">Erstelle deine erste Anzeige oder Aktion</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {announcements.map(ann => (
+                  <div key={ann.id} className="flex items-center gap-4 p-4 bg-white border border-[#EBEBEB] rounded-2xl shadow-sm">
+                    <div className={`shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wide ${ann.type === 'product' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'}`}>
+                      {ann.type === 'product' ? 'Produkt' : 'Allgemein'}
+                    </div>
+                    {ann.image1_url && (
+                      <img src={ann.image1_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#EBEBEB]" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-[#1A1A1A] truncate">{ann.title}</p>
+                      <p className="text-xs text-[#888] mt-0.5">
+                        {ann.subtitle && <span className="mr-2">{ann.subtitle}</span>}
+                        {ann.show_once && <span className="bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-[10px] font-medium">Einmalig</span>}
+                      </p>
+                    </div>
+                    <div className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-bold ${ann.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                      {ann.is_active ? 'AKTIV' : 'INAKTIV'}
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => toggleAnnouncement(ann.id)}
+                        disabled={togglingAnnId === ann.id}
+                        className={`rounded-xl text-xs h-8 ${ann.is_active ? 'border-red-200 text-red-500 hover:bg-red-50' : 'border-green-200 text-green-600 hover:bg-green-50'}`}
+                      >
+                        {togglingAnnId === ann.id ? '...' : ann.is_active ? 'Deaktivieren' : 'Aktivieren'}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => openAnnModal(ann)} className="rounded-xl text-xs h-8 gap-1">
+                        <Edit className="w-3 h-3" /> Bearbeiten
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setDeleteAnnId(ann.id)} className="rounded-xl text-xs h-8 border-red-200 text-red-500 hover:bg-red-50">
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
         </Tabs>
 
         {/* Order Detail Modal */}
@@ -2995,6 +3257,152 @@ export function Admin({ onClose }: AdminProps) {
             <div className="flex gap-3 pt-2">
               <Button variant="destructive" onClick={() => deleteGalleryId && deleteGalleryImage(deleteGalleryId)} className="flex-1 rounded-xl">Löschen</Button>
               <Button variant="outline" onClick={() => setDeleteGalleryId(null)} className="rounded-xl">Abbrechen</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* ── Announcement Create/Edit Modal ── */}
+        <Dialog open={isAnnModalOpen} onOpenChange={open => { setIsAnnModalOpen(open); if (!open) setEditingAnn(null) }}>
+          <DialogContent className="max-w-lg bg-white max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader>
+              <DialogTitle>{editingAnn ? "Anzeige bearbeiten" : "Neue Anzeige erstellen"}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-5 pt-2">
+              <div>
+                <Label className="text-sm font-semibold mb-2 block">Typ</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {(['general', 'product'] as const).map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setAnnForm(f => ({ ...f, type: t }))}
+                      className={`p-3 rounded-xl border-2 text-sm font-semibold flex flex-col items-center gap-1.5 transition-all ${annForm.type === t ? 'border-[#8B5E3C] bg-[#8B5E3C]/5 text-[#8B5E3C]' : 'border-[#E5E5E5] text-[#888] hover:border-[#CCC]'}`}
+                    >
+                      {t === 'general' ? <Bell className="w-5 h-5" /> : <Package className="w-5 h-5" />}
+                      {t === 'general' ? 'Allgemeine Anzeige' : 'Produktaktion'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-sm font-semibold mb-1.5 block">Titel *</Label>
+                <Input value={annForm.title} onChange={e => setAnnForm(f => ({ ...f, title: e.target.value }))} placeholder={annForm.type === 'product' ? "z.B. NEU: Habanero Gold Sauce" : "z.B. Sommerferien – wir sind zurück!"} className="rounded-xl" />
+              </div>
+
+              <div>
+                <Label className="text-sm font-semibold mb-1.5 block">Untertitel (optional)</Label>
+                <Textarea value={annForm.subtitle} onChange={e => setAnnForm(f => ({ ...f, subtitle: e.target.value }))} placeholder={annForm.type === 'product' ? "z.B. Jetzt 10% Rabatt sichern – nur für kurze Zeit!" : "z.B. Wir sind wieder da mit neuen heissen Produkten."} className="rounded-xl resize-none" rows={3} />
+              </div>
+
+              {annForm.type === 'product' && (
+                <div>
+                  <Label className="text-sm font-semibold mb-1.5 block">Produkt-URL</Label>
+                  <Input value={annForm.product_url} onChange={e => setAnnForm(f => ({ ...f, product_url: e.target.value }))} placeholder="https://..." className="rounded-xl" />
+                  <p className="text-xs text-[#AAA] mt-1">Wird als «Produkt ansehen»-Button angezeigt</p>
+                </div>
+              )}
+
+              {(annForm.type === 'general' ? [0, 1] : [0]).map(i => (
+                <div key={i}>
+                  <Label className="text-sm font-semibold mb-1.5 flex items-center gap-1.5 block">
+                    <ImageIcon className="w-3.5 h-3.5" /> {i === 0 ? 'Bild 1' : 'Bild 2'} {i === 0 && annForm.type === 'product' ? '' : '(optional)'}
+                  </Label>
+                  {(annImagePreviews[i] && !annRemovedImages[i]) ? (
+                    <div className="relative w-full h-36 rounded-xl overflow-hidden border border-[#E5E5E5]">
+                      <img src={annImagePreviews[i]!} alt="" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => {
+                          const r: [boolean,boolean] = [...annRemovedImages] as [boolean,boolean]; r[i] = true; setAnnRemovedImages(r)
+                          const p: [string|null,string|null] = [...annImagePreviews] as [string|null,string|null]; p[i] = null; setAnnImagePreviews(p)
+                          const f: [File|null,File|null] = [...annImageFiles] as [File|null,File|null]; f[i] = null; setAnnImageFiles(f)
+                          const u: [string,string] = [...annImageUrls] as [string,string]; u[i] = ""; setAnnImageUrls(u)
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                      ><X className="w-3.5 h-3.5" /></button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-[#D5D5D5] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
+                        <Upload className="w-4 h-4 text-[#AAA] mb-1" />
+                        <span className="text-[11px] text-[#AAA]">Datei hochladen</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={e => {
+                          const file = e.target.files?.[0]; if (!file) return
+                          const files: [File|null,File|null] = [...annImageFiles] as [File|null,File|null]; files[i] = file; setAnnImageFiles(files)
+                          const previews: [string|null,string|null] = [...annImagePreviews] as [string|null,string|null]; previews[i] = URL.createObjectURL(file); setAnnImagePreviews(previews)
+                          const r: [boolean,boolean] = [...annRemovedImages] as [boolean,boolean]; r[i] = false; setAnnRemovedImages(r)
+                          const u: [string,string] = [...annImageUrls] as [string,string]; u[i] = ""; setAnnImageUrls(u)
+                        }} />
+                      </label>
+                      <div className="flex flex-col gap-1">
+                        <input
+                          type="url"
+                          placeholder="https://..."
+                          value={annImageUrls[i]}
+                          onChange={e => {
+                            const u: [string,string] = [...annImageUrls] as [string,string]; u[i] = e.target.value; setAnnImageUrls(u)
+                            if (e.target.value) {
+                              const p: [string|null,string|null] = [...annImagePreviews] as [string|null,string|null]; p[i] = e.target.value; setAnnImagePreviews(p)
+                              const f: [File|null,File|null] = [...annImageFiles] as [File|null,File|null]; f[i] = null; setAnnImageFiles(f)
+                            }
+                          }}
+                          className="h-20 text-xs px-3 border border-[#D5D5D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-[#E5E5E5] hover:border-[#CCC] transition-colors">
+                <input
+                  type="checkbox"
+                  checked={annForm.show_once}
+                  onChange={e => setAnnForm(f => ({ ...f, show_once: e.target.checked }))}
+                  className="w-4 h-4 accent-[#8B5E3C]"
+                />
+                <div>
+                  <p className="text-sm font-semibold text-[#1A1A1A]">Nur einmal anzeigen</p>
+                  <p className="text-xs text-[#888]">Nutzer sehen die Anzeige nur beim ersten Besuch</p>
+                </div>
+              </label>
+
+              <div className="flex gap-3 pt-1">
+                <Button onClick={saveAnnouncement} disabled={annSaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4A2F] text-white rounded-xl">
+                  {annSaving ? "Speichern..." : editingAnn ? "Aktualisieren" : "Erstellen"}
+                </Button>
+                <Button variant="outline" onClick={() => setIsAnnModalOpen(false)} className="rounded-xl">Abbrechen</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* ── Ship Confirm ── */}
+        <Dialog open={!!shipConfirmOrder} onOpenChange={open => { if (!open) setShipConfirmOrder(null) }}>
+          <DialogContent className="max-w-sm bg-white">
+            <DialogHeader><DialogTitle>📦 Versandbestätigung senden?</DialogTitle></DialogHeader>
+            <p className="text-sm text-[#666]">
+              Es wird eine E-Mail an <span className="font-semibold text-[#1A1A1A]">{shipConfirmOrder?.customer_email}</span> gesendet, um zu bestätigen, dass die Bestellung auf dem Weg ist.
+            </p>
+            <div className="flex gap-3 pt-2">
+              <Button
+                onClick={() => { if (shipConfirmOrder) { sendShippingNotification(shipConfirmOrder); setShipConfirmOrder(null) } }}
+                className="flex-1 rounded-xl bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                Ja, senden
+              </Button>
+              <Button variant="outline" onClick={() => setShipConfirmOrder(null)} className="rounded-xl">Abbrechen</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* ── Announcement Delete Confirm ── */}
+        <Dialog open={!!deleteAnnId} onOpenChange={open => { if (!open) setDeleteAnnId(null) }}>
+          <DialogContent className="max-w-sm bg-white">
+            <DialogHeader><DialogTitle>Anzeige löschen?</DialogTitle></DialogHeader>
+            <p className="text-sm text-[#666]">Diese Anzeige wird dauerhaft gelöscht.</p>
+            <div className="flex gap-3 pt-2">
+              <Button variant="destructive" onClick={() => deleteAnnId && deleteAnnouncement(deleteAnnId)} className="flex-1 rounded-xl">Löschen</Button>
+              <Button variant="outline" onClick={() => setDeleteAnnId(null)} className="rounded-xl">Abbrechen</Button>
             </div>
           </DialogContent>
         </Dialog>

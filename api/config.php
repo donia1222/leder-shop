@@ -1,6 +1,11 @@
 <?php
-// URL base del sitio (usada para construir URLs de imágenes)
-define('SITE_BASE_URL', 'https://web.lweb.ch/ledershop');
+// URL base dinámica para uploads (funciona en cualquier servidor sin cambios)
+function getUploadBaseUrl() {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $dir  = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    return $protocol . '://' . $host . $dir . '/upload/';
+}
 
 // Configuración de la base de datos
 define('DB_HOST', 'your_host');

@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Shield, Eye, EyeOff, User, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -16,29 +17,21 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 interface AdminAuthProps {
-  onAdminOpen: () => void
   isLightSection?: boolean
 }
 
-// Exportable Admin Login Button Component (simplified version for footer)
 export function AdminLoginButton({
-  onAdminOpen,
   isLightSection = false,
   className = "",
 }: {
-  onAdminOpen: () => void
   isLightSection?: boolean
   className?: string
 }) {
-  return (
-    <AdminAuth 
-      onAdminOpen={onAdminOpen} 
-      isLightSection={isLightSection} 
-    />
-  )
+  return <AdminAuth isLightSection={isLightSection} />
 }
 
-export function AdminAuth({ onAdminOpen, isLightSection = false }: AdminAuthProps) {
+export function AdminAuth({ isLightSection = false }: AdminAuthProps) {
+  const router = useRouter()
   // Estados del sistema de admin
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
@@ -171,12 +164,13 @@ export function AdminAuth({ onAdminOpen, isLightSection = false }: AdminAuthProp
   }
 
   // Función para guardar el estado de login
-  const saveLoginState = (email: string, timestamp: string) => {
+  const saveLoginState = (email: string, timestamp: string, remember: boolean) => {
     try {
       const loginState = {
         isLoggedIn: true,
         email: email,
         timestamp: timestamp,
+        rememberMe: remember,
         version: "2.0",
       }
 
@@ -273,21 +267,15 @@ export function AdminAuth({ onAdminOpen, isLightSection = false }: AdminAuthProp
       }
       setAdminProfile(profileData)
 
-      // Guardar estado si "recordar" está marcado
-      if (rememberMe) {
-        console.log("💾 Guardando sesión para recordar...")
-        saveLoginState(loginData.email, loginTimestamp)
-      } else {
-        console.log("🚫 No se guardará la sesión (recordar no marcado)")
-      }
+      // Siempre guardar sesión (rememberMe controla la duración)
+      saveLoginState(loginData.email, loginTimestamp, rememberMe)
 
       // Limpiar formulario
       setLoginData({ email: "", password: "" })
       setRememberMe(false)
 
-      // Llamar a la función de admin (abrir panel)
-      console.log("🚀 Llamando onAdminOpen")
-      onAdminOpen()
+      // Navegar al panel de admin
+      router.push("/adminsax")
     } else {
       console.log("❌ Credenciales incorrectas")
       setLoginError("Email o contraseña incorrectos")
@@ -362,7 +350,7 @@ export function AdminAuth({ onAdminOpen, isLightSection = false }: AdminAuthProp
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                onClick={onAdminOpen}
+                onClick={() => router.push("/adminsax")}
                 className="rounded-xl px-3 py-2.5 cursor-pointer hover:bg-white focus:bg-white transition-colors"
               >
                 <Settings className="w-4 h-4 mr-3 text-[#2C5F2E] shrink-0" />
@@ -579,7 +567,7 @@ export function AdminAuth({ onAdminOpen, isLightSection = false }: AdminAuthProp
               <Button
                 onClick={() => {
                   setIsProfileOpen(false)
-                  onAdminOpen()
+                  router.push("/adminsax")
                 }}
                 className="flex-1 bg-[#2C5F2E] hover:bg-[#1A4520]"
               >

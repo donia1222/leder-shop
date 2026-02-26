@@ -301,6 +301,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
           city: data.user.city || "",
           postalCode: data.user.postal_code || "",
           canton: data.user.canton || "",
+          country: data.user.country || "CH",
           notes: data.user.notes || "",
         })
 
@@ -775,6 +776,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
     if (!customerInfo.phone.trim()) errors.phone = "Telefon ist erforderlich"
     if (!customerInfo.address.trim()) errors.address = "Adresse ist erforderlich"
     if (!customerInfo.city.trim()) errors.city = "Stadt ist erforderlich"
+    if (!customerInfo.postalCode.trim()) errors.postalCode = "PLZ ist erforderlich"
     if (!customerInfo.canton.trim()) errors.canton = "Kanton ist erforderlich"
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -970,6 +972,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
           city: result.user.city || "",
           postalCode: result.user.postal_code || "",
           canton: result.user.canton || "",
+          country: result.user.country || "CH",
           notes: result.user.notes || "",
         })
 
@@ -1485,7 +1488,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="postalCode">PLZ</Label>
+                    <Label htmlFor="postalCode">PLZ *</Label>
                     <Input
                       id="postalCode"
                       value={customerInfo.postalCode}
@@ -2064,7 +2067,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                 {paymentMethod === "invoice" && (
                   <div className="mb-4 bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
                     <h4 className="font-semibold text-green-800">📄 Kauf auf Rechnung & Vorkasse</h4>
-                    {paymentSettings.bank_iban ? (
+                    {paymentSettings.bank_iban && (paymentSettings.enable_paypal || paymentSettings.enable_stripe || paymentSettings.enable_twint) ? (
                       <>
                         <p className="text-sm text-green-700">Bitte überweisen Sie den Betrag auf folgendes Konto:</p>
                         <div className="bg-white border border-green-200 rounded-lg p-3 text-sm space-y-1">
