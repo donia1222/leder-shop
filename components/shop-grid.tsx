@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, memo } from "react"
+import { useState, useEffect, useCallback, memo, useRef } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import {
   ShoppingCart, ChevronLeft, ChevronRight,
@@ -13,6 +13,8 @@ import { CheckoutPage } from "@/components/checkout-page"
 import { LoginAuth } from "./login-auth"
 import { ProductImage } from "./product-image"
 import { UserProfile } from "./user-profile"
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -167,16 +169,18 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
 
 // ─── MobileCatCard: smaller version for mobile scroll ─────────────────────────
 
-function MobileCatCard({ srcs, displayName, isActive, onClick }: {
+function MobileCatCard({ srcs, displayName, isActive, onClick, id }: {
   srcs: string[]
   displayName: string
   isActive: boolean
   onClick: () => void
+  id?: string
 }) {
   const [idx, setIdx] = useState(0)
   const img = srcs[idx] ?? null
   return (
     <button
+      id={id}
       onClick={onClick}
       className="relative overflow-hidden rounded-xl flex-shrink-0 text-left transition-all duration-200"
       style={{
@@ -206,7 +210,7 @@ function MobileCatCard({ srcs, displayName, isActive, onClick }: {
         </div>
       )}
       <div className="absolute bottom-0 left-0 right-0 px-2.5 pb-2">
-        <span className="text-white font-black text-[11px] leading-tight block truncate drop-shadow-md">
+        <span className="text-white font-black text-[13px] leading-tight block truncate drop-shadow-md">
           {displayName}
         </span>
       </div>
@@ -276,6 +280,7 @@ export default function ShopGrid() {
 
   const [search, setSearch]                 = useState("")
   const [activeCategory, setActiveCategory] = useState("all")
+  const mobileCatScrollRef = useRef<HTMLDivElement>(null)
   const [activeSupplier, setActiveSupplier] = useState("all")
   const [stockFilter, setStockFilter]       = useState<"all" | "out_of_stock">("all")
   const [sortBy, setSortBy]                 = useState<"default"|"name_asc"|"name_desc"|"price_asc"|"price_desc">("default")
@@ -283,6 +288,26 @@ export default function ShopGrid() {
   const [showBackTop, setShowBackTop]       = useState(false)
   const [navMenuOpen, setNavMenuOpen]       = useState(false)
   const [showUserProfile, setShowUserProfile] = useState(false)
+  const [paySettings, setPaySettings] = useState<{
+    enable_paypal: boolean; enable_stripe: boolean; enable_twint: boolean; enable_invoice: boolean
+  } | null>(null)
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/get_payment_settings.php`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          const s = data.settings
+          setPaySettings({
+            enable_paypal: !!s.enable_paypal,
+            enable_stripe: !!s.enable_stripe,
+            enable_twint: !!s.enable_twint,
+            enable_invoice: s.enable_invoice !== false,
+          })
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const handleDownloadVCard = () => {
     const imageUrl = "https://online-shop-seven-delta.vercel.app/logo.png"
@@ -333,6 +358,17 @@ export default function ShopGrid() {
     )
     if (matched) setActiveCategory(matched.slug)
   }, [categories, searchParams])
+
+  // Scroll horizontal automático al card de categoría activa en móvil
+  useEffect(() => {
+    if (activeCategory === "all") return
+    const container = mobileCatScrollRef.current
+    const el = document.getElementById(`mobile-cat-${activeCategory}`)
+    if (!container || !el) return
+    const containerCenter = container.offsetWidth / 2
+    const elCenter = el.offsetLeft + el.offsetWidth / 2
+    container.scrollTo({ left: elCenter - containerCenter, behavior: "smooth" })
+  }, [activeCategory])
 
   useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 500)
@@ -846,7 +882,7 @@ export default function ShopGrid() {
             </div>
 
             {/* ── Category cards — mobile only ── */}
-            <div className="lg:hidden overflow-x-auto mb-3 -mx-4 px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div ref={mobileCatScrollRef} className="lg:hidden overflow-x-auto mb-3 -mx-4 px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex gap-2.5 pb-1" style={{ flexWrap: "nowrap" }}>
                 {/* Alle card — mobile */}
                 <button
@@ -865,8 +901,8 @@ export default function ShopGrid() {
                     <LayoutGrid className="w-4 h-4" style={{ color: "#8B5E3C" }} />
                   </div>
                   <div className="relative">
-                    <p className="font-black text-[11px] leading-tight" style={{ color: "#8B5E3C" }}>Alle</p>
-                    <p className="text-[10px] text-[#999] mt-0.5">Anzeigen</p>
+                    <p className="font-black text-[15px] leading-tight" style={{ color: "#8B5E3C" }}>Alle</p>
+                    <p className="text-[12px] text-[#999] mt-0.5">Anzeigen</p>
                   </div>
                 </button>
                 {categories.map(cat => {
@@ -884,6 +920,7 @@ export default function ShopGrid() {
                   return (
                     <MobileCatCard
                       key={cat.slug}
+                      id={`mobile-cat-${cat.slug}`}
                       srcs={uniqueSrcs}
                       displayName={displayName}
                       isActive={isActive}
@@ -1048,6 +1085,7 @@ export default function ShopGrid() {
       </div>
 
       {/* Payment methods */}
+      {paySettings && (paySettings.enable_invoice || paySettings.enable_stripe || paySettings.enable_twint || paySettings.enable_paypal) && (
       <div className="border-t border-[#E0E0E0] py-5 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -1055,23 +1093,38 @@ export default function ShopGrid() {
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-[#8B5E3C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <span className="text-[11px] font-semibold text-[#555] tracking-widest uppercase">Sichere Zahlung</span>
             </div>
-            <div className="h-8 px-3 rounded-lg bg-black flex items-center shadow-sm">
-              <img src="/twint-logo.svg" alt="TWINT" className="h-5 w-auto" />
-            </div>
-            <div className="h-8 px-3 rounded-lg bg-[#FFCC00] flex items-center shadow-sm">
-              <span className="font-black text-black text-xs tracking-tight">Post<span className="font-normal">Finance</span></span>
-            </div>
-            <div className="h-8 px-4 rounded-lg bg-[#1A1F71] flex items-center shadow-sm">
-              <span className="font-black text-white text-base italic tracking-tight">VISA</span>
-            </div>
-            <div className="h-8 px-3 rounded-lg bg-white border border-[#E0E0E0] flex items-center gap-1 shadow-sm">
-              <div className="w-4 h-4 rounded-full bg-[#EB001B]" />
-              <div className="w-4 h-4 rounded-full bg-[#F79E1B] -ml-2" />
-              <span className="text-[11px] font-bold text-[#333] ml-1.5">Mastercard</span>
-            </div>
+            {paySettings.enable_invoice && (
+              <div className="h-8 px-3 rounded-lg bg-[#F5F5F5] border border-[#E0E0E0] flex items-center gap-1.5 shadow-sm">
+                <span className="text-base">🏦</span>
+                <span className="text-[11px] font-bold text-[#444]">Rechnung</span>
+              </div>
+            )}
+            {paySettings.enable_twint && (
+              <div className="h-8 px-3 rounded-lg bg-black flex items-center shadow-sm">
+                <img src="/twint-logo.svg" alt="TWINT" className="h-5 w-auto" />
+              </div>
+            )}
+            {paySettings.enable_stripe && (
+              <>
+                <div className="h-8 px-4 rounded-lg bg-[#1A1F71] flex items-center shadow-sm">
+                  <span className="font-black text-white text-base italic tracking-tight">VISA</span>
+                </div>
+                <div className="h-8 px-3 rounded-lg bg-white border border-[#E0E0E0] flex items-center gap-1 shadow-sm">
+                  <div className="w-4 h-4 rounded-full bg-[#EB001B]" />
+                  <div className="w-4 h-4 rounded-full bg-[#F79E1B] -ml-2" />
+                  <span className="text-[11px] font-bold text-[#333] ml-1.5">Mastercard</span>
+                </div>
+              </>
+            )}
+            {paySettings.enable_paypal && (
+              <div className="h-8 px-3 rounded-lg bg-white border border-[#E0E0E0] flex items-center shadow-sm">
+                <img src="/0014294_paypal-express-payment-plugin.png" alt="PayPal" className="h-6 w-auto object-contain" />
+              </div>
+            )}
           </div>
         </div>
       </div>
+      )}
     </>
   )
 }

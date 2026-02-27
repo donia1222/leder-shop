@@ -1954,11 +1954,11 @@ export function Admin({ onClose }: AdminProps) {
               <div className="flex items-center space-x-2">
                 <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-full">
                   <Plus className="w-4 h-4 mr-2" />
-                  Kategorie erstellen
+                  Kategorie
                 </Button>
                 <Button onClick={showAddProductModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full">
                   <Plus className="w-4 h-4 mr-2" />
-                  Produkt hinzufügen
+                  Produkt
                 </Button>
               </div>
             </div>
@@ -2633,24 +2633,26 @@ export function Admin({ onClose }: AdminProps) {
             ) : (
               <div className="space-y-3">
                 {announcements.map(ann => (
-                  <div key={ann.id} className="flex items-center gap-4 p-4 bg-white border border-[#EBEBEB] rounded-2xl shadow-sm">
-                    <div className={`shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wide ${ann.type === 'product' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'}`}>
-                      {ann.type === 'product' ? 'Produkt' : 'Allgemein'}
+                  <div key={ann.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-white border border-[#EBEBEB] rounded-2xl shadow-sm">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className={`shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wide ${ann.type === 'product' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'}`}>
+                        {ann.type === 'product' ? 'Produkt' : 'Allgemein'}
+                      </div>
+                      {ann.image1_url && (
+                        <img src={ann.image1_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#EBEBEB]" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-[#1A1A1A] truncate">{ann.title}</p>
+                        <p className="text-xs text-[#888] mt-0.5">
+                          {ann.subtitle && <span className="mr-2">{ann.subtitle}</span>}
+                          {ann.show_once && <span className="bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-[10px] font-medium">Einmalig</span>}
+                        </p>
+                      </div>
                     </div>
-                    {ann.image1_url && (
-                      <img src={ann.image1_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#EBEBEB]" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-[#1A1A1A] truncate">{ann.title}</p>
-                      <p className="text-xs text-[#888] mt-0.5">
-                        {ann.subtitle && <span className="mr-2">{ann.subtitle}</span>}
-                        {ann.show_once && <span className="bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-[10px] font-medium">Einmalig</span>}
-                      </p>
-                    </div>
-                    <div className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-bold ${ann.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-                      {ann.is_active ? 'AKTIV' : 'INAKTIV'}
-                    </div>
-                    <div className="flex gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-bold ${ann.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                        {ann.is_active ? 'AKTIV' : 'INAKTIV'}
+                      </div>
                       <Button
                         size="sm"
                         variant="outline"
@@ -2784,12 +2786,13 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* Product Add/Edit Modal */}
         <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white">
-            <DialogHeader>
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-2xl sm:h-auto sm:max-h-[80vh] sm:rounded-lg bg-white">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
               <DialogTitle>{currentEditingProduct ? "Produkt bearbeiten" : "Produkt hinzufügen"}</DialogTitle>
             </DialogHeader>
 
-            <form onSubmit={handleProductSubmit} className="space-y-4 bg-white">
+            <form onSubmit={handleProductSubmit} className="flex flex-col flex-1 min-h-0">
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-white">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Produktname *</Label>
@@ -2968,7 +2971,8 @@ export function Admin({ onClose }: AdminProps) {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-4">
+            </div>
+            <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
                 <Button type="button" variant="outline" onClick={() => setIsProductModalOpen(false)} className="bg-white text-gray-700 hover:bg-gray-50">
                   Abbrechen
                 </Button>
@@ -3015,42 +3019,44 @@ export function Admin({ onClose }: AdminProps) {
         </Dialog>
 
         <Dialog open={isCategoryModalOpen} onOpenChange={(open) => { setIsCategoryModalOpen(open); if (!open) setEditingCategory(null) }}>
-          <DialogContent className="max-w-md bg-white">
-            <DialogHeader>
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-md sm:h-auto sm:max-h-[80vh] sm:rounded-lg bg-white">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
               <DialogTitle>{editingCategory ? "Kategorie bearbeiten" : "Neue Kategorie erstellen"}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCategorySubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="cat-name">Name *</Label>
-                <Input
-                  id="cat-name"
-                  name="name"
-                  required
-                  defaultValue={editingCategory?.name || ""}
-                  key={editingCategory?.id ?? "new"}
-                  placeholder="z.B. Rubs & Gewürze"
-                  className="bg-white"
-                />
-                {!editingCategory && (
-                  <p className="text-xs text-gray-400 mt-1">Der Slug wird automatisch generiert</p>
-                )}
-                {editingCategory && (
-                  <p className="text-xs text-gray-400 mt-1">Slug: <span className="font-mono">{editingCategory.slug}</span> (wird nicht geändert)</p>
-                )}
+            <form onSubmit={handleCategorySubmit} className="flex flex-col flex-1 min-h-0">
+              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+                <div>
+                  <Label htmlFor="cat-name" className="text-sm font-medium">Name *</Label>
+                  <Input
+                    id="cat-name"
+                    name="name"
+                    required
+                    defaultValue={editingCategory?.name || ""}
+                    key={editingCategory?.id ?? "new"}
+                    placeholder="z.B. Rubs & Gewürze"
+                    className="bg-white h-12 text-base sm:h-10 sm:text-sm mt-1"
+                  />
+                  {!editingCategory && (
+                    <p className="text-xs text-gray-400 mt-1">Der Slug wird automatisch generiert</p>
+                  )}
+                  {editingCategory && (
+                    <p className="text-xs text-gray-400 mt-1">Slug: <span className="font-mono">{editingCategory.slug}</span> (wird nicht geändert)</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="cat-description" className="text-sm font-medium">Beschreibung</Label>
+                  <Textarea
+                    id="cat-description"
+                    name="description"
+                    rows={4}
+                    defaultValue={editingCategory?.description || ""}
+                    key={(editingCategory?.id ?? "new") + "-desc"}
+                    placeholder="Kurze Beschreibung der Kategorie..."
+                    className="bg-white text-base sm:text-sm mt-1"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="cat-description">Beschreibung</Label>
-                <Textarea
-                  id="cat-description"
-                  name="description"
-                  rows={2}
-                  defaultValue={editingCategory?.description || ""}
-                  key={(editingCategory?.id ?? "new") + "-desc"}
-                  placeholder="Kurze Beschreibung der Kategorie..."
-                  className="bg-white"
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
+              <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
                 <Button type="button" variant="outline" onClick={() => { setIsCategoryModalOpen(false); setEditingCategory(null) }} className="bg-white text-gray-700 hover:bg-gray-50">
                   Abbrechen
                 </Button>
@@ -3089,18 +3095,18 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Blog Post Modal ── */}
         <Dialog open={isBlogModalOpen} onOpenChange={open => { setIsBlogModalOpen(open); if (!open) setCurrentEditingPost(null) }}>
-          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-white">
-            <DialogHeader>
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-2xl sm:h-auto sm:max-h-[85vh] sm:rounded-lg bg-white">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
               <DialogTitle>{currentEditingPost ? "Beitrag bearbeiten" : "Neuer Beitrag"}</DialogTitle>
             </DialogHeader>
-            <div className="space-y-5 pt-2">
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
               <div>
                 <Label className="text-sm font-semibold mb-1.5 block">Titel *</Label>
-                <Input value={blogForm.title} onChange={e => setBlogForm(f => ({ ...f, title: e.target.value }))} placeholder="Beitragstitel..." className="rounded-xl" />
+                <Input value={blogForm.title} onChange={e => setBlogForm(f => ({ ...f, title: e.target.value }))} placeholder="Beitragstitel..." className="rounded-xl h-12 text-base sm:h-10 sm:text-sm" />
               </div>
               <div>
                 <Label className="text-sm font-semibold mb-1.5 block">Inhalt *</Label>
-                <Textarea value={blogForm.content} onChange={e => setBlogForm(f => ({ ...f, content: e.target.value }))} placeholder="Schreibe deinen Beitrag hier..." rows={8} className="rounded-xl resize-none" />
+                <Textarea value={blogForm.content} onChange={e => setBlogForm(f => ({ ...f, content: e.target.value }))} placeholder="Schreibe deinen Beitrag hier..." rows={8} className="rounded-xl resize-none text-base sm:text-sm" />
               </div>
 
               {/* Images */}
@@ -3159,12 +3165,12 @@ export function Admin({ onClose }: AdminProps) {
                 </div>
               ))}
 
-              <div className="flex gap-3 pt-2">
-                <Button onClick={saveBlogPost} disabled={blogSaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl">
-                  {blogSaving ? "Speichern..." : currentEditingPost ? "Aktualisieren" : "Veröffentlichen"}
-                </Button>
-                <Button variant="outline" onClick={() => setIsBlogModalOpen(false)} className="rounded-xl">Abbrechen</Button>
-              </div>
+            </div>
+            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
+              <Button onClick={saveBlogPost} disabled={blogSaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl">
+                {blogSaving ? "Speichern..." : currentEditingPost ? "Aktualisieren" : "Veröffentlichen"}
+              </Button>
+              <Button variant="outline" onClick={() => setIsBlogModalOpen(false)} className="rounded-xl">Abbrechen</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -3183,11 +3189,11 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Gallery Add Modal ── */}
         <Dialog open={isGalleryModalOpen} onOpenChange={open => { setIsGalleryModalOpen(open) }}>
-          <DialogContent className="max-w-md bg-white">
-            <DialogHeader>
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-md sm:h-auto sm:max-h-[85vh] sm:rounded-lg bg-white">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
               <DialogTitle>Bild hinzufügen</DialogTitle>
             </DialogHeader>
-            <div className="space-y-5 pt-2">
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
               <div>
                 <Label className="text-sm font-semibold mb-1.5 block">Titel (optional)</Label>
                 <input
@@ -3195,7 +3201,7 @@ export function Admin({ onClose }: AdminProps) {
                   value={galleryForm.title}
                   onChange={e => setGalleryForm({ title: e.target.value })}
                   placeholder="z.B. Ledertasche handgemacht..."
-                  className="w-full h-10 px-3 border border-[#D5D5D5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C]"
+                  className="w-full h-12 px-3 border border-[#D5D5D5] rounded-xl text-base sm:h-10 sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C]"
                 />
               </div>
 
@@ -3214,8 +3220,8 @@ export function Admin({ onClose }: AdminProps) {
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
-                    <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed border-[#D5D5D5] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
-                      <Upload className="w-4 h-4 text-[#AAA] mb-1" />
+                    <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-[#D5D5D5] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
+                      <Upload className="w-5 h-5 text-[#AAA] mb-1" />
                       <span className="text-[11px] text-[#AAA]">Datei hochladen</span>
                       <input type="file" accept="image/*" className="hidden" onChange={e => {
                         const file = e.target.files?.[0]; if (!file) return
@@ -3233,18 +3239,17 @@ export function Admin({ onClose }: AdminProps) {
                         if (e.target.value) { setGalleryImagePreview(e.target.value); setGalleryImageFile(null) }
                         else setGalleryImagePreview(null)
                       }}
-                      className="h-24 text-xs px-3 border border-[#D5D5D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
+                      className="h-32 text-xs px-3 border border-[#D5D5D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
                     />
                   </div>
                 )}
               </div>
-
-              <div className="flex gap-3 pt-2">
-                <Button onClick={saveGalleryImage} disabled={gallerySaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl">
-                  {gallerySaving ? "Speichern..." : "Hinzufügen"}
-                </Button>
-                <Button variant="outline" onClick={() => setIsGalleryModalOpen(false)} className="rounded-xl">Abbrechen</Button>
-              </div>
+            </div>
+            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
+              <Button onClick={saveGalleryImage} disabled={gallerySaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl">
+                {gallerySaving ? "Speichern..." : "Hinzufügen"}
+              </Button>
+              <Button variant="outline" onClick={() => setIsGalleryModalOpen(false)} className="rounded-xl">Abbrechen</Button>
             </div>
           </DialogContent>
         </Dialog>

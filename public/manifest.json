@@ -1,7 +1,7 @@
 {
-  "name": "US - Fishing & Huntingshop",
-  "short_name": "US-F&H",
-  "description": "Ihr Spezialist für Jagd- und Angelausrüstung. Premium Outdoor-Ausrüstung zu fairen Preisen",
+  "name": "Leder-Shop",
+  "short_name": "Leder-Shop",
+  "description": "Handgemachte Taschen, Portemonnaies & Accessoires aus echtem Leder",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

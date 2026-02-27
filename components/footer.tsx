@@ -1,14 +1,39 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { AdminLoginButton } from "@/components/admin-auth"
 import { Facebook, Twitter, Instagram, Newspaper, ArrowRight, Download, ShieldCheck } from "lucide-react"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
 export function Footer() {
   const router = useRouter()
   const [openModal, setOpenModal] = useState<string | null>(null)
+  const [paySettings, setPaySettings] = useState<{
+    enable_paypal: boolean
+    enable_stripe: boolean
+    enable_twint: boolean
+    enable_invoice: boolean
+  } | null>(null)
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/get_payment_settings.php`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          const s = data.settings
+          setPaySettings({
+            enable_paypal: !!s.enable_paypal,
+            enable_stripe: !!s.enable_stripe,
+            enable_twint: !!s.enable_twint,
+            enable_invoice: s.enable_invoice !== false,
+          })
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const handleDownloadVCard = () => {
     const imageUrl = "https://online-shop-seven-delta.vercel.app/logo.png"
@@ -267,35 +292,46 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
     <footer className="bg-white mt-0">
 
       {/* ── Payment icons strip ── */}
-      <div className="border-t border-b border-[#E0E0E0] py-5 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {/* Sichere Zahlung */}
-            <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0]">
-              <ShieldCheck className="w-4 h-4 text-[#8B5E3C]" />
-              <span className="text-[11px] font-semibold text-[#555] tracking-widest uppercase">Sichere Zahlung</span>
-            </div>
-            {/* TWINT */}
-            <div className="h-9 px-3 rounded-lg bg-black flex items-center shadow-sm">
-              <img src="/twint-logo.svg" alt="TWINT" className="h-7 w-auto" />
-            </div>
-            {/* PostFinance */}
-            <div className="h-9 px-4 rounded-lg bg-[#FFCC00] flex items-center shadow-sm">
-              <span className="font-black text-black text-xs tracking-tight">Post<span className="font-normal">Finance</span></span>
-            </div>
-            {/* VISA */}
-            <div className="h-9 px-5 rounded-lg bg-[#1A1F71] flex items-center shadow-sm">
-              <span className="font-black text-white text-base italic tracking-tight">VISA</span>
-            </div>
-            {/* Mastercard */}
-            <div className="h-9 px-4 rounded-lg bg-white border border-[#E0E0E0] flex items-center gap-1 shadow-sm">
-              <div className="w-5 h-5 rounded-full bg-[#EB001B] opacity-90" />
-              <div className="w-5 h-5 rounded-full bg-[#F79E1B] opacity-90 -ml-2" />
-              <span className="text-[11px] font-bold text-[#333] ml-1.5 tracking-tight">Mastercard</span>
+      {paySettings && (paySettings.enable_invoice || paySettings.enable_stripe || paySettings.enable_twint || paySettings.enable_paypal) && (
+        <div className="border-t border-b border-[#E0E0E0] py-5 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0]">
+                <ShieldCheck className="w-4 h-4 text-[#8B5E3C]" />
+                <span className="text-[11px] font-semibold text-[#555] tracking-widest uppercase">Sichere Zahlung</span>
+              </div>
+              {paySettings.enable_invoice && (
+                <div className="h-9 px-4 rounded-lg bg-[#F5F5F5] border border-[#E0E0E0] flex items-center gap-2 shadow-sm">
+                  <span className="text-lg">🏦</span>
+                  <span className="text-[11px] font-bold text-[#444] tracking-tight">Rechnung</span>
+                </div>
+              )}
+              {paySettings.enable_twint && (
+                <div className="h-9 px-3 rounded-lg bg-black flex items-center shadow-sm">
+                  <img src="/twint-logo.svg" alt="TWINT" className="h-7 w-auto" />
+                </div>
+              )}
+              {paySettings.enable_stripe && (
+                <>
+                  <div className="h-9 px-5 rounded-lg bg-[#1A1F71] flex items-center shadow-sm">
+                    <span className="font-black text-white text-base italic tracking-tight">VISA</span>
+                  </div>
+                  <div className="h-9 px-4 rounded-lg bg-white border border-[#E0E0E0] flex items-center gap-1 shadow-sm">
+                    <div className="w-5 h-5 rounded-full bg-[#EB001B] opacity-90" />
+                    <div className="w-5 h-5 rounded-full bg-[#F79E1B] opacity-90 -ml-2" />
+                    <span className="text-[11px] font-bold text-[#333] ml-1.5 tracking-tight">Mastercard</span>
+                  </div>
+                </>
+              )}
+              {paySettings.enable_paypal && (
+                <div className="h-9 px-3 rounded-lg bg-white border border-[#E0E0E0] flex items-center shadow-sm">
+                  <img src="/0014294_paypal-express-payment-plugin.png" alt="PayPal" className="h-7 w-auto object-contain" />
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ── Social icons ── */}
       <div className="border-b border-[#E0E0E0] py-4 bg-white">
