@@ -16,6 +16,8 @@ import { Footer } from "@/components/footer"
 import  Bot  from "@/components/bot"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { X } from "lucide-react"
+import { CulinaryInspiration } from "@/components/culinary-inspiration"
+import { PairingSuggestions } from "@/components/pairing-suggestions"
 
 interface Announcement {
   id: number
@@ -385,7 +387,8 @@ function PremiumHotSauceStoreInner() {
       <BlogBanner />
       <ReviewsSection />
 
-
+                <CulinaryInspiration />
+      <PairingSuggestions />
 
       <ShoppingCartComponent
         isOpen={isCartOpen}

@@ -11,6 +11,7 @@ interface HeaderProps {
   cartCount?: number
 }
 
+
 export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -74,12 +75,7 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
 
   return (
     <>
-      {/* ── Top announcement bar ── */}
-      <div className="bg-[#2D1206] py-2">
-        <p className="text-center text-[12px] text-[#C49A6C] tracking-[0.12em] font-medium px-4">
-          ✦&nbsp; 100% Leder &nbsp;·&nbsp; Handgemacht in der Schweiz &nbsp;·&nbsp; 14 Tage Rückgaberecht
-        </p>
-      </div>
+ 
 
       {/* ── Main header ── */}
       <div className="bg-white border-b border-[#E8D9C8] sticky top-0 z-50 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
