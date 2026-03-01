@@ -556,10 +556,10 @@ export function LoginAuth({
       {/* ── User Icon Button ── */}
       <button
         onClick={handleUserIconClick}
-        className={`relative flex flex-col items-center p-2 hover:bg-[#F5F5F5] rounded min-w-[64px] ${className}`}
+        className={`relative flex flex-col items-center p-2 hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] rounded min-w-[64px] ${className}`}
       >
-        <User className={`w-6 h-6 ${isLoggedIn ? "text-[#8B5E3C]" : "text-[#555]"}`} />
-        <span className="text-xs text-[#555] mt-0.5 leading-none text-center font-medium">
+        <User className={`w-6 h-6 ${isLoggedIn ? "text-[#8B5E3C] dark:text-[#C49A6C]" : "text-[#2D1206] dark:text-[#C49A6C]"}`} />
+        <span className="text-xs text-[#555] dark:text-[#A89070] mt-0.5 leading-none text-center font-medium">
           {isLoggedIn && currentUser ? currentUser.firstName || "Konto" : "Anmelden"}
         </span>
         {isLoggedIn && currentUser && (

@@ -345,9 +345,9 @@ export default function ProductPage() {
               </h1>
 
               <div className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full w-fit ${
-                inStock ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-500"
+                inStock ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400"
               }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${inStock ? "bg-emerald-500" : "bg-red-400"}`} />
+                <span className={`w-1.5 h-1.5 rounded-full ${inStock ? "bg-emerald-500 dark:bg-emerald-400" : "bg-red-400"}`} />
                 {inStock ? `Auf Lager · ${product.stock} Stück` : "Nicht verfügbar"}
               </div>
 
