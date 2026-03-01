@@ -108,7 +108,8 @@ export function HeroSection() {
                 </button>
                 <button
                   onClick={() => router.push("/shop")}
-                  className="border border-[#C49A6C] text-[#8B5E3C] hover:bg-[#8B5E3C] hover:text-white hover:border-[#8B5E3C] font-semibold px-7 py-3 text-sm rounded-full transition-all duration-200"
+                  className="text-[#8B5E3C] font-semibold px-7 py-3 text-sm rounded-full transition-all duration-200 hover:bg-[#F5EDE0]"
+                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #FAF7F4, 0 0 0 1px #C49A6C33" }}
                 >
                   Alle Kategorien
                 </button>

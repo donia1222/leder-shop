@@ -59,7 +59,7 @@ export function CulinaryInspiration() {
               className="inline-block px-5 py-2 rounded-xl"
               style={{ border: "2px dashed #B8864E", boxShadow: "inset 0 0 0 3px #F9F7F4, 0 0 0 1px #B8864E33" }}
             >
-              <h3 className="text-4xl font-black text-[#2E1F0F]">Pflege & Stil</h3>
+              <h3 className="text-2xl font-black text-[#8B5E3C]">Pflege & Stil</h3>
             </div>
           </div>
           <p className="text-xl text-[#9B9189] max-w-2xl mx-auto">
