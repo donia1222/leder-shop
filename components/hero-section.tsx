@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { MarqueeBanner } from "./marquee-banner"
 
 const HERO_IMAGE = "/logo.png"
 
@@ -150,6 +151,8 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+
+      <MarqueeBanner />
 
       {/* ── Unsere Leder-Kategorien ── */}
       <div id="leder-kategorien" className="bg-white border-b border-[#E0E0E0] py-14">
