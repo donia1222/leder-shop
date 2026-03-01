@@ -143,7 +143,7 @@ export function HeroSection() {
 
             {/* RIGHT: Single image (desktop only) */}
             <div className="hidden lg:flex items-center justify-center h-full py-6">
-              <div className="relative" style={{ width: "440px", height: "490px", opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
+              <div className="relative" style={{ width: "410px", height: "460px", opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
                 <img src={HERO_IMAGE} alt="Premium Leder" className="w-full h-full object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer" />
               </div>
             </div>
