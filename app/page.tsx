@@ -382,6 +382,7 @@ function PremiumHotSauceStoreInner() {
 
       <CategoryPreviewSection />
 
+      <RecommendedProducts />
 
       <GalleryBanner />
       <BlogBanner />
@@ -389,7 +390,7 @@ function PremiumHotSauceStoreInner() {
 
                 <HandwerkSection />
                 <CulinaryInspiration />
-
+      <ReviewsSection />
 
       <ShoppingCartComponent
         isOpen={isCartOpen}
