@@ -123,7 +123,7 @@ export default function ProductsGridCompact({
 
   // Note: activeCart variables will be defined after the handler functions
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   // Cargar productos, categorías y carrito
   useEffect(() => {

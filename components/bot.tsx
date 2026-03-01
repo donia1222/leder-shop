@@ -36,7 +36,7 @@ let productDatabase: DetectedProduct[] = []
 // Función para cargar productos desde la API
 async function loadProductsFromAPI(): Promise<DetectedProduct[]> {
   try {
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/get_products.php`
+    const apiUrl = `${"https://web.lweb.ch/ledershop"}/get_products.php`
     console.log('🔗 Cargando productos desde API:', apiUrl)
     
     const response = await fetch(apiUrl)

@@ -183,11 +183,11 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
   const [resetMessage, setResetMessage] = useState("")
   const [resetErrors, setResetErrors] = useState<any>({})
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   // Check if user is logged in on component mount
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/get_payment_settings.php`)
+    fetch(`${"https://web.lweb.ch/ledershop"}/get_payment_settings.php`)
       .then(r => r.json())
       .then(data => {
         if (data.success && data.settings) {
@@ -226,7 +226,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
     initializeAuth()
 
     // Load payment settings
-    const API = process.env.NEXT_PUBLIC_API_BASE_URL
+    const API = "https://web.lweb.ch/ledershop"
     fetch(`${API}/get_payment_settings.php`)
       .then(r => r.json())
       .then(data => {
@@ -392,7 +392,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
       setShippingInfo({ zone: "", range: "" })
       return
     }
-    const API = process.env.NEXT_PUBLIC_API_BASE_URL
+    const API = "https://web.lweb.ch/ledershop"
     fetch(`${API}/calculate_shipping.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

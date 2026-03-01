@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const PHP_URL = process.env.NEXT_PUBLIC_API_BASE_URL + "/update_order.php"
+const PHP_URL = "https://web.lweb.ch/ledershop" + "/update_order.php"
 
 export async function POST(req: NextRequest) {
   try {

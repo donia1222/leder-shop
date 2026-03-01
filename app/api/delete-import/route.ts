@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "No se proporcionaron IDs" }, { status: 400 })
     }
 
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL
+    const apiBase = "https://web.lweb.ch/ledershop"
     const phpResponse = await fetch(`${apiBase}/delete_import.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

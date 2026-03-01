@@ -36,7 +36,7 @@ export function Login({
   onClose,
   onLoginSuccess,
   initialEmail = "",
-  API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL,
+  API_BASE_URL = "https://web.lweb.ch/ledershop",
   showAsCard = false,
   title = "Anmelden"
 }: LoginProps) {

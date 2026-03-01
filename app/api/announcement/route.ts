@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     return NextResponse.json(cached.data)
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL
+  const apiBase = "https://web.lweb.ch/ledershop"
   const url = active
     ? `${apiBase}/get_announcement.php?active=1`
     : `${apiBase}/get_announcement.php`

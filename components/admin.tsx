@@ -154,7 +154,7 @@ export function Admin({ onClose }: AdminProps) {
   const [isSavingSettings, setIsSavingSettings] = useState(false)
   const [settingsSavedMsg, setSettingsSavedMsg] = useState("")
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE = "https://web.lweb.ch/ledershop"
 
   const getPaymentChip = (method: string, status?: string) => {
     const map: Record<string, { label: string; bg: string; color: string }> = {
@@ -412,7 +412,7 @@ export function Admin({ onClose }: AdminProps) {
     sortBy: "name",
   })
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   useEffect(() => {
     const onScroll = () => {

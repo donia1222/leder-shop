@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { announcementCache } from "../cache"
 
-const PHP_URL = process.env.NEXT_PUBLIC_API_BASE_URL + "/save_announcement.php"
+const PHP_URL = "https://web.lweb.ch/ledershop" + "/save_announcement.php"
 
 export async function POST(req: NextRequest) {
   try {

@@ -111,7 +111,7 @@ export function LoginAuth({
   const [resetErrors, setResetErrors] = useState<any>({})
 
   const router = useRouter()
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   // Check if user is logged in on component mount
   useEffect(() => {

@@ -92,7 +92,7 @@ export default function SpiceDiscovery({
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set())
   const [animatingProducts, setAnimatingProducts] = useState<Set<number>>(new Set())
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   // Function to handle Kaufen button click
   const handleKaufenClick = (product: Product) => {

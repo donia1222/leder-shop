@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Enviar al endpoint PHP
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL
+    const apiBase = "https://web.lweb.ch/ledershop"
     const phpResponse = await fetch(`${apiBase}/import_products.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

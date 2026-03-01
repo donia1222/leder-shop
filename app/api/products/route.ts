@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const PHP_BASE = process.env.NEXT_PUBLIC_API_BASE_URL + "/get_products.php"
+const PHP_BASE = "https://web.lweb.ch/ledershop" + "/get_products.php"
 const CACHE_TTL = 30_000 // 30 segundos
 
 // Cache keyed by query string so ?stock_status=X is cached separately

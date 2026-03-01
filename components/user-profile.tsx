@@ -163,7 +163,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [passwordError, setPasswordError] = useState("")
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   useEffect(() => {
     loadUserProfile()

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const PHP_URL = process.env.NEXT_PUBLIC_API_BASE_URL + "/get_categories.php"
+const PHP_URL = "https://web.lweb.ch/ledershop" + "/get_categories.php"
 const CACHE_TTL = 30_000
 
 let cache: { data: unknown; at: number } | null = null

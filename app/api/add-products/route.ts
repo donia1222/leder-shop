@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Llama al PHP que NO borra nada
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL
+    const apiBase = "https://web.lweb.ch/ledershop"
     const phpResponse = await fetch(`${apiBase}/add_products_excel.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

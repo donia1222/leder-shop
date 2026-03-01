@@ -27,7 +27,7 @@ export default function PayPalSuccessPage() {
   const [hasProcessed, setHasProcessed] = useState<boolean>(false)
 
   // API Base URL
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
   useEffect(() => {
     // Prevenir múltiples ejecuciones

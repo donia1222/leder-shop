@@ -14,7 +14,7 @@ import { LoginAuth } from "./login-auth"
 import { ProductImage } from "./product-image"
 import { UserProfile } from "./user-profile"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
