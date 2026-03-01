@@ -60,10 +60,10 @@ export function HeroSection() {
   }, [])
 
   return (
-    <div className="bg-[#FAF7F4]">
+    <div className="bg-[#FAF7F4] dark:bg-[#120804]">
 
       {/* ── Hero editorial split ── */}
-      <div id="hero" className="border-b border-[#E8D9C8]">
+      <div id="hero" className="border-b border-[#E8D9C8] dark:border-[#3a2010]">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-6 items-center">
 
@@ -85,7 +85,7 @@ export function HeroSection() {
 
               {/* Heading */}
               <h1
-                className="font-black text-[#1A1A1A] leading-[1.02] mb-5"
+                className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] leading-[1.02] mb-5"
                 style={{ fontSize: "clamp(2.6rem, 4.5vw, 4.2rem)", letterSpacing: "-0.03em" }}
               >
                 Premium<br />
@@ -94,7 +94,7 @@ export function HeroSection() {
               </h1>
 
               {/* Description */}
-              <p className="text-[#777] text-base leading-relaxed mb-8 max-w-md">
+              <p className="text-[#777] dark:text-[#B8A080] text-base leading-relaxed mb-8 max-w-md">
                 Handgemachte Taschen, Portemonnaies & Accessoires
                 aus echtem Leder — für jeden Anlass.
               </p>
@@ -110,7 +110,7 @@ export function HeroSection() {
                 <button
                   onClick={() => router.push("/shop")}
                   className="text-[#8B5E3C] font-semibold px-7 py-3 text-sm rounded-full transition-all duration-200 hover:bg-[#F5EDE0]"
-                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #FAF7F4, 0 0 0 1px #C49A6C33" }}
+                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
                 >
                   Alle Kategorien
                 </button>
@@ -119,7 +119,7 @@ export function HeroSection() {
               {/* Decorative tags */}
               <div className="flex flex-wrap gap-2 mb-8">
                 {["Handgemacht", "Echtes Leder", "Swiss Quality", "Seit 2018"].map(tag => (
-                  <span key={tag} className="inline-flex items-center gap-1.5 bg-[#F5EDE0] text-[#8B5E3C] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#E8D9C8]">
+                  <span key={tag} className="inline-flex items-center gap-1.5 bg-[#F5EDE0] dark:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#E8D9C8] dark:border-[#3a2010]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#8B5E3C] inline-block" />
                     {tag}
                   </span>
@@ -127,15 +127,15 @@ export function HeroSection() {
               </div>
 
               {/* Stats */}
-              <div className="flex items-center gap-8 pt-8 border-t border-[#E8D9C8]">
+              <div className="flex items-center gap-8 pt-8 border-t border-[#E8D9C8] dark:border-[#3a2010]">
                 {[
                   { val: "200+", label: "Artikel" },
                   { val: "1–3 Tage", label: "Lieferung" },
                   { val: "100%", label: "Echtes Leder" },
                 ].map(({ val, label }) => (
                   <div key={label}>
-                    <div className="font-black text-[#1A1A1A] text-xl leading-none">{val}</div>
-                    <div className="text-[#AAA] text-xs mt-1 tracking-wide uppercase">{label}</div>
+                    <div className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-xl leading-none">{val}</div>
+                    <div className="text-[#AAA] dark:text-[#A89070] text-xs mt-1 tracking-wide uppercase">{label}</div>
                   </div>
                 ))}
               </div>
@@ -155,17 +155,17 @@ export function HeroSection() {
       <MarqueeBanner />
 
       {/* ── Unsere Leder-Kategorien ── */}
-      <div id="leder-kategorien" className="bg-white border-b border-[#E0E0E0] py-14">
+      <div id="leder-kategorien" className="bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010] py-14">
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between mb-10">
             <div>
               <div
                 className="inline-block px-3 py-1 rounded-lg mb-3"
-                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
               >
-                <span className="text-xs font-black text-[#2D1206] uppercase tracking-[0.25em]">Sortiment</span>
+                <span className="text-xs font-black text-[#2D1206] dark:text-[#C49A6C] uppercase tracking-[0.25em]">Sortiment</span>
               </div>
-              <h2 className="text-3xl font-black text-[#1A1A1A] tracking-tight">Unsere Leder-Kategorien</h2>
+              <h2 className="text-3xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Unsere Leder-Kategorien</h2>
             </div>
             <button
               onClick={() => router.push("/shop")}
@@ -178,11 +178,11 @@ export function HeroSection() {
           {categories.length === 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="rounded-2xl overflow-hidden border border-[#EDE0D4] animate-pulse">
-                  <div className="h-[160px] bg-[#EDE0D4]" />
+                <div key={i} className="rounded-2xl overflow-hidden border border-[#EDE0D4] dark:border-[#3a2010] bg-white dark:bg-[#2D1206] animate-pulse">
+                  <div className="h-[160px] bg-[#EDE0D4] dark:bg-[#3a1a08]" />
                   <div className="p-4 space-y-2">
-                    <div className="h-4 bg-[#EDE0D4] rounded-full w-2/3" />
-                    <div className="h-3 bg-[#EDE0D4] rounded-full w-1/2" />
+                    <div className="h-4 bg-[#EDE0D4] dark:bg-[#3a1a08] rounded-full w-2/3" />
+                    <div className="h-3 bg-[#EDE0D4] dark:bg-[#3a1a08] rounded-full w-1/2" />
                   </div>
                 </div>
               ))}
@@ -197,7 +197,7 @@ export function HeroSection() {
                   <div
                     key={cat.slug}
                     onClick={() => router.push(`/shop?cat=${encodeURIComponent(cat.slug)}`)}
-                    className="group cursor-pointer bg-white rounded-2xl border border-[#EDE0D4] hover:border-[#8B5E3C] hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    className="group cursor-pointer bg-white dark:bg-[#2D1206] rounded-2xl border border-[#EDE0D4] dark:border-[#3a2010] hover:border-[#8B5E3C] hover:shadow-xl transition-all duration-300 overflow-hidden"
                   >
                     <div className="relative overflow-hidden" style={{ height: "160px", backgroundColor: bg }}>
                       {img && (
@@ -211,8 +211,8 @@ export function HeroSection() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
                     <div className="p-4 flex items-center justify-between">
-                      <p className="font-black text-[#1A1A1A] text-base leading-tight">{displayName}</p>
-                      <span className="w-8 h-8 rounded-full bg-[#F5EDE0] group-hover:bg-[#8B5E3C] flex items-center justify-center text-[#8B5E3C] group-hover:text-white font-bold text-sm transition-all duration-200 flex-shrink-0">
+                      <p className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base leading-tight">{displayName}</p>
+                      <span className="w-8 h-8 rounded-full bg-[#F5EDE0] dark:bg-[#3D1F0D] group-hover:bg-[#8B5E3C] flex items-center justify-center text-[#8B5E3C] dark:text-[#C49A6C] group-hover:text-white font-bold text-sm transition-all duration-200 flex-shrink-0">
                         →
                       </span>
                     </div>

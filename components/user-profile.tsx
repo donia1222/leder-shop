@@ -807,7 +807,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F7F8] p-4">
+      <div className="min-h-screen bg-[#F7F7F8] dark:bg-[#120804] p-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center">
@@ -842,10 +842,10 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F7F8]">
-      <div className="bg-white flex flex-col">
+    <div className="min-h-screen bg-[#F7F7F8] dark:bg-[#120804]">
+      <div className="bg-white dark:bg-[#120804] flex flex-col">
         {/* Header */}
-        <div className="bg-white shadow-sm border-b border-[#E0E0E0] sticky top-0 z-30 flex-shrink-0">
+        <div className="bg-white dark:bg-[#1a0b04] shadow-sm border-b border-[#E0E0E0] dark:border-[#3a2010] sticky top-0 z-30 flex-shrink-0">
           <div className="px-3 sm:px-6 py-3 sm:py-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center space-x-3 sm:space-x-4">
@@ -859,10 +859,10 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                 <div className="w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
                 <div
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
-                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
                 >
-                  <User className="w-4 h-4 text-[#2D1206]" />
-                  <h1 className="text-base font-black text-[#2D1206]">Mein Profil</h1>
+                  <User className="w-4 h-4 text-[#2D1206] dark:text-[#C49A6C]" />
+                  <h1 className="text-base font-black text-[#2D1206] dark:text-[#C49A6C]">Mein Profil</h1>
                 </div>
               </div>
 
@@ -920,7 +920,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
         </div>
 
         {/* Main Content */}
-        <div className="bg-[#F7F7F8]">
+        <div className="bg-[#F7F7F8] dark:bg-[#120804]">
           <div className="px-3 sm:px-6 py-4 sm:py-8">
             <div className="max-w-6xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
@@ -942,10 +942,10 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                               id="firstName"
                               value={editData.first_name || ""}
                               onChange={(e) => setEditData((prev) => ({ ...prev, first_name: e.target.value }))}
-                              className="bg-white"
+                              className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                             />
                           ) : (
-                            <p className="p-2 bg-gray-50 rounded">{userData?.first_name}</p>
+                            <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded">{userData?.first_name}</p>
                           )}
                         </div>
                         <div>
@@ -955,10 +955,10 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                               id="lastName"
                               value={editData.last_name || ""}
                               onChange={(e) => setEditData((prev) => ({ ...prev, last_name: e.target.value }))}
-                              className="bg-white"
+                              className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                             />
                           ) : (
-                            <p className="p-2 bg-gray-50 rounded">{userData?.last_name}</p>
+                            <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded">{userData?.last_name}</p>
                           )}
                         </div>
                       </div>
@@ -967,7 +967,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                         <Label>E-Mail</Label>
                         <div className="flex items-center space-x-2">
                           <Mail className="w-4 h-4 text-gray-500" />
-                          <p className="p-2 bg-gray-100 rounded flex-1 text-gray-600">{userData?.email}</p>
+                          <p className="p-2 bg-gray-100 dark:bg-[#2D1206] rounded flex-1 text-gray-600 dark:text-[#A89070]">{userData?.email}</p>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">E-Mail kann nicht geändert werden</p>
                       </div>
@@ -979,13 +979,13 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                             id="phone"
                             value={editData.phone || ""}
                             onChange={(e) => setEditData((prev) => ({ ...prev, phone: e.target.value }))}
-                            className="bg-white"
+                            className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                             placeholder="+41 XX XXX XX XX"
                           />
                         ) : (
                           <div className="flex items-center space-x-2">
                             <Phone className="w-4 h-4 text-gray-500" />
-                            <p className="p-2 bg-gray-50 rounded flex-1">{userData?.phone}</p>
+                            <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded flex-1">{userData?.phone}</p>
                           </div>
                         )}
                       </div>
@@ -1007,10 +1007,10 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                             id="address"
                             value={editData.address || ""}
                             onChange={(e) => setEditData((prev) => ({ ...prev, address: e.target.value }))}
-                            className="bg-white"
+                            className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded">{userData?.address}</p>
+                          <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded">{userData?.address}</p>
                         )}
                       </div>
 
@@ -1022,11 +1022,11 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                               id="postalCode"
                               value={editData.postal_code || ""}
                               onChange={(e) => setEditData((prev) => ({ ...prev, postal_code: e.target.value }))}
-                              className="bg-white"
+                              className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                               placeholder="1234"
                             />
                           ) : (
-                            <p className="p-2 bg-gray-50 rounded">{userData?.postal_code}</p>
+                            <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded">{userData?.postal_code}</p>
                           )}
                         </div>
                         <div>
@@ -1036,10 +1036,10 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                               id="city"
                               value={editData.city || ""}
                               onChange={(e) => setEditData((prev) => ({ ...prev, city: e.target.value }))}
-                              className="bg-white"
+                              className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                             />
                           ) : (
-                            <p className="p-2 bg-gray-50 rounded">{userData?.city}</p>
+                            <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded">{userData?.city}</p>
                           )}
                         </div>
                       </div>
@@ -1051,11 +1051,11 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                             id="canton"
                             value={editData.canton || ""}
                             onChange={(e) => setEditData((prev) => ({ ...prev, canton: e.target.value }))}
-                            className="bg-white"
+                            className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                             placeholder="z.B. Zürich, Bern, Basel..."
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded">{userData?.canton}</p>
+                          <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded">{userData?.canton}</p>
                         )}
                       </div>
 
@@ -1066,12 +1066,12 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                             id="notes"
                             value={editData.notes || ""}
                             onChange={(e) => setEditData((prev) => ({ ...prev, notes: e.target.value }))}
-                            className="bg-white"
+                            className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                             rows={3}
                             placeholder="Besondere Lieferhinweise..."
                           />
                         ) : (
-                          <p className="p-2 bg-gray-50 rounded min-h-[80px]">
+                          <p className="p-2 bg-gray-50 dark:bg-[#2D1206] dark:text-[#D4C0A0] rounded min-h-[80px]">
                             {userData?.notes || "Keine Anmerkungen"}
                           </p>
                         )}
@@ -1169,7 +1169,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                           variant="outline"
                           size="sm"
                           disabled={ordersLoading}
-                          className="bg-white hover:bg-gray-50"
+                          className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] hover:bg-gray-50 dark:hover:bg-[#3a1a08]"
                         >
                           <RefreshCw className={`w-4 h-4 mr-2 ${ordersLoading ? "animate-spin" : ""}`} />
                           Aktualisieren
@@ -1186,7 +1186,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                               placeholder="Bestellnummer oder Produkt suchen..."
                               value={searchTerm}
                               onChange={(e) => handleSearchChange(e.target.value)}
-                              className="pl-10 bg-white text-sm"
+                              className="pl-10 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] text-sm"
                             />
                           </div>
                         </div>
@@ -1220,7 +1220,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                           {orders.length > 0 ? (
                             <div className="space-y-4">
                               {orders.map((order) => (
-                                <div key={order.id} className="border rounded-lg bg-white shadow-sm">
+                                <div key={order.id} className="border dark:border-[#3a2010] rounded-lg bg-white dark:bg-[#2D1206] shadow-sm">
                                   <div className="p-4">
                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-3">
                                       <div className="flex items-center space-x-3 sm:space-x-4">
@@ -1241,7 +1241,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                                       </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm text-gray-600 mb-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm text-gray-600 dark:text-[#A89070] mb-3">
                                       <div>
                                         <span className="font-medium">Zahlung:</span>
                                         <p className="capitalize">{order.payment_method}</p>
@@ -1263,7 +1263,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                                     {getVisibleNotes(order.customer_notes || "") && (
                                       <div className="mb-3">
                                         <span className="font-medium text-sm text-gray-600">Anmerkungen:</span>
-                                        <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded mt-1">
+                                        <p className="text-sm text-gray-700 dark:text-[#A89070] bg-gray-50 dark:bg-[#1a0b04] p-2 rounded mt-1">
                                           {getVisibleNotes(order.customer_notes || "")}
                                         </p>
                                       </div>
@@ -1276,7 +1276,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                                           onClick={() => toggleOrderItems(order.id)}
                                           variant="outline"
                                           size="sm"
-                                          className="bg-gray-50 hover:bg-gray-100"
+                                          className="bg-gray-50 dark:bg-[#1a0b04] dark:border-[#3a2010] dark:text-[#D4C0A0] hover:bg-gray-100 dark:hover:bg-[#3a1a08]"
                                         >
                                           <Package className="w-4 h-4 mr-2" />
                                           {showOrderItems[order.id] ? "Ausblenden" : "Anzeigen"}
@@ -1303,13 +1303,13 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
 
                                     {/* Order Items */}
                                     {showOrderItems[order.id] && order.items && order.items.length > 0 && (
-                                      <div className="mt-4 pt-4 border-t bg-gray-50 rounded-lg p-4">
-                                        <h5 className="font-medium mb-3 text-gray-800">Bestellte Artikel:</h5>
+                                      <div className="mt-4 pt-4 border-t dark:border-[#3a2010] bg-gray-50 dark:bg-[#1a0b04] rounded-lg p-4">
+                                        <h5 className="font-medium mb-3 text-gray-800 dark:text-[#D4C0A0]">Bestellte Artikel:</h5>
                                         <div className="space-y-3">
                                           {order.items.map((item, index) => (
                                             <div
                                               key={index}
-                                              className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 bg-white p-3 rounded-lg shadow-sm"
+                                              className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 bg-white dark:bg-[#2D1206] p-3 rounded-lg shadow-sm"
                                             >
                                     
                                               <div className="flex-1 text-center sm:text-left">
@@ -1395,7 +1395,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                                       setCurrentPage(1)
                                     }}
                                     variant="outline"
-                                    className="bg-white hover:bg-gray-50"
+                                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] hover:bg-gray-50 dark:hover:bg-[#3a1a08]"
                                   >
                                     Filter zurücksetzen
                                   </Button>
@@ -1419,7 +1419,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
       {/* Delete Account Dialog */}
       {showDeleteDialog && (
         <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-          <DialogContent className="sm:max-w-md bg-white mx-4 max-w-[calc(100vw-2rem)]">
+          <DialogContent className="sm:max-w-md bg-white dark:bg-[#1a0b04] dark:border-[#3a2010] mx-4 max-w-[calc(100vw-2rem)]">
             <DialogHeader>
               <DialogTitle className="flex items-center text-red-600">
                 <AlertTriangle className="w-5 h-5 mr-2" />
@@ -1452,7 +1452,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                   value={deletePassword}
                   onChange={(e) => setDeletePassword(e.target.value)}
                   placeholder="Geben Sie Ihr Passwort ein"
-                  className="bg-white"
+                  className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                 />
                 {deleteError && <p className="text-sm text-red-600 mt-1">{deleteError}</p>}
               </div>
@@ -1479,7 +1479,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
       {/* Change Password Dialog */}
       {showPasswordDialog && (
         <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-          <DialogContent className="sm:max-w-md bg-white mx-4 max-w-[calc(100vw-2rem)]">
+          <DialogContent className="sm:max-w-md bg-white dark:bg-[#1a0b04] dark:border-[#3a2010] mx-4 max-w-[calc(100vw-2rem)]">
             <DialogHeader>
               <DialogTitle className="flex items-center text-[#8B5E3C]">
                 <Lock className="w-5 h-5 mr-2" />
@@ -1499,7 +1499,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                   value={passwordData.currentPassword}
                   onChange={(e) => setPasswordData((prev) => ({ ...prev, currentPassword: e.target.value }))}
                   placeholder="Ihr aktuelles Passwort"
-                  className="bg-white"
+                  className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                 />
               </div>
 
@@ -1511,7 +1511,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                   value={passwordData.newPassword}
                   onChange={(e) => setPasswordData((prev) => ({ ...prev, newPassword: e.target.value }))}
                   placeholder="Mindestens 8 Zeichen"
-                  className="bg-white"
+                  className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                 />
               </div>
 
@@ -1523,7 +1523,7 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                   value={passwordData.confirmPassword}
                   onChange={(e) => setPasswordData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
                   placeholder="Neues Passwort wiederholen"
-                  className="bg-white"
+                  className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4]"
                 />
               </div>
 

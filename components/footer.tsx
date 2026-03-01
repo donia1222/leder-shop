@@ -289,11 +289,11 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
   }
 
   return (
-    <footer className="bg-white mt-0">
+    <footer className="bg-white dark:bg-[#1a0b04] mt-0">
 
       {/* ── Payment icons strip ── */}
       {paySettings && (paySettings.enable_invoice || paySettings.enable_stripe || paySettings.enable_twint || paySettings.enable_paypal) && (
-        <div className="border-t border-b border-[#E0E0E0] py-5 bg-white">
+        <div className="border-t border-b border-[#E0E0E0] dark:border-[#3a2010] py-5 bg-white dark:bg-[#1a0b04]">
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap items-center justify-center gap-3">
               <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0]">
@@ -334,7 +334,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
       )}
 
       {/* ── Social icons ── */}
-      <div className="border-b border-[#E0E0E0] py-4 bg-white">
+      <div className="border-b border-[#E0E0E0] dark:border-[#3a2010] py-4 bg-white dark:bg-[#1a0b04]">
         <div className="container mx-auto px-4 flex justify-center gap-6">
           {[
             { Icon: Facebook, href: "https://www.facebook.com/usfh.ch" },
@@ -355,7 +355,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
       </div>
 
       {/* ── Footer columns ── */}
-      <div className="bg-white border-t border-[#E8E8E8] py-14">
+      <div className="bg-white dark:bg-[#1a0b04] border-t border-[#E8E8E8] dark:border-[#3a2010] py-14">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-10">
 
@@ -366,25 +366,25 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <img src="/logo.png" alt="Logo" className="h-14 w-auto object-contain flex-shrink-0" />
                 <div
                   className="px-3 py-1.5 rounded-xl"
-                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
                 >
-                  <div className="font-black text-[#2D1206] text-lg leading-tight tracking-tight">Leder-Shop</div>
+                  <div className="font-black text-[#2D1206] dark:text-[#C49A6C] text-lg leading-tight tracking-tight">Leder-Shop</div>
                   <div className="text-xs text-[#8B5E3C] uppercase tracking-widest mt-1">Handgemachte Lederartikel</div>
                 </div>
               </div>
 
               {/* Contact pills */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px", marginBottom: "24px" }}>
+              <div className="flex flex-col items-start gap-2 mb-6">
                 <a href="https://maps.google.com/?q=9468+Sax+SG" target="_blank" rel="noopener noreferrer"
-                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#F5F5F5", color: "#444", fontSize: "14px", padding: "6px 12px", borderRadius: "999px", whiteSpace: "nowrap", textDecoration: "none" }}>
+                  className="inline-flex items-center gap-1.5 bg-[#F5F5F5] dark:bg-[#2D1206] text-[#444] dark:text-[#A89070] text-sm px-3 py-1.5 rounded-full whitespace-nowrap no-underline">
                   <span>📍</span> 9468 Sax (SG)
                 </a>
                 <a href="tel:0774167375"
-                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#F5F5F5", color: "#8B5E3C", fontWeight: 600, fontSize: "14px", padding: "6px 12px", borderRadius: "999px", whiteSpace: "nowrap", textDecoration: "none" }}>
+                  className="inline-flex items-center gap-1.5 bg-[#F5F5F5] dark:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] font-semibold text-sm px-3 py-1.5 rounded-full whitespace-nowrap no-underline">
                   <span>📞</span> 077 416 73 75
                 </a>
                 <a href="mailto:info@leder-shop.ch"
-                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#F5F5F5", color: "#8B5E3C", fontWeight: 600, fontSize: "14px", padding: "6px 12px", borderRadius: "999px", whiteSpace: "nowrap", textDecoration: "none" }}>
+                  className="inline-flex items-center gap-1.5 bg-[#F5F5F5] dark:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] font-semibold text-sm px-3 py-1.5 rounded-full whitespace-nowrap no-underline">
                   <span>✉️</span> info@leder-shop.ch
                 </a>
               </div>
@@ -393,15 +393,15 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
 
             {/* Service */}
             <div>
-              <h3 className="font-black text-[#1A1A1A] text-base mb-5 uppercase tracking-widest">Service</h3>
+              <h3 className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base mb-5 uppercase tracking-widest">Service</h3>
               <ul className="space-y-3">
                 <li>
-                  <a href="mailto:info@leder-shop.ch" className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors">Kontakt</a>
+                  <a href="mailto:info@leder-shop.ch" className="text-sm font-medium text-[#444] dark:text-[#C49A6C] hover:text-[#8B5E3C] transition-colors">Kontakt</a>
                 </li>
                 <li>
                   <Dialog open={openModal === "rueckgabe"} onOpenChange={(open) => setOpenModal(open ? "rueckgabe" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">Versand und Rückgabe</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">Versand und Rückgabe</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -414,7 +414,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <li>
                   <Dialog open={openModal === "zahlungsarten"} onOpenChange={(open) => setOpenModal(open ? "zahlungsarten" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">Zahlungsarten</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">Zahlungsarten</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -427,7 +427,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <li>
                   <Dialog open={openModal === "cookies"} onOpenChange={(open) => setOpenModal(open ? "cookies" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">Cookie Manager</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">Cookie Manager</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -440,7 +440,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <li>
                   <button
                     onClick={handleDownloadVCard}
-                    className="flex items-center gap-1.5 text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left"
+                    className="flex items-center gap-1.5 text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Digitale Visitenkarte
@@ -451,12 +451,12 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
 
             {/* Firma */}
             <div>
-              <h3 className="font-black text-[#1A1A1A] text-base mb-5 uppercase tracking-widest">Firma</h3>
+              <h3 className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base mb-5 uppercase tracking-widest">Firma</h3>
               <ul className="space-y-3">
                 <li>
                   <Dialog open={openModal === "ueberuns"} onOpenChange={(open) => setOpenModal(open ? "ueberuns" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">Über uns</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">Über uns</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -469,7 +469,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <li>
                   <Dialog open={openModal === "impressum"} onOpenChange={(open) => setOpenModal(open ? "impressum" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">Impressum</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">Impressum</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -482,7 +482,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <li>
                   <Dialog open={openModal === "datenschutz"} onOpenChange={(open) => setOpenModal(open ? "datenschutz" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">Datenschutzerklärung</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">Datenschutzerklärung</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -495,7 +495,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                 <li>
                   <Dialog open={openModal === "agb"} onOpenChange={(open) => setOpenModal(open ? "agb" : null)}>
                     <DialogTrigger asChild>
-                      <button className="text-sm font-medium text-[#444] hover:text-[#8B5E3C] transition-colors text-left">AGB</button>
+                      <button className="text-sm font-medium text-[#444] dark:text-[#D4C0A0] hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors text-left">AGB</button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
@@ -515,11 +515,11 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
       </div>
 
       {/* ── Bottom copyright bar ── */}
-      <div className="bg-[#F5F5F5] border-t border-[#E0E0E0] py-5">
+      <div className="bg-[#F5F5F5] dark:bg-[#0d0602] border-t border-[#E0E0E0] dark:border-[#3a2010] py-5">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[#888]">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[#888] dark:text-[#A89070]">
             <span>* Alle Preise inkl. MwSt., zzgl. Versandkosten</span>
-            <span className="font-semibold text-xs text-[#555]">Copyright © 2026 Leder-Shop. Alle Rechte vorbehalten.</span>
+            <span className="font-semibold text-xs text-[#555] dark:text-[#B8A080]">Copyright © 2026 Leder-Shop. Alle Rechte vorbehalten.</span>
             <span className="flex items-center gap-2">
               Design:&nbsp;<a href="https://lweb.ch" target="_blank" rel="noopener noreferrer" className="text-[#8B5E3C] font-semibold hover:underline">lweb.ch</a>
               <AdminLoginButton className="text-[#CCC] hover:text-[#888] ml-2" />

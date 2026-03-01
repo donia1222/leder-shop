@@ -83,17 +83,17 @@ export function RecommendedProducts() {
   const visibleProducts = products.filter(p => !failedIds.has(p.id)).slice(0, 12)
 
   if (loading) return (
-    <section className="border-t border-[#E0E0E0]">
+    <section className="border-t border-[#E0E0E0] dark:border-[#3a2010]">
       <div className="h-[260px] bg-[#2D1206] animate-pulse" />
-      <div className="bg-white py-10">
+      <div className="bg-white dark:bg-[#120804] py-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 animate-pulse">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i}>
-                <div className="aspect-square bg-gray-100 rounded-2xl mb-3" />
-                <div className="h-3 bg-gray-100 rounded-full w-5/6 mb-1" />
-                <div className="h-3 bg-gray-100 rounded-full w-3/4 mb-1" />
-                <div className="h-4 bg-gray-200 rounded-full w-1/2" />
+                <div className="aspect-square bg-gray-100 dark:bg-[#2D1206] rounded-2xl mb-3" />
+                <div className="h-3 bg-gray-100 dark:bg-[#2D1206] rounded-full w-5/6 mb-1" />
+                <div className="h-3 bg-gray-100 dark:bg-[#2D1206] rounded-full w-3/4 mb-1" />
+                <div className="h-4 bg-gray-200 dark:bg-[#3a1a08] rounded-full w-1/2" />
               </div>
             ))}
           </div>
@@ -105,7 +105,7 @@ export function RecommendedProducts() {
   if (visibleProducts.length === 0) return null
 
   return (
-    <section className="border-t border-[#E0E0E0]">
+    <section className="border-t border-[#E0E0E0] dark:border-[#3a2010]">
 
       {/* ── Banner ── */}
       <div className="relative overflow-hidden" style={{ minHeight: "260px" }}>
@@ -188,7 +188,7 @@ export function RecommendedProducts() {
       </div>
 
       {/* ── Product grid ── */}
-      <div className="bg-[#Fffff] py-10 border-b border-[#D9C4A8]">
+      <div className="bg-white dark:bg-[#120804] py-10 border-b border-[#D9C4A8] dark:border-[#3a2010]">
         <div className="container mx-auto px-4">
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -207,7 +207,7 @@ export function RecommendedProducts() {
                 <div
                   key={product.id}
                   onClick={() => router.push(`/product/${product.id}`)}
-                  className="cursor-pointer group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#E8D9C8] hover:border-[#8B5E3C]/50"
+                  className="cursor-pointer group bg-white dark:bg-[#2D1206] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#E8D9C8] dark:border-[#3a2010] hover:border-[#8B5E3C]/50"
                 >
                   {/* Image */}
                   <div className="relative bg-[#2D1206] overflow-hidden aspect-square">
@@ -243,7 +243,7 @@ export function RecommendedProducts() {
 
                   {/* Info */}
                   <div className="p-2.5">
-                    <p className="text-xs font-semibold text-[#1A1A1A] leading-tight line-clamp-2 mb-1.5 group-hover:text-[#8B5E3C] transition-colors">
+                    <p className="text-xs font-semibold text-[#1A1A1A] dark:text-[#FAF7F4] leading-tight line-clamp-2 mb-1.5 group-hover:text-[#8B5E3C] dark:group-hover:text-[#C49A6C] transition-colors">
                       {product.name}
                     </p>
                     <div className="flex items-baseline gap-1.5 flex-wrap">

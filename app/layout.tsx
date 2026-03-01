@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/next';
 import { CookieBanner } from '@/components/cookie-banner'
+import { ThemeProvider } from 'next-themes'
 
 
 export const metadata: Metadata = {
@@ -36,8 +37,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de">
-      <body>{children} <Analytics /><CookieBanner /></body>
+    <html lang="de" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {children}
+          <Analytics />
+          <CookieBanner />
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

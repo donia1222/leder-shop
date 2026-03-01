@@ -1346,12 +1346,12 @@ export function Admin({ onClose }: AdminProps) {
     (activeTab === "products" && productsLoading && products.length === 0)
   ) {
     return (
-      <div className="min-h-screen bg-[#F0F1F3] p-4">
+      <div className="min-h-screen bg-[#F0F1F3] dark:bg-[#120804] p-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5E3C] mx-auto mb-4"></div>
-              <p className="text-gray-600">Verwaltungspanel wird geladen...</p>
+              <p className="text-gray-600 dark:text-[#D4C0A0]">Verwaltungspanel wird geladen...</p>
             </div>
           </div>
         </div>
@@ -1360,22 +1360,22 @@ export function Admin({ onClose }: AdminProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F0F1F3]">
+    <div className="min-h-screen bg-[#F0F1F3] dark:bg-[#120804]">
       {/* Header */}
-      <div className="bg-white border-b border-[#E0E0E0] sticky top-0 z-50 shadow-sm">
+      <div className="bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010] sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all">
+              <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 dark:border-[#3a2010] text-[#6B4226] dark:text-[#C49A6C] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all">
                 <ArrowLeft className="w-4 h-4" />
               </button>
-              <div className="w-px h-6 bg-[#E0E0E0]" />
+              <div className="w-px h-6 bg-[#E0E0E0] dark:bg-[#3a2010]" />
               <div
                 className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
-                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
               >
-                <Shield className="w-4 h-4 text-[#2D1206]" />
-                <span className="font-black text-[#2D1206] text-sm tracking-tight">Verwaltungspanel</span>
+                <Shield className="w-4 h-4 text-[#2D1206] dark:text-[#FAF7F4]" />
+                <span className="font-black text-[#2D1206] dark:text-[#FAF7F4] text-sm tracking-tight">Verwaltungspanel</span>
               </div>
             </div>
 
@@ -1409,52 +1409,52 @@ export function Admin({ onClose }: AdminProps) {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="overflow-x-auto mb-8 -mx-2 px-2 pb-1">
-          <TabsList className="flex w-max lg:grid lg:grid-cols-7 lg:w-full bg-white border border-[#EBEBEB] rounded-2xl p-1 shadow-sm gap-1">
+          <TabsList className="flex w-max lg:grid lg:grid-cols-7 lg:w-full bg-white dark:bg-[#1a0b04] border border-[#EBEBEB] dark:border-[#3a2010] rounded-2xl p-1 shadow-sm gap-1">
             <TabsTrigger
               value="orders"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-blue-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <ShoppingBag className="w-4 h-4" />
               <span>Bestellungen</span>
             </TabsTrigger>
             <TabsTrigger
               value="products"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-blue-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Package className="w-4 h-4" />
               <span>Produkte</span>
             </TabsTrigger>
             <TabsTrigger
               value="versand"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-blue-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Package className="w-4 h-4" />
               <span>Versand</span>
             </TabsTrigger>
             <TabsTrigger
               value="settings"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-blue-50 text-blue-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-blue-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Settings className="w-4 h-4" />
               <span>Zahlungen</span>
             </TabsTrigger>
             <TabsTrigger
               value="gallery"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 data-[state=active]:bg-green-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-green-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Images className="w-4 h-4" />
               <span>Galerie</span>
             </TabsTrigger>
             <TabsTrigger
               value="blog"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 data-[state=active]:bg-green-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-green-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <BookOpen className="w-4 h-4" />
               <span>Blog</span>
             </TabsTrigger>
             <TabsTrigger
               value="anuncios"
-              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 data-[state=active]:bg-green-400 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+              className="flex items-center gap-2 font-semibold shrink-0 bg-green-50 text-green-700 dark:bg-[#2D1206] dark:text-[#C49A6C] data-[state=active]:bg-green-400 dark:data-[state=active]:bg-[#8B5E3C] data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
             >
               <Megaphone className="w-4 h-4" />
               <span>Anzeigen</span>
@@ -1471,8 +1471,8 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Bestellungen</p>
-                        <p className="text-3xl font-black text-[#1A1A1A] mt-1">
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Bestellungen</p>
+                        <p className="text-3xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] mt-1">
                           {Number.parseInt(String(orderStats.total_orders ?? 0)) || 0}
                         </p>
                       </div>
@@ -1487,7 +1487,7 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Umsatz</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Umsatz</p>
                         <p className="text-2xl font-black text-[#8B5E3C] mt-1">
                           {(Number.parseFloat(String(orderStats.total_revenue ?? 0)) || 0).toFixed(2)}
                           <span className="text-sm font-semibold text-[#888] ml-1">CHF</span>
@@ -1504,7 +1504,7 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Abgeschlossen</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Abgeschlossen</p>
                         <p className="text-3xl font-black text-[#8B5E3C] mt-1">
                           {Number.parseInt(String(orderStats.completed_orders ?? 0)) || 0}
                         </p>
@@ -1520,7 +1520,7 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Ausstehend</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Ausstehend</p>
                         <p className="text-3xl font-black text-yellow-600 mt-1">
                           {Number.parseInt(String(orderStats.pending_orders ?? 0)) || 0}
                         </p>
@@ -1551,7 +1551,7 @@ export function Admin({ onClose }: AdminProps) {
                       placeholder="Name, E-Mail, Nummer..."
                       value={orderFilters.search}
                       onChange={(e) => handleOrderFilterChange("search", e.target.value)}
-                      className="bg-white"
+                      className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                     />
                   </div>
 
@@ -1561,10 +1561,10 @@ export function Admin({ onClose }: AdminProps) {
                       value={orderFilters.status}
                       onValueChange={(value) => handleOrderFilterChange("status", value)}
                     >
-                      <SelectTrigger className="bg-white border-gray-300">
+                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
                         <SelectValue placeholder="Alle Status" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
                         <SelectItem value="all">Alle</SelectItem>
                         <SelectItem value="pending">Ausstehend</SelectItem>
                         <SelectItem value="processing">In Bearbeitung</SelectItem>
@@ -1582,7 +1582,7 @@ export function Admin({ onClose }: AdminProps) {
                       placeholder="kunde@email.com"
                       value={orderFilters.email}
                       onChange={(e) => handleOrderFilterChange("email", e.target.value)}
-                      className="bg-white"
+                      className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                     />
                   </div>
 
@@ -1603,11 +1603,11 @@ export function Admin({ onClose }: AdminProps) {
             {/* Orders List */}
             <div className="flex flex-col gap-2">
               {orders.map((order) => (
-                <div key={order.id} className="bg-white border border-[#EBEBEB] rounded-2xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-center gap-3">
+                <div key={order.id} className="bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] rounded-2xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-center gap-3">
                   {/* Order number + payment chips */}
                   <div className="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
                     <Package className="w-4 h-4 text-gray-400 shrink-0" />
-                    <span className="font-bold text-[#1A1A1A] text-sm truncate">{order.order_number}</span>
+                    <span className="font-bold text-[#1A1A1A] dark:text-[#FAF7F4] text-sm truncate">{order.order_number}</span>
                     {order.payment_method && (
                       <span className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#8B5E3C]/10 text-[#8B5E3C] uppercase tracking-wide">
                         {(() => {
@@ -1636,13 +1636,13 @@ export function Admin({ onClose }: AdminProps) {
                   </div>
                   {/* Customer */}
                   <div className="sm:w-40 shrink-0">
-                    <p className="text-sm font-semibold text-gray-800 truncate">{order.customer_first_name} {order.customer_last_name}</p>
-                    <p className="text-xs text-gray-400 truncate">{order.customer_email}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-[#FAF7F4] truncate">{order.customer_first_name} {order.customer_last_name}</p>
+                    <p className="text-xs text-gray-400 dark:text-[#A89070] truncate">{order.customer_email}</p>
                   </div>
                   {/* Total */}
                   <div className="sm:w-28 shrink-0">
-                    <p className="text-sm font-bold text-gray-800">{(Number.parseFloat(order.total_amount.toString()) || 0).toFixed(2)} CHF</p>
-                    <p className="text-xs text-gray-400">{formatDate(order.created_at)}</p>
+                    <p className="text-sm font-bold text-gray-800 dark:text-[#FAF7F4]">{(Number.parseFloat(order.total_amount.toString()) || 0).toFixed(2)} CHF</p>
+                    <p className="text-xs text-gray-400 dark:text-[#A89070]">{formatDate(order.created_at)}</p>
                   </div>
                   {/* Actions */}
                   <div className="flex items-center gap-2 shrink-0 flex-wrap">
@@ -1709,7 +1709,7 @@ export function Admin({ onClose }: AdminProps) {
               >
                 ← Zurück
               </Button>
-              <span className="text-sm font-semibold text-[#666] bg-white border border-[#EBEBEB] rounded-full px-4 py-2 shadow-sm">
+              <span className="text-sm font-semibold text-[#666] dark:text-[#D4C0A0] bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] rounded-full px-4 py-2 shadow-sm">
                 {currentOrderPage} / {totalOrderPages}
               </span>
               <Button
@@ -1731,8 +1731,8 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Produkte</p>
-                        <p className="text-3xl font-black text-[#1A1A1A] mt-1">{productStats.total_products}</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Produkte</p>
+                        <p className="text-3xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] mt-1">{productStats.total_products}</p>
                       </div>
                       <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center">
                         <Package className="w-5 h-5 text-blue-500" />
@@ -1745,7 +1745,7 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Lagerbestand</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Lagerbestand</p>
                         <p className="text-3xl font-black text-[#8B5E3C] mt-1">{productStats.total_stock}</p>
                       </div>
                       <div className="w-11 h-11 bg-[#8B5E3C]/10 rounded-xl flex items-center justify-center">
@@ -1759,7 +1759,7 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Wenig Lager</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Wenig Lager</p>
                         <p className="text-3xl font-black text-yellow-600 mt-1">{productStats.low_stock}</p>
                       </div>
                       <div className="w-11 h-11 bg-yellow-50 rounded-xl flex items-center justify-center">
@@ -1773,7 +1773,7 @@ export function Admin({ onClose }: AdminProps) {
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[#888] text-xs font-medium uppercase tracking-wide">Ausverkauft</p>
+                        <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Ausverkauft</p>
                         <p className="text-3xl font-black text-red-500 mt-1">{productStats.out_of_stock}</p>
                       </div>
                       <div className="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center">
@@ -1796,9 +1796,9 @@ export function Admin({ onClose }: AdminProps) {
               <CardContent>
                 <div className="flex items-center gap-4 flex-wrap">
                   <label className="flex-1 min-w-[220px] cursor-pointer">
-                    <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-2 bg-white hover:bg-gray-50 transition-colors">
-                      <Upload className="w-4 h-4 text-gray-500 shrink-0" />
-                      <span className="text-sm text-gray-600 truncate">
+                    <div className="flex items-center gap-2 border border-gray-300 dark:border-[#3a2010] rounded-lg px-4 py-2 bg-white dark:bg-[#2D1206] hover:bg-gray-50 dark:hover:bg-[#3a1a08] transition-colors">
+                      <Upload className="w-4 h-4 text-gray-500 dark:text-[#A89070] shrink-0" />
+                      <span className="text-sm text-gray-600 dark:text-[#D4C0A0] truncate">
                         {importFile ? importFile.name : ".xlsx / .xls auswählen"}
                       </span>
                     </div>
@@ -1864,9 +1864,9 @@ export function Admin({ onClose }: AdminProps) {
               <CardContent>
                 <div className="flex items-center gap-4 flex-wrap">
                   <label className="flex-1 min-w-[220px] cursor-pointer">
-                    <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-2 bg-white hover:bg-gray-50 transition-colors">
-                      <Upload className="w-4 h-4 text-gray-500 shrink-0" />
-                      <span className="text-sm text-gray-600 truncate">
+                    <div className="flex items-center gap-2 border border-gray-300 dark:border-[#3a2010] rounded-lg px-4 py-2 bg-white dark:bg-[#2D1206] hover:bg-gray-50 dark:hover:bg-[#3a1a08] transition-colors">
+                      <Upload className="w-4 h-4 text-gray-500 dark:text-[#A89070] shrink-0" />
+                      <span className="text-sm text-gray-600 dark:text-[#D4C0A0] truncate">
                         {addFile ? addFile.name : ".xlsx / .xls auswählen"}
                       </span>
                     </div>
@@ -1921,13 +1921,13 @@ export function Admin({ onClose }: AdminProps) {
                 {/* Historial de importaciones */}
                 {importHistory.length > 0 && (
                   <div className="mt-4">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Importverlauf</p>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-[#A89070] uppercase tracking-wide mb-2">Importverlauf</p>
                     <div className="space-y-2">
                       {importHistory.map((batch) => (
-                        <div key={batch.date} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                        <div key={batch.date} className="flex items-center justify-between bg-gray-50 dark:bg-[#2D1206] border border-gray-200 dark:border-[#3a2010] rounded-lg px-3 py-2">
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-gray-800 truncate">{batch.filename}</p>
-                            <p className="text-xs text-gray-500">{batch.date} · {batch.count} Produkte</p>
+                            <p className="text-sm font-medium text-gray-800 dark:text-[#FAF7F4] truncate">{batch.filename}</p>
+                            <p className="text-xs text-gray-500 dark:text-[#A89070]">{batch.date} · {batch.count} Produkte</p>
                           </div>
                           <Button
                             variant="outline"
@@ -1949,7 +1949,7 @@ export function Admin({ onClose }: AdminProps) {
 
             {/* Products Header Actions */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight">Produktverwaltung</h2>
+              <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produktverwaltung</h2>
               <div className="flex items-center space-x-2">
                 <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-full">
                   <Plus className="w-4 h-4 mr-2" />
@@ -1965,15 +1965,15 @@ export function Admin({ onClose }: AdminProps) {
             {/* Categories List */}
             {categories.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Vorhandene Kategorien</h3>
+                <h3 className="text-sm font-semibold text-gray-500 dark:text-[#A89070] uppercase tracking-wider mb-3">Vorhandene Kategorien</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {categories.map((cat) => {
                     const productCount = products.filter((p) => p.category === cat.slug).length
                     return (
-                      <div key={cat.slug} className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+                      <div key={cat.slug} className="flex items-center justify-between bg-white dark:bg-[#2D1206] border border-gray-200 dark:border-[#3a2010] rounded-xl px-4 py-3 shadow-sm">
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-800 truncate">{cat.name}</p>
-                          <p className="text-xs text-gray-400">{productCount} Produkt{productCount !== 1 ? "e" : ""}</p>
+                          <p className="font-semibold text-gray-800 dark:text-[#FAF7F4] truncate">{cat.name}</p>
+                          <p className="text-xs text-gray-400 dark:text-[#A89070]">{productCount} Produkt{productCount !== 1 ? "e" : ""}</p>
                         </div>
                         <div className="flex items-center space-x-1 ml-2">
                           <Button
@@ -2004,7 +2004,7 @@ export function Admin({ onClose }: AdminProps) {
 
             {/* Products Filters */}
             <div ref={filterCardRef}>
-            <Card className="mb-4 rounded-2xl border-[#c8e6c9] shadow-sm bg-[#e8f5e9]">
+            <Card className="mb-4 rounded-2xl border-[#c8e6c9] dark:border-[#3a2010] shadow-sm bg-[#e8f5e9] dark:bg-[#1a0b04]">
               <CardHeader>
                 <CardTitle className="flex items-center text-base">
                   <Filter className="w-4 h-4 mr-2 text-[#8B5E3C]" />
@@ -2022,7 +2022,7 @@ export function Admin({ onClose }: AdminProps) {
                         placeholder="Produkte suchen..."
                         value={productFilters.search}
                         onChange={(e) => setProductFilters((prev) => ({ ...prev, search: e.target.value }))}
-                        className="bg-white pl-10"
+                        className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] pl-10"
                       />
                     </div>
                   </div>
@@ -2033,10 +2033,10 @@ export function Admin({ onClose }: AdminProps) {
                       value={productFilters.category || "all"}
                       onValueChange={(value) => setProductFilters((prev) => ({ ...prev, category: value === "all" ? "" : value }))}
                     >
-                      <SelectTrigger className="bg-white border-gray-300">
+                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
                         <SelectValue placeholder="Alle Kategorien" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
                         <SelectItem value="all">Alle Kategorien</SelectItem>
                         {categories.map((cat) => (
                           <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
@@ -2051,10 +2051,10 @@ export function Admin({ onClose }: AdminProps) {
                       value={productFilters.stock_status || "all"}
                       onValueChange={(value) => setProductFilters((prev) => ({ ...prev, stock_status: value === "all" ? "" : value }))}
                     >
-                      <SelectTrigger className="bg-white border-gray-300">
+                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
                         <SelectValue placeholder="Alle Status" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
                         <SelectItem value="all">Alle Status</SelectItem>
                         <SelectItem value="in_stock">Auf Lager</SelectItem>
                         <SelectItem value="low_stock">Geringer Lagerbestand</SelectItem>
@@ -2069,10 +2069,10 @@ export function Admin({ onClose }: AdminProps) {
                       value={productFilters.sortBy}
                       onValueChange={(value) => setProductFilters((prev) => ({ ...prev, sortBy: value }))}
                     >
-                      <SelectTrigger className="bg-white border-gray-300">
+                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
                         <SelectItem value="name">Name</SelectItem>
                         <SelectItem value="price">Preis</SelectItem>
                         <SelectItem value="stock">Lagerbestand</SelectItem>
@@ -2122,7 +2122,7 @@ export function Admin({ onClose }: AdminProps) {
                     <SelectTrigger className="w-48 bg-white border-gray-300 text-sm">
                       <SelectValue placeholder="Status ändern..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
                       <SelectItem value="in_stock">Auf Lager</SelectItem>
                       <SelectItem value="low_stock">Geringer Bestand</SelectItem>
                       <SelectItem value="out_of_stock">Nicht vorrätig</SelectItem>
@@ -2152,8 +2152,8 @@ export function Admin({ onClose }: AdminProps) {
               {filteredProducts.map((product) => (
                 <Card
                   key={product.id}
-                  className={`rounded-2xl border-[#EBEBEB] shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
-                    selectedProductIds.has(product.id) ? "ring-2 ring-[#8B5E3C] border-[#8B5E3C]" : ""
+                  className={`rounded-2xl border-[#EBEBEB] dark:border-[#3a2010] shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
+                    selectedProductIds.has(product.id) ? "ring-2 ring-[#8B5E3C] border-[#8B5E3C]" : "dark:bg-[#2D1206]"
                   }`}
                   onClick={() => toggleProductSelection(product.id)}
                 >
@@ -2198,13 +2198,13 @@ export function Admin({ onClose }: AdminProps) {
                       </div>
                     </div>
 
-                    <h3 className="font-bold text-lg mb-2 text-gray-800">{product.name}</h3>
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                    <h3 className="font-bold text-lg mb-2 text-gray-800 dark:text-[#FAF7F4]">{product.name}</h3>
+                    <p className="text-gray-600 dark:text-[#D4C0A0] text-sm mb-3 line-clamp-2">{product.description}</p>
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <Badge className="bg-[#8B5E3C]/10 text-[#8B5E3C]">{getCategoryDisplay(product.category)}</Badge>
-                        <span className="font-bold text-lg text-gray-800">
+                        <span className="font-bold text-lg text-gray-800 dark:text-[#FAF7F4]">
                           {Number.parseFloat(product.price.toString()).toFixed(2)} CHF
                         </span>
                       </div>
@@ -2214,7 +2214,7 @@ export function Admin({ onClose }: AdminProps) {
                           <Badge className={getStockStatusColor(product.stock_status)}>
                             {getStockStatusText(product.stock_status)}
                           </Badge>
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-gray-700 dark:text-[#D4C0A0]">
                             Lager: {product.stock}
                           </span>
                         </div>
@@ -2227,8 +2227,8 @@ export function Admin({ onClose }: AdminProps) {
                         </Badge>
                       )}
 
-                      {product.supplier && <p className="text-xs text-gray-500">Lieferant: {product.supplier}</p>}
-                      {product.origin && <p className="text-xs text-gray-500">Hersteller: {product.origin}</p>}
+                      {product.supplier && <p className="text-xs text-gray-500 dark:text-[#A89070]">Lieferant: {product.supplier}</p>}
+                      {product.origin && <p className="text-xs text-gray-500 dark:text-[#A89070]">Hersteller: {product.origin}</p>}
                     </div>
                   </CardContent>
                 </Card>
@@ -2237,8 +2237,8 @@ export function Admin({ onClose }: AdminProps) {
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-12">
-                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 text-lg">Keine Produkte gefunden</p>
+                <Package className="w-16 h-16 text-gray-400 dark:text-[#A89070] mx-auto mb-4" />
+                <p className="text-gray-600 dark:text-[#D4C0A0] text-lg">Keine Produkte gefunden</p>
               </div>
             )}
           </TabsContent>
@@ -2247,8 +2247,8 @@ export function Admin({ onClose }: AdminProps) {
           <TabsContent value="blog">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-black text-[#1A1A1A]">Blog</h2>
-                <p className="text-sm text-[#888] mt-0.5">{blogPosts.length} Beiträge</p>
+                <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4]">Blog</h2>
+                <p className="text-sm text-[#888] dark:text-[#A89070] mt-0.5">{blogPosts.length} Beiträge</p>
               </div>
               <Button onClick={() => openBlogModal()} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white gap-2 rounded-xl">
                 <Plus className="w-4 h-4" /> Neuer Beitrag
@@ -2257,22 +2257,22 @@ export function Admin({ onClose }: AdminProps) {
 
             {blogLoading && (
               <div className="space-y-4">
-                {[0,1,2].map(i => <div key={i} className="h-24 bg-gray-100 rounded-2xl animate-pulse" />)}
+                {[0,1,2].map(i => <div key={i} className="h-24 bg-gray-100 dark:bg-[#2D1206] rounded-2xl animate-pulse" />)}
               </div>
             )}
 
             {!blogLoading && blogPosts.length === 0 && (
               <div className="text-center py-20">
-                <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Noch keine Beiträge. Erstelle den ersten!</p>
+                <BookOpen className="w-16 h-16 text-gray-300 dark:text-[#A89070] mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-[#A89070]">Noch keine Beiträge. Erstelle den ersten!</p>
               </div>
             )}
 
             <div className="space-y-4">
               {blogPosts.map(post => (
-                <div key={post.id} className="bg-white rounded-2xl border border-[#EBEBEB] shadow-sm overflow-hidden flex gap-0">
+                <div key={post.id} className="bg-white dark:bg-[#2D1206] rounded-2xl border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm overflow-hidden flex gap-0">
                   {post.hero_image_url && (
-                    <div className="w-28 sm:w-40 flex-shrink-0 bg-[#F0F0F0]">
+                    <div className="w-28 sm:w-40 flex-shrink-0 bg-[#F0F0F0] dark:bg-[#1a0b04]">
                       <img src={post.hero_image_url} alt={post.title} className="w-full h-full object-cover" />
                     </div>
                   )}
@@ -2282,8 +2282,8 @@ export function Admin({ onClose }: AdminProps) {
                         <Calendar className="w-3 h-3" />
                         {new Date(post.created_at).toLocaleDateString("de-CH")}
                       </div>
-                      <h3 className="font-black text-[#1A1A1A] truncate">{post.title}</h3>
-                      <p className="text-xs text-[#888] line-clamp-2 mt-1 leading-relaxed">{post.content}</p>
+                      <h3 className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] truncate">{post.title}</h3>
+                      <p className="text-xs text-[#888] dark:text-[#A89070] line-clamp-2 mt-1 leading-relaxed">{post.content}</p>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
                       <Button size="sm" variant="outline" onClick={() => openBlogModal(post)} className="gap-1.5 rounded-xl text-xs h-8">
@@ -2303,8 +2303,8 @@ export function Admin({ onClose }: AdminProps) {
           <TabsContent value="gallery">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-black text-[#1A1A1A]">Galerie</h2>
-                <p className="text-sm text-[#888] mt-0.5">{galleryImages.length} Bilder</p>
+                <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4]">Galerie</h2>
+                <p className="text-sm text-[#888] dark:text-[#A89070] mt-0.5">{galleryImages.length} Bilder</p>
               </div>
               <Button onClick={openGalleryModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white gap-2 rounded-xl">
                 <Plus className="w-4 h-4" /> Bild hinzufügen
@@ -2313,20 +2313,20 @@ export function Admin({ onClose }: AdminProps) {
 
             {galleryLoading && (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {[0,1,2,3,4,5,6,7].map(i => <div key={i} className="aspect-square bg-gray-100 rounded-2xl animate-pulse" />)}
+                {[0,1,2,3,4,5,6,7].map(i => <div key={i} className="aspect-square bg-gray-100 dark:bg-[#2D1206] rounded-2xl animate-pulse" />)}
               </div>
             )}
 
             {!galleryLoading && galleryImages.length === 0 && (
               <div className="text-center py-20">
-                <Images className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Noch keine Bilder. Füge das erste hinzu!</p>
+                <Images className="w-16 h-16 text-gray-300 dark:text-[#A89070] mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-[#A89070]">Noch keine Bilder. Füge das erste hinzu!</p>
               </div>
             )}
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {galleryImages.map(img => (
-                <div key={img.id} className="group relative aspect-square rounded-2xl overflow-hidden border border-[#EBEBEB] shadow-sm bg-[#F5F5F5]">
+                <div key={img.id} className="group relative aspect-square rounded-2xl overflow-hidden border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm bg-[#F5F5F5] dark:bg-[#2D1206]">
                   <img src={img.image_url} alt={img.title ?? ""} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   {img.title && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
@@ -2350,8 +2350,8 @@ export function Admin({ onClose }: AdminProps) {
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-1 h-8 bg-[#8B5E3C] rounded-full" />
                 <div>
-                  <h2 className="text-2xl font-black text-[#1A1A1A]">Zahlungseinstellungen</h2>
-                  <p className="text-sm text-[#888]">API-Schlüssel und Konten für Zahlungsmethoden</p>
+                  <h2 className="text-2xl font-black text-[#1A1A1A] dark:text-[#FAF7F4]">Zahlungseinstellungen</h2>
+                  <p className="text-sm text-[#888] dark:text-[#A89070]">API-Schlüssel und Konten für Zahlungsmethoden</p>
                 </div>
               </div>
 
@@ -2375,7 +2375,7 @@ export function Admin({ onClose }: AdminProps) {
                       placeholder="shop@example.com"
                       value={paySettings.paypal_email}
                       onChange={e => setPaySettings(p => ({ ...p, paypal_email: e.target.value }))}
-                      className="mt-1 bg-white"
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                       disabled={!paySettings.enable_paypal}
                     />
                     <p className="text-xs text-[#999] mt-1">E-Mail des PayPal-Kontos, das Zahlungen empfängt</p>
@@ -2399,19 +2399,19 @@ export function Admin({ onClose }: AdminProps) {
                     <Label htmlFor="stripe_pub">Publishable Key (pk_...)</Label>
                     <Input id="stripe_pub" placeholder="pk_live_..." value={paySettings.stripe_publishable_key}
                       onChange={e => setPaySettings(p => ({ ...p, stripe_publishable_key: e.target.value }))}
-                      className="mt-1 bg-white font-mono text-sm" disabled={!paySettings.enable_stripe} />
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] font-mono text-sm" disabled={!paySettings.enable_stripe} />
                   </div>
                   <div>
                     <Label htmlFor="stripe_sec">Secret Key (sk_...)</Label>
                     <Input id="stripe_sec" type="password" placeholder="sk_live_..." value={paySettings.stripe_secret_key}
                       onChange={e => setPaySettings(p => ({ ...p, stripe_secret_key: e.target.value }))}
-                      className="mt-1 bg-white font-mono text-sm" disabled={!paySettings.enable_stripe} />
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] font-mono text-sm" disabled={!paySettings.enable_stripe} />
                   </div>
                   <div>
                     <Label htmlFor="stripe_wh">Webhook Secret (whsec_...)</Label>
                     <Input id="stripe_wh" type="password" placeholder="whsec_..." value={paySettings.stripe_webhook_secret}
                       onChange={e => setPaySettings(p => ({ ...p, stripe_webhook_secret: e.target.value }))}
-                      className="mt-1 bg-white font-mono text-sm" disabled={!paySettings.enable_stripe} />
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] font-mono text-sm" disabled={!paySettings.enable_stripe} />
                     <p className="text-xs text-[#999] mt-1">Zu finden im Stripe Dashboard → Webhooks</p>
                   </div>
                 </CardContent>
@@ -2433,7 +2433,7 @@ export function Admin({ onClose }: AdminProps) {
                     <Label htmlFor="twint_phone">TWINT Telefonnummer</Label>
                     <Input id="twint_phone" placeholder="+41 79 123 45 67" value={paySettings.twint_phone}
                       onChange={e => setPaySettings(p => ({ ...p, twint_phone: e.target.value }))}
-                      className="mt-1 bg-white" disabled={!paySettings.enable_twint} />
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]" disabled={!paySettings.enable_twint} />
                     <p className="text-xs text-[#999] mt-1">Diese Nummer wird dem Kunden beim Checkout angezeigt</p>
                   </div>
                 </CardContent>
@@ -2467,7 +2467,7 @@ export function Admin({ onClose }: AdminProps) {
                       placeholder="Max Mustermann / Firmenname"
                       value={paySettings.bank_holder}
                       onChange={e => setPaySettings(p => ({ ...p, bank_holder: e.target.value }))}
-                      className="mt-1 bg-white"
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                     />
                   </div>
                   <div>
@@ -2477,7 +2477,7 @@ export function Admin({ onClose }: AdminProps) {
                       placeholder="Raiffeisen / PostFinance / UBS …"
                       value={paySettings.bank_name}
                       onChange={e => setPaySettings(p => ({ ...p, bank_name: e.target.value }))}
-                      className="mt-1 bg-white"
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                     />
                   </div>
                   <div>
@@ -2487,7 +2487,7 @@ export function Admin({ onClose }: AdminProps) {
                       placeholder="CH56 0483 5012 3456 7800 9"
                       value={paySettings.bank_iban}
                       onChange={e => setPaySettings(p => ({ ...p, bank_iban: e.target.value }))}
-                      className="mt-1 bg-white font-mono"
+                      className="mt-1 bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] font-mono"
                     />
                     <p className="text-xs text-[#999] mt-1">Wird dem Kunden bei Kauf auf Rechnung / Vorkasse angezeigt</p>
                   </div>
@@ -2520,8 +2520,8 @@ export function Admin({ onClose }: AdminProps) {
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-1 h-8 bg-[#8B5E3C] rounded-full" />
                 <div>
-                  <h2 className="text-2xl font-black text-[#1A1A1A]">Versandkosten</h2>
-                  <p className="text-sm text-[#888]">Preis pro Zone und Gewicht in CHF. 0 = kostenlos.</p>
+                  <h2 className="text-2xl font-black text-[#1A1A1A] dark:text-[#FAF7F4]">Versandkosten</h2>
+                  <p className="text-sm text-[#888] dark:text-[#A89070]">Preis pro Zone und Gewicht in CHF. 0 = kostenlos.</p>
                 </div>
               </div>
 
@@ -2575,15 +2575,15 @@ export function Admin({ onClose }: AdminProps) {
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             {shippingRanges.map(range => (
                               <div key={range.id} className="flex flex-col gap-1">
-                                <label className="text-xs font-semibold text-[#555]">{range.label}</label>
+                                <label className="text-xs font-semibold text-[#555] dark:text-[#D4C0A0]">{range.label}</label>
                                 <div className="flex items-center gap-1">
                                   <Input
                                     type="number" step="0.01" min="0"
                                     value={getRate(zone.id, range.id)}
-                                    className="bg-white text-sm"
+                                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] text-sm"
                                     onChange={e => setRate(zone.id, range.id, parseFloat(e.target.value) || 0)}
                                   />
-                                  <span className="text-xs text-[#888] whitespace-nowrap">CHF</span>
+                                  <span className="text-xs text-[#888] dark:text-[#A89070] whitespace-nowrap">CHF</span>
                                 </div>
                               </div>
                             ))}
@@ -2612,8 +2612,8 @@ export function Admin({ onClose }: AdminProps) {
           <TabsContent value="anuncios">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-black text-[#1A1A1A]">Anzeigen & Aktionen</h2>
-                <p className="text-sm text-[#888] mt-0.5">Anzeigen verwalten, die beim Öffnen der Website erscheinen</p>
+                <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4]">Anzeigen & Aktionen</h2>
+                <p className="text-sm text-[#888] dark:text-[#A89070] mt-0.5">Anzeigen verwalten, die beim Öffnen der Website erscheinen</p>
               </div>
               <Button onClick={() => openAnnModal()} className="bg-[#8B5E3C] hover:bg-[#6B4A2F] text-white rounded-xl gap-2">
                 <Plus className="w-4 h-4" />
@@ -2632,7 +2632,7 @@ export function Admin({ onClose }: AdminProps) {
             ) : (
               <div className="space-y-3">
                 {announcements.map(ann => (
-                  <div key={ann.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-white border border-[#EBEBEB] rounded-2xl shadow-sm">
+                  <div key={ann.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] rounded-2xl shadow-sm">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className={`shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wide ${ann.type === 'product' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'}`}>
                         {ann.type === 'product' ? 'Produkt' : 'Allgemein'}
@@ -2641,8 +2641,8 @@ export function Admin({ onClose }: AdminProps) {
                         <img src={ann.image1_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#EBEBEB]" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-[#1A1A1A] truncate">{ann.title}</p>
-                        <p className="text-xs text-[#888] mt-0.5">
+                        <p className="font-bold text-[#1A1A1A] dark:text-[#FAF7F4] truncate">{ann.title}</p>
+                        <p className="text-xs text-[#888] dark:text-[#A89070] mt-0.5">
                           {ann.subtitle && <span className="mr-2">{ann.subtitle}</span>}
                           {ann.show_once && <span className="bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-[10px] font-medium">Einmalig</span>}
                         </p>
@@ -2679,7 +2679,7 @@ export function Admin({ onClose }: AdminProps) {
         {/* Order Detail Modal */}
         {selectedOrder && (
           <Dialog open={isOrderModalOpen} onOpenChange={setIsOrderModalOpen}>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white">
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
               <DialogHeader>
                 <DialogTitle className="flex items-center space-x-2">
                   <Package className="w-6 h-6 text-gray-600" />
@@ -2755,7 +2755,7 @@ export function Admin({ onClose }: AdminProps) {
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
                             <h4 className="font-medium">{item.product_name}</h4>
-                            <div className="flex items-center gap-6 text-sm text-gray-700">
+                            <div className="flex items-center gap-6 text-sm text-gray-700 dark:text-[#D4C0A0]">
                               <span>{item.quantity}x</span>
                               <span>{Number.parseFloat(item.price.toString()).toFixed(2)} CHF</span>
                               <span className="font-semibold text-[#8B5E3C]">
@@ -2770,7 +2770,7 @@ export function Admin({ onClose }: AdminProps) {
                 </div>
               )}
 
-              <div className="pt-4 border-t mt-4">
+              <div className="pt-4 border-t dark:border-[#3a2010] mt-4">
                 <Button
                   onClick={() => downloadInvoicePDF(selectedOrder)}
                   className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full px-5 text-sm"
@@ -2785,13 +2785,13 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* Product Add/Edit Modal */}
         <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
-          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-2xl sm:h-auto sm:max-h-[80vh] sm:rounded-lg bg-white">
-            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-2xl sm:h-auto sm:max-h-[80vh] sm:rounded-lg bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-[#3a2010] shrink-0">
               <DialogTitle>{currentEditingProduct ? "Produkt bearbeiten" : "Produkt hinzufügen"}</DialogTitle>
             </DialogHeader>
 
             <form onSubmit={handleProductSubmit} className="flex flex-col flex-1 min-h-0">
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-white">
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-white dark:bg-[#1a0b04]">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Produktname *</Label>
@@ -2800,7 +2800,7 @@ export function Admin({ onClose }: AdminProps) {
                     name="name"
                     required
                     defaultValue={currentEditingProduct?.name || ""}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
                 <div>
@@ -2813,7 +2813,7 @@ export function Admin({ onClose }: AdminProps) {
                     min="0"
                     required
                     defaultValue={currentEditingProduct?.price || ""}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
               </div>
@@ -2828,7 +2828,7 @@ export function Admin({ onClose }: AdminProps) {
                     step="0.001"
                     min="0"
                     defaultValue={currentEditingProduct?.weight_kg ?? "0.500"}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                     placeholder="z.B. 0.350"
                   />
                 </div>
@@ -2841,7 +2841,7 @@ export function Admin({ onClose }: AdminProps) {
                   name="description"
                   rows={3}
                   defaultValue={currentEditingProduct?.description || ""}
-                  className="bg-white"
+                  className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                 />
               </div>
 
@@ -2849,10 +2849,10 @@ export function Admin({ onClose }: AdminProps) {
                 <div>
                   <Label htmlFor="category">Kategorie *</Label>
                   <Select name="category" defaultValue={currentEditingProduct?.category || ""} required>
-                    <SelectTrigger className="bg-white border-gray-300">
+                    <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
                       <SelectValue placeholder="Kategorie auswählen" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
                       {categories.map((cat) => (
                         <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
                       ))}
@@ -2868,7 +2868,7 @@ export function Admin({ onClose }: AdminProps) {
                     min="0"
                     required
                     defaultValue={currentEditingProduct?.stock || "0"}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
               </div>
@@ -2887,7 +2887,7 @@ export function Admin({ onClose }: AdminProps) {
                     min="0"
                     max="5"
                     defaultValue={currentEditingProduct?.rating || ""}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
               </div>
@@ -2900,7 +2900,7 @@ export function Admin({ onClose }: AdminProps) {
                     name="badge"
                     placeholder="z.B. Neue, Aktion"
                     defaultValue={currentEditingProduct?.badge || ""}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
                 <div>
@@ -2910,7 +2910,7 @@ export function Admin({ onClose }: AdminProps) {
                     name="origin"
                     placeholder="z.B. Pohl Force, Walther"
                     defaultValue={currentEditingProduct?.origin || ""}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
                 <div>
@@ -2920,7 +2920,7 @@ export function Admin({ onClose }: AdminProps) {
                     name="supplier"
                     placeholder="z.B. Airsoft, Böker"
                     defaultValue={currentEditingProduct?.supplier || ""}
-                    className="bg-white"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                   />
                 </div>
               </div>
@@ -2937,7 +2937,7 @@ export function Admin({ onClose }: AdminProps) {
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange(index)}
-                        className="bg-white"
+                        className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]"
                       />
                       {imagePreviews[index] && (
                         <div className="relative">
@@ -2971,8 +2971,8 @@ export function Admin({ onClose }: AdminProps) {
               </div>
 
             </div>
-            <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
-                <Button type="button" variant="outline" onClick={() => setIsProductModalOpen(false)} className="bg-white text-gray-700 hover:bg-gray-50">
+            <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 dark:border-[#3a2010] bg-white dark:bg-[#1a0b04] shrink-0">
+                <Button type="button" variant="outline" onClick={() => setIsProductModalOpen(false)} className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#D4C0A0] text-gray-700 hover:bg-gray-50 dark:hover:bg-[#3a1a08]">
                   Abbrechen
                 </Button>
                 <Button type="submit" className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full px-6">
@@ -3018,8 +3018,8 @@ export function Admin({ onClose }: AdminProps) {
         </Dialog>
 
         <Dialog open={isCategoryModalOpen} onOpenChange={(open) => { setIsCategoryModalOpen(open); if (!open) setEditingCategory(null) }}>
-          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-md sm:h-auto sm:max-h-[80vh] sm:rounded-lg bg-white">
-            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-md sm:h-auto sm:max-h-[80vh] sm:rounded-lg bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-[#3a2010] shrink-0">
               <DialogTitle>{editingCategory ? "Kategorie bearbeiten" : "Neue Kategorie erstellen"}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCategorySubmit} className="flex flex-col flex-1 min-h-0">
@@ -3033,7 +3033,7 @@ export function Admin({ onClose }: AdminProps) {
                     defaultValue={editingCategory?.name || ""}
                     key={editingCategory?.id ?? "new"}
                     placeholder="z.B. Rubs & Gewürze"
-                    className="bg-white h-12 text-base sm:h-10 sm:text-sm mt-1"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] h-12 text-base sm:h-10 sm:text-sm mt-1"
                   />
                   {!editingCategory && (
                     <p className="text-xs text-gray-400 mt-1">Der Slug wird automatisch generiert</p>
@@ -3051,12 +3051,12 @@ export function Admin({ onClose }: AdminProps) {
                     defaultValue={editingCategory?.description || ""}
                     key={(editingCategory?.id ?? "new") + "-desc"}
                     placeholder="Kurze Beschreibung der Kategorie..."
-                    className="bg-white text-base sm:text-sm mt-1"
+                    className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] text-base sm:text-sm mt-1"
                   />
                 </div>
               </div>
-              <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
-                <Button type="button" variant="outline" onClick={() => { setIsCategoryModalOpen(false); setEditingCategory(null) }} className="bg-white text-gray-700 hover:bg-gray-50">
+              <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 dark:border-[#3a2010] bg-white dark:bg-[#1a0b04] shrink-0">
+                <Button type="button" variant="outline" onClick={() => { setIsCategoryModalOpen(false); setEditingCategory(null) }} className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#D4C0A0] text-gray-700 hover:bg-gray-50 dark:hover:bg-[#3a1a08]">
                   Abbrechen
                 </Button>
                 <Button type="submit" className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full px-6">
@@ -3069,19 +3069,19 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* Delete Product Modal */}
         <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-          <DialogContent className="max-w-md bg-white">
+          <DialogContent className="max-w-md bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
             <DialogHeader>
               <DialogTitle>Löschen bestätigen</DialogTitle>
             </DialogHeader>
 
             <div className="py-4">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-[#D4C0A0]">
                 Sind Sie sicher, dass Sie dieses Produkt löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
               </p>
             </div>
 
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} className="bg-white text-gray-700 hover:bg-gray-50">
+              <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#D4C0A0] text-gray-700 hover:bg-gray-50 dark:hover:bg-[#3a1a08]">
                 Abbrechen
               </Button>
               <Button onClick={confirmDeleteProduct} className="bg-red-500 hover:bg-red-600 text-white">
@@ -3094,8 +3094,8 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Blog Post Modal ── */}
         <Dialog open={isBlogModalOpen} onOpenChange={open => { setIsBlogModalOpen(open); if (!open) setCurrentEditingPost(null) }}>
-          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-2xl sm:h-auto sm:max-h-[85vh] sm:rounded-lg bg-white">
-            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-2xl sm:h-auto sm:max-h-[85vh] sm:rounded-lg bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-[#3a2010] shrink-0">
               <DialogTitle>{currentEditingPost ? "Beitrag bearbeiten" : "Neuer Beitrag"}</DialogTitle>
             </DialogHeader>
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
@@ -3132,9 +3132,9 @@ export function Admin({ onClose }: AdminProps) {
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
                       {/* Upload file */}
-                      <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-[#D5D5D5] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
-                        <Upload className="w-4 h-4 text-[#AAA] mb-1" />
-                        <span className="text-[11px] text-[#AAA]">Datei hochladen</span>
+                      <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-[#D5D5D5] dark:border-[#3a2010] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
+                        <Upload className="w-4 h-4 text-[#AAA] dark:text-[#A89070] mb-1" />
+                        <span className="text-[11px] text-[#AAA] dark:text-[#A89070]">Datei hochladen</span>
                         <input type="file" accept="image/*" className="hidden" onChange={e => {
                           const file = e.target.files?.[0]; if (!file) return
                           const files = [...blogImageFiles]; files[i] = file; setBlogImageFiles(files)
@@ -3156,7 +3156,7 @@ export function Admin({ onClose }: AdminProps) {
                               const f = [...blogImageFiles]; f[i] = null; setBlogImageFiles(f)
                             }
                           }}
-                          className="h-20 text-xs px-3 border border-[#D5D5D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
+                          className="h-20 text-xs px-3 border border-[#D5D5D5] dark:border-[#3a2010] dark:bg-[#2D1206] dark:text-[#FAF7F4] dark:placeholder-[#A89070] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
                         />
                       </div>
                     </div>
@@ -3165,7 +3165,7 @@ export function Admin({ onClose }: AdminProps) {
               ))}
 
             </div>
-            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
+            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 dark:border-[#3a2010] bg-white dark:bg-[#1a0b04] shrink-0">
               <Button onClick={saveBlogPost} disabled={blogSaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl">
                 {blogSaving ? "Speichern..." : currentEditingPost ? "Aktualisieren" : "Veröffentlichen"}
               </Button>
@@ -3176,9 +3176,9 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Blog Delete Confirm ── */}
         <Dialog open={!!deleteBlogId} onOpenChange={open => { if (!open) setDeleteBlogId(null) }}>
-          <DialogContent className="max-w-sm bg-white">
+          <DialogContent className="max-w-sm bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
             <DialogHeader><DialogTitle>Beitrag löschen?</DialogTitle></DialogHeader>
-            <p className="text-sm text-[#666]">Dieser Beitrag wird dauerhaft gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
+            <p className="text-sm text-[#666] dark:text-[#D4C0A0]">Dieser Beitrag wird dauerhaft gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
             <div className="flex gap-3 pt-2">
               <Button variant="destructive" onClick={() => deleteBlogId && deleteBlogPost(deleteBlogId)} className="flex-1 rounded-xl">Löschen</Button>
               <Button variant="outline" onClick={() => setDeleteBlogId(null)} className="rounded-xl">Abbrechen</Button>
@@ -3188,8 +3188,8 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Gallery Add Modal ── */}
         <Dialog open={isGalleryModalOpen} onOpenChange={open => { setIsGalleryModalOpen(open) }}>
-          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-md sm:h-auto sm:max-h-[85vh] sm:rounded-lg bg-white">
-            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
+          <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 w-full max-w-full h-full max-h-full rounded-none flex flex-col overflow-hidden p-0 sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-md sm:h-auto sm:max-h-[85vh] sm:rounded-lg bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-[#3a2010] shrink-0">
               <DialogTitle>Bild hinzufügen</DialogTitle>
             </DialogHeader>
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
@@ -3200,7 +3200,7 @@ export function Admin({ onClose }: AdminProps) {
                   value={galleryForm.title}
                   onChange={e => setGalleryForm({ title: e.target.value })}
                   placeholder="z.B. Ledertasche handgemacht..."
-                  className="w-full h-12 px-3 border border-[#D5D5D5] rounded-xl text-base sm:h-10 sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C]"
+                  className="w-full h-12 px-3 border border-[#D5D5D5] dark:border-[#3a2010] dark:bg-[#2D1206] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] rounded-xl text-base sm:h-10 sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C]"
                 />
               </div>
 
@@ -3244,7 +3244,7 @@ export function Admin({ onClose }: AdminProps) {
                 )}
               </div>
             </div>
-            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 bg-white shrink-0">
+            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 dark:border-[#3a2010] bg-white dark:bg-[#1a0b04] shrink-0">
               <Button onClick={saveGalleryImage} disabled={gallerySaving} className="flex-1 bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl">
                 {gallerySaving ? "Speichern..." : "Hinzufügen"}
               </Button>
@@ -3255,9 +3255,9 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Gallery Delete Confirm ── */}
         <Dialog open={!!deleteGalleryId} onOpenChange={open => { if (!open) setDeleteGalleryId(null) }}>
-          <DialogContent className="max-w-sm bg-white">
+          <DialogContent className="max-w-sm bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
             <DialogHeader><DialogTitle>Bild löschen?</DialogTitle></DialogHeader>
-            <p className="text-sm text-[#666]">Dieses Bild wird dauerhaft gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
+            <p className="text-sm text-[#666] dark:text-[#D4C0A0]">Dieses Bild wird dauerhaft gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
             <div className="flex gap-3 pt-2">
               <Button variant="destructive" onClick={() => deleteGalleryId && deleteGalleryImage(deleteGalleryId)} className="flex-1 rounded-xl">Löschen</Button>
               <Button variant="outline" onClick={() => setDeleteGalleryId(null)} className="rounded-xl">Abbrechen</Button>
@@ -3267,19 +3267,19 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Announcement Create/Edit Modal ── */}
         <Dialog open={isAnnModalOpen} onOpenChange={open => { setIsAnnModalOpen(open); if (!open) setEditingAnn(null) }}>
-          <DialogContent className="max-w-lg bg-white max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
+          <DialogContent className="max-w-lg bg-white dark:bg-[#1a0b04] dark:border-[#3a2010] max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>{editingAnn ? "Anzeige bearbeiten" : "Neue Anzeige erstellen"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-5 pt-2">
               <div>
-                <Label className="text-sm font-semibold mb-2 block">Typ</Label>
+                <Label className="text-sm font-semibold mb-2 block dark:text-[#FAF7F4]">Typ</Label>
                 <div className="grid grid-cols-2 gap-3">
                   {(['general', 'product'] as const).map(t => (
                     <button
                       key={t}
                       onClick={() => setAnnForm(f => ({ ...f, type: t }))}
-                      className={`p-3 rounded-xl border-2 text-sm font-semibold flex flex-col items-center gap-1.5 transition-all ${annForm.type === t ? 'border-[#8B5E3C] bg-[#8B5E3C]/5 text-[#8B5E3C]' : 'border-[#E5E5E5] text-[#888] hover:border-[#CCC]'}`}
+                      className={`p-3 rounded-xl border-2 text-sm font-semibold flex flex-col items-center gap-1.5 transition-all ${annForm.type === t ? 'border-[#8B5E3C] bg-[#8B5E3C]/5 text-[#8B5E3C]' : 'border-[#E5E5E5] dark:border-[#3a2010] text-[#888] dark:text-[#A89070] hover:border-[#CCC] dark:hover:border-[#5a3020]'}`}
                     >
                       {t === 'general' ? <Bell className="w-5 h-5" /> : <Package className="w-5 h-5" />}
                       {t === 'general' ? 'Allgemeine Anzeige' : 'Produktaktion'}
@@ -3289,30 +3289,30 @@ export function Admin({ onClose }: AdminProps) {
               </div>
 
               <div>
-                <Label className="text-sm font-semibold mb-1.5 block">Titel *</Label>
-                <Input value={annForm.title} onChange={e => setAnnForm(f => ({ ...f, title: e.target.value }))} placeholder={annForm.type === 'product' ? "z.B. NEU: Habanero Gold Sauce" : "z.B. Sommerferien – wir sind zurück!"} className="rounded-xl" />
+                <Label className="text-sm font-semibold mb-1.5 block dark:text-[#FAF7F4]">Titel *</Label>
+                <Input value={annForm.title} onChange={e => setAnnForm(f => ({ ...f, title: e.target.value }))} placeholder={annForm.type === 'product' ? "z.B. NEU: Habanero Gold Sauce" : "z.B. Sommerferien – wir sind zurück!"} className="rounded-xl dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]" />
               </div>
 
               <div>
-                <Label className="text-sm font-semibold mb-1.5 block">Untertitel (optional)</Label>
-                <Textarea value={annForm.subtitle} onChange={e => setAnnForm(f => ({ ...f, subtitle: e.target.value }))} placeholder={annForm.type === 'product' ? "z.B. Jetzt 10% Rabatt sichern – nur für kurze Zeit!" : "z.B. Wir sind wieder da mit neuen heissen Produkten."} className="rounded-xl resize-none" rows={3} />
+                <Label className="text-sm font-semibold mb-1.5 block dark:text-[#FAF7F4]">Untertitel (optional)</Label>
+                <Textarea value={annForm.subtitle} onChange={e => setAnnForm(f => ({ ...f, subtitle: e.target.value }))} placeholder={annForm.type === 'product' ? "z.B. Jetzt 10% Rabatt sichern – nur für kurze Zeit!" : "z.B. Wir sind wieder da mit neuen heissen Produkten."} className="rounded-xl resize-none dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]" rows={3} />
               </div>
 
               {annForm.type === 'product' && (
                 <div>
-                  <Label className="text-sm font-semibold mb-1.5 block">Produkt-URL</Label>
-                  <Input value={annForm.product_url} onChange={e => setAnnForm(f => ({ ...f, product_url: e.target.value }))} placeholder="https://..." className="rounded-xl" />
-                  <p className="text-xs text-[#AAA] mt-1">Wird als «Produkt ansehen»-Button angezeigt</p>
+                  <Label className="text-sm font-semibold mb-1.5 block dark:text-[#FAF7F4]">Produkt-URL</Label>
+                  <Input value={annForm.product_url} onChange={e => setAnnForm(f => ({ ...f, product_url: e.target.value }))} placeholder="https://..." className="rounded-xl dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070]" />
+                  <p className="text-xs text-[#AAA] dark:text-[#A89070] mt-1">Wird als «Produkt ansehen»-Button angezeigt</p>
                 </div>
               )}
 
               {(annForm.type === 'general' ? [0, 1] : [0]).map(i => (
                 <div key={i}>
-                  <Label className="text-sm font-semibold mb-1.5 flex items-center gap-1.5 block">
+                  <Label className="text-sm font-semibold mb-1.5 flex items-center gap-1.5 block dark:text-[#FAF7F4]">
                     <ImageIcon className="w-3.5 h-3.5" /> {i === 0 ? 'Bild 1' : 'Bild 2'} {i === 0 && annForm.type === 'product' ? '' : '(optional)'}
                   </Label>
                   {(annImagePreviews[i] && !annRemovedImages[i]) ? (
-                    <div className="relative w-full h-36 rounded-xl overflow-hidden border border-[#E5E5E5]">
+                    <div className="relative w-full h-36 rounded-xl overflow-hidden border border-[#E5E5E5] dark:border-[#3a2010]">
                       <img src={annImagePreviews[i]!} alt="" className="w-full h-full object-cover" />
                       <button
                         onClick={() => {
@@ -3326,9 +3326,9 @@ export function Admin({ onClose }: AdminProps) {
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
-                      <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-[#D5D5D5] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
-                        <Upload className="w-4 h-4 text-[#AAA] mb-1" />
-                        <span className="text-[11px] text-[#AAA]">Datei hochladen</span>
+                      <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-[#D5D5D5] dark:border-[#3a2010] rounded-xl cursor-pointer hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors">
+                        <Upload className="w-4 h-4 text-[#AAA] dark:text-[#A89070] mb-1" />
+                        <span className="text-[11px] text-[#AAA] dark:text-[#A89070]">Datei hochladen</span>
                         <input type="file" accept="image/*" className="hidden" onChange={e => {
                           const file = e.target.files?.[0]; if (!file) return
                           const files: [File|null,File|null] = [...annImageFiles] as [File|null,File|null]; files[i] = file; setAnnImageFiles(files)
@@ -3349,7 +3349,7 @@ export function Admin({ onClose }: AdminProps) {
                               const f: [File|null,File|null] = [...annImageFiles] as [File|null,File|null]; f[i] = null; setAnnImageFiles(f)
                             }
                           }}
-                          className="h-20 text-xs px-3 border border-[#D5D5D5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
+                          className="h-20 text-xs px-3 border border-[#D5D5D5] dark:border-[#3a2010] dark:bg-[#2D1206] dark:text-[#FAF7F4] dark:placeholder-[#A89070] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 focus:border-[#8B5E3C] placeholder-[#CCC]"
                         />
                       </div>
                     </div>
@@ -3357,7 +3357,7 @@ export function Admin({ onClose }: AdminProps) {
                 </div>
               ))}
 
-              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-[#E5E5E5] hover:border-[#CCC] transition-colors">
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-[#E5E5E5] dark:border-[#3a2010] hover:border-[#CCC] dark:hover:border-[#5a3020] transition-colors">
                 <input
                   type="checkbox"
                   checked={annForm.show_once}
@@ -3365,8 +3365,8 @@ export function Admin({ onClose }: AdminProps) {
                   className="w-4 h-4 accent-[#8B5E3C]"
                 />
                 <div>
-                  <p className="text-sm font-semibold text-[#1A1A1A]">Nur einmal anzeigen</p>
-                  <p className="text-xs text-[#888]">Nutzer sehen die Anzeige nur beim ersten Besuch</p>
+                  <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF7F4]">Nur einmal anzeigen</p>
+                  <p className="text-xs text-[#888] dark:text-[#A89070]">Nutzer sehen die Anzeige nur beim ersten Besuch</p>
                 </div>
               </label>
 
@@ -3382,10 +3382,10 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Ship Confirm ── */}
         <Dialog open={!!shipConfirmOrder} onOpenChange={open => { if (!open) setShipConfirmOrder(null) }}>
-          <DialogContent className="max-w-sm bg-white">
+          <DialogContent className="max-w-sm bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
             <DialogHeader><DialogTitle>📦 Versandbestätigung senden?</DialogTitle></DialogHeader>
-            <p className="text-sm text-[#666]">
-              Es wird eine E-Mail an <span className="font-semibold text-[#1A1A1A]">{shipConfirmOrder?.customer_email}</span> gesendet, um zu bestätigen, dass die Bestellung auf dem Weg ist.
+            <p className="text-sm text-[#666] dark:text-[#D4C0A0]">
+              Es wird eine E-Mail an <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF7F4]">{shipConfirmOrder?.customer_email}</span> gesendet, um zu bestätigen, dass die Bestellung auf dem Weg ist.
             </p>
             <div className="flex gap-3 pt-2">
               <Button
@@ -3401,9 +3401,9 @@ export function Admin({ onClose }: AdminProps) {
 
         {/* ── Announcement Delete Confirm ── */}
         <Dialog open={!!deleteAnnId} onOpenChange={open => { if (!open) setDeleteAnnId(null) }}>
-          <DialogContent className="max-w-sm bg-white">
+          <DialogContent className="max-w-sm bg-white dark:bg-[#1a0b04] dark:border-[#3a2010]">
             <DialogHeader><DialogTitle>Anzeige löschen?</DialogTitle></DialogHeader>
-            <p className="text-sm text-[#666]">Diese Anzeige wird dauerhaft gelöscht.</p>
+            <p className="text-sm text-[#666] dark:text-[#D4C0A0]">Diese Anzeige wird dauerhaft gelöscht.</p>
             <div className="flex gap-3 pt-2">
               <Button variant="destructive" onClick={() => deleteAnnId && deleteAnnouncement(deleteAnnId)} className="flex-1 rounded-xl">Löschen</Button>
               <Button variant="outline" onClick={() => setDeleteAnnId(null)} className="rounded-xl">Abbrechen</Button>

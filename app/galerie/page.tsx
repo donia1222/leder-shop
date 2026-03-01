@@ -89,10 +89,10 @@ export default function GaleriePage() {
   }, [lightbox])
 
   return (
-    <div className="min-h-screen bg-[#FAF7F4]">
+    <div className="min-h-screen bg-[#FAF7F4] dark:bg-[#120804]">
 
       {/* ── Header ── */}
-      <div className="sticky top-0 z-40 bg-white border-b border-[#E0E0E0]">
+      <div className="sticky top-0 z-40 bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010]">
         <div className="container mx-auto px-4 h-16 flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
@@ -103,9 +103,9 @@ export default function GaleriePage() {
           <div className="w-px h-6 bg-[#E0E0E0]" />
           <div
             className="px-3 py-1.5 rounded-xl"
-            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
           >
-            <div className="font-black text-[#2D1206] text-base leading-tight tracking-tight">Galerie</div>
+            <div className="font-black text-[#2D1206] dark:text-[#C49A6C] text-base leading-tight tracking-tight">Galerie</div>
           </div>
         </div>
       </div>

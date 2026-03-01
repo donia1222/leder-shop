@@ -48,14 +48,12 @@ export function MarqueeBanner() {
 
   return (
     <div
-      className="w-full overflow-hidden border-y border-[#E8D9C8] bg-[#FAF7F4] relative"
+      className="w-full overflow-hidden border-y border-[#E8D9C8] dark:border-[#3a2010] bg-[#FAF7F4] dark:bg-[#120804] relative"
       style={{ height: "44px" }}
     >
       {/* Fade edges */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to right, #FAF7F4, transparent)" }} />
-      <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to left, #FAF7F4, transparent)" }} />
+      <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-[#FAF7F4] dark:from-[#120804] to-transparent" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-[#FAF7F4] dark:from-[#120804] to-transparent" />
 
       {/* Scrolling track */}
       <div
@@ -67,7 +65,7 @@ export function MarqueeBanner() {
       >
         {repeated.map((item, i) => (
           <span key={i} className="flex items-center gap-3 px-6 whitespace-nowrap">
-            <span className="text-[11px] font-black uppercase tracking-[0.22em] text-[#2D1206]">
+            <span className="text-[11px] font-black uppercase tracking-[0.22em] text-[#2D1206] dark:text-[#C49A6C]">
               {item.text}
             </span>
             {SEPARATORS[i % SEPARATORS.length]}

@@ -92,25 +92,25 @@ export function CategoryPreviewSection() {
   }, [])
 
   if (loading) return (
-    <div className="bg-[#F5EDE0] border-t border-[#E0E0E0] py-12">
+    <div className="bg-[#F5EDE0] dark:bg-[#120804] border-t border-[#E0E0E0] dark:border-[#3a2010] py-12">
       <div className="container mx-auto px-4 space-y-6">
         {[0, 1].map(i => (
-          <div key={i} className="rounded-3xl overflow-hidden bg-white border border-[#EBEBEB] shadow-sm animate-pulse">
-            <div className="h-[280px] bg-gray-200" />
+          <div key={i} className="rounded-3xl overflow-hidden bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm animate-pulse">
+            <div className="h-[280px] bg-gray-200 dark:bg-[#3a1a08]" />
             <div className="p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {Array.from({ length: 6 }).map((_, j) => (
-                <div key={j} className="rounded-2xl overflow-hidden border border-gray-100">
-                  <div className="aspect-square bg-gray-100" />
+                <div key={j} className="rounded-2xl overflow-hidden border border-gray-100 dark:border-[#3a2010]">
+                  <div className="aspect-square bg-gray-100 dark:bg-[#3a1a08]" />
                   <div className="p-3 space-y-2">
-                    <div className="h-3 bg-gray-100 rounded-full w-5/6" />
-                    <div className="h-3 bg-gray-100 rounded-full w-3/4" />
-                    <div className="h-4 bg-gray-200 rounded-full w-1/2" />
+                    <div className="h-3 bg-gray-100 dark:bg-[#3a1a08] rounded-full w-5/6" />
+                    <div className="h-3 bg-gray-100 dark:bg-[#3a1a08] rounded-full w-3/4" />
+                    <div className="h-4 bg-gray-200 dark:bg-[#3a2010] rounded-full w-1/2" />
                   </div>
                 </div>
               ))}
             </div>
             <div className="px-5 pb-5">
-              <div className="h-12 bg-gray-100 rounded-xl" />
+              <div className="h-12 bg-gray-100 dark:bg-[#3a1a08] rounded-xl" />
             </div>
           </div>
         ))}

@@ -51,38 +51,39 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    /* Warm dark brown palette — Leder-Shop */
+    --background: 20 74% 7%;
+    --foreground: 30 40% 94%;
+    --card: 20 60% 11%;
+    --card-foreground: 30 40% 94%;
+    --popover: 20 60% 11%;
+    --popover-foreground: 30 40% 94%;
+    --primary: 30 43% 59%;
+    --primary-foreground: 20 74% 7%;
+    --secondary: 20 50% 17%;
+    --secondary-foreground: 30 40% 94%;
+    --muted: 20 45% 15%;
+    --muted-foreground: 30 25% 62%;
+    --accent: 26 41% 28%;
+    --accent-foreground: 30 40% 94%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 20 40% 19%;
+    --input: 20 40% 19%;
+    --ring: 30 43% 59%;
+    --chart-1: 30 70% 55%;
+    --chart-2: 26 58% 45%;
+    --chart-3: 20 80% 40%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 20 74% 7%;
+    --sidebar-foreground: 30 40% 94%;
+    --sidebar-primary: 30 43% 59%;
+    --sidebar-primary-foreground: 20 74% 7%;
+    --sidebar-accent: 20 50% 17%;
+    --sidebar-accent-foreground: 30 40% 94%;
+    --sidebar-border: 20 40% 19%;
+    --sidebar-ring: 30 43% 59%;
   }
 }
 
@@ -92,5 +93,15 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* CSS variable for dashed box inner ring — transparent in dark mode */
+:root { --box-inset: rgba(255,255,255,0.7); }
+.dark { --box-inset: transparent; }

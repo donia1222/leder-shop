@@ -18,6 +18,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { X } from "lucide-react"
 import { CulinaryInspiration } from "@/components/culinary-inspiration"
 import { HandwerkSection } from "@/components/handwerk-section"
+import { SplashScreen } from "@/components/splash-screen"
 import { PairingSuggestions } from "@/components/pairing-suggestions"
 
 interface Announcement {
@@ -376,6 +377,7 @@ function PremiumHotSauceStoreInner() {
         </Dialog>
       )}
 
+      <SplashScreen />
       <Header onCartOpen={() => setIsCartOpen(true)} cartCount={getTotalItems()} />
 
       <HeroSection />

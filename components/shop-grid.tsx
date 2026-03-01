@@ -5,7 +5,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import {
   ShoppingCart, ChevronLeft, ChevronRight,
   Search, X, Check, LayoutGrid,
-  ArrowUp, ChevronDown, Heart, Menu, Newspaper, Download, Images
+  ArrowUp, ChevronDown, Heart, Menu, Newspaper, Download, Images, Sun, Moon
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ShoppingCartComponent } from "./shopping-cart"
@@ -13,6 +13,7 @@ import { CheckoutPage } from "@/components/checkout-page"
 import { LoginAuth } from "./login-auth"
 import { ProductImage } from "./product-image"
 import { UserProfile } from "./user-profile"
+import { useTheme } from "next-themes"
 
 const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
@@ -88,10 +89,10 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
   const isWished = wishlist.has(product.id)
 
   return (
-    <div className="group bg-white rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border border-[#EBEBEB] hover:border-[#D5D5D5]">
+    <div className="group bg-white dark:bg-[#2D1206] rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border border-[#EBEBEB] dark:border-[#3a2010] hover:border-[#D5D5D5] dark:hover:border-[#5a3020]">
       {/* Image */}
       <div
-        className="relative aspect-square bg-[#F8F5F2] overflow-hidden cursor-pointer"
+        className="relative aspect-square bg-[#F8F5F2] dark:bg-[#1a0b04] overflow-hidden cursor-pointer"
         onClick={() => onSelect(product)}
       >
         {images.length > 0 ? (
@@ -122,15 +123,15 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
           <>
             <button
               onClick={e => { e.stopPropagation(); setIdx(i => (i - 1 + images.length) % images.length) }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#2D1206]/90 backdrop-blur-sm rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"
             >
-              <ChevronLeft className="w-3.5 h-3.5 text-[#333]" />
+              <ChevronLeft className="w-3.5 h-3.5 text-[#333] dark:text-[#D4C0A0]" />
             </button>
             <button
               onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % images.length) }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#2D1206]/90 backdrop-blur-sm rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md"
             >
-              <ChevronRight className="w-3.5 h-3.5 text-[#333]" />
+              <ChevronRight className="w-3.5 h-3.5 text-[#333] dark:text-[#D4C0A0]" />
             </button>
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
               {images.map((_, i) => (
@@ -157,8 +158,8 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
           className={`absolute top-2 right-2 rounded-full flex items-center justify-center transition-all duration-200
             w-6 h-6 sm:w-8 sm:h-8
             ${isWished
-              ? "bg-red-500 text-white shadow-md"
-              : "bg-white/80 text-[#DDD] shadow-sm hover:text-red-400 hover:scale-110"
+              ? "bg-red-500 text-white shadow-md scale-110"
+              : "bg-white/90 dark:bg-black/50 text-[#AAA] dark:text-[#C49A6C] shadow-sm hover:text-red-500 dark:hover:text-red-400 hover:scale-110"
             }`}
         >
           <Heart className={`w-4 h-4 ${isWished ? "fill-current" : ""}`} />
@@ -167,17 +168,17 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
 
       {/* Details */}
       <div className="p-3.5 flex flex-col flex-1 gap-1.5">
-        <p className="text-[10px] font-bold text-[#BBBBBB] uppercase tracking-widest truncate">
+        <p className="text-[10px] font-bold text-[#BBBBBB] dark:text-[#A89070] uppercase tracking-widest truncate">
           {product.supplier || product.origin || "—"}
         </p>
         <h3
-          className="text-sm font-bold text-[#1A1A1A] line-clamp-2 leading-snug cursor-pointer hover:text-[#8B5E3C] transition-colors"
+          className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF7F4] line-clamp-2 leading-snug cursor-pointer hover:text-[#8B5E3C] dark:hover:text-[#C49A6C] transition-colors"
           onClick={() => onSelect(product)}
         >
           {product.name}
         </h3>
-        <div className="mt-auto pt-2.5 flex items-center justify-between gap-2 border-t border-[#F5F5F5]">
-          <span className="text-base font-black text-[#1A1A1A] tracking-tight">CHF {product.price.toFixed(2)}</span>
+        <div className="mt-auto pt-2.5 flex items-center justify-between gap-2 border-t border-[#F5F5F5] dark:border-[#3a2010]">
+          <span className="text-base font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">CHF {product.price.toFixed(2)}</span>
           <button
             onClick={(e) => { onAddToCart(product); if (inStock) flyToCart(e.currentTarget) }}
             disabled={!inStock}
@@ -185,10 +186,10 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
               isAdded
                 ? "bg-[#2D1206] text-white border-2 border-dashed border-[#8B5E3C]"
                 : inStock
-                  ? "bg-transparent text-[#2D1206] hover:bg-[#F5EDE0] active:scale-95"
+                  ? "bg-transparent text-[#2D1206] dark:text-[#C49A6C] hover:bg-[#F5EDE0] dark:hover:bg-[#3a1a08] active:scale-95"
                   : "text-[#CCC] cursor-not-allowed border-2 border-dashed border-[#DDD]"
             }`}
-            style={inStock && !isAdded ? { border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 2px #FAF7F4" } : {}}
+            style={inStock && !isAdded ? { border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 2px var(--box-inset)" } : {}}
           >
             {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingCart className="w-3.5 h-3.5 text-[#8B5E3C]" />}
             {isAdded ? "✓" : "Kaufen"}
@@ -368,6 +369,9 @@ export default function ShopGrid() {
 
   const PAGE_SIZE = 20
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const [cart, setCart]           = useState<CartItem[]>([])
   const [cartOpen, setCartOpen]   = useState(false)
@@ -537,17 +541,17 @@ export default function ShopGrid() {
   }
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f7f8]">
+      <div className="min-h-screen bg-[#f7f7f8] dark:bg-[#120804]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm animate-pulse">
-                <div className="aspect-square bg-gray-100" />
+              <div key={i} className="bg-white dark:bg-[#2D1206] rounded-2xl overflow-hidden border border-gray-100 dark:border-[#3a2010] shadow-sm animate-pulse">
+                <div className="aspect-square bg-gray-100 dark:bg-[#3a1a08]" />
                 <div className="p-3.5 space-y-2">
-                  <div className="h-3 bg-gray-100 rounded-full w-1/2" />
-                  <div className="h-4 bg-gray-100 rounded-full w-5/6" />
-                  <div className="h-3 bg-gray-100 rounded-full w-3/4" />
-                  <div className="h-8 bg-gray-100 rounded-xl mt-2" />
+                  <div className="h-3 bg-gray-100 dark:bg-[#3a1a08] rounded-full w-1/2" />
+                  <div className="h-4 bg-gray-100 dark:bg-[#3a1a08] rounded-full w-5/6" />
+                  <div className="h-3 bg-gray-100 dark:bg-[#3a1a08] rounded-full w-3/4" />
+                  <div className="h-8 bg-gray-100 dark:bg-[#3a1a08] rounded-xl mt-2" />
                 </div>
               </div>
             ))}
@@ -558,10 +562,10 @@ export default function ShopGrid() {
   }
   if (error) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-[#120804] flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-500 font-semibold mb-3">{error}</p>
-          <button onClick={loadProducts} className="text-sm font-medium text-gray-600 underline">Erneut versuchen</button>
+          <button onClick={loadProducts} className="text-sm font-medium text-gray-600 dark:text-[#D4C0A0] underline">Erneut versuchen</button>
         </div>
       </div>
     )
@@ -589,36 +593,44 @@ export default function ShopGrid() {
       {showBackTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-5 z-40 bg-white hover:bg-gray-50 text-gray-700 rounded-2xl p-3 shadow-xl border border-gray-200 transition-all hover:scale-110 active:scale-95"
+          className="fixed bottom-6 right-5 z-40 bg-white dark:bg-[#2D1206] hover:bg-gray-50 dark:hover:bg-[#3a1a08] text-gray-700 dark:text-[#D4C0A0] rounded-2xl p-3 shadow-xl border border-gray-200 dark:border-[#3a2010] transition-all hover:scale-110 active:scale-95"
         >
           <ArrowUp className="w-5 h-5" />
         </button>
       )}
 
 
-<div className="min-h-screen bg-[#f7f7f8]">
+<div className="min-h-screen bg-[#f7f7f8] dark:bg-[#120804]">
 
         {/* ── Top bar ── */}
-        <div className="bg-white border-b border-[#E0E0E0] sticky top-0 z-30 shadow-sm">
+        <div className="bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010] sticky top-0 z-30 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
 
             {/* Mobile: Hamburger side menu */}
             <Sheet open={navMenuOpen} onOpenChange={setNavMenuOpen}>
               <SheetTrigger asChild>
-                <button className="lg:hidden p-2 border border-[#E0E0E0] rounded hover:bg-[#F5F5F5] flex-shrink-0">
-                  <Menu className="w-5 h-5 text-[#333]" />
+                <button className="lg:hidden p-2 border border-[#E0E0E0] dark:border-[#3a2010] rounded hover:bg-[#F5F5F5] dark:hover:bg-[#2D1206] flex-shrink-0">
+                  <Menu className="w-5 h-5 text-[#333] dark:text-[#D4C0A0]" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-full sm:w-72 bg-white p-0 flex flex-col h-full [&>button]:border-2 [&>button]:border-dashed [&>button]:border-[#8B5E3C] [&>button]:rounded-lg [&>button]:text-[#2D1206] [&>button]:opacity-100">
-                <div className="bg-[#F5EDE0] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8]">
+              <SheetContent side="left" className="w-full sm:w-72 bg-white dark:bg-[#1a0b04] p-0 flex flex-col h-full [&>button]:border-2 [&>button]:border-dashed [&>button]:border-[#8B5E3C] [&>button]:rounded-lg [&>button]:text-[#2D1206] dark:[&>button]:text-[#FAF7F4] [&>button]:opacity-100">
+                <div className="bg-[#F5EDE0] dark:bg-[#2D1206] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8] dark:border-[#3a2010]">
                   <div
                     className="flex flex-col px-3 py-1.5 rounded-xl"
-                    style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #F5EDE0, 0 0 0 1px #C49A6C33" }}
+                    style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
                   >
-                    <div className="font-black text-[#2D1206] text-sm leading-none">Leder-Shop</div>
-                    <div className="text-[#8B5E3C] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
+                    <div className="font-black text-[#2D1206] dark:text-[#C49A6C] text-sm leading-none">Leder-Shop</div>
+                    <div className="text-[#8B5E3C] dark:text-[#A07848] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
                   </div>
                   <div className="flex items-center gap-1">
+                    {mounted && (
+                      <button
+                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                        className="p-2 rounded-lg hover:bg-[#E8D9C8] dark:hover:bg-[#3a1a08] text-[#2D1206] dark:text-[#C49A6C] transition-colors"
+                      >
+                        {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                      </button>
+                    )}
                     <div className="[&_span]:hidden flex items-center">
                       <LoginAuth
                         onLoginSuccess={() => {}}
@@ -630,22 +642,27 @@ export default function ShopGrid() {
                     </div>
                     <button
                       onClick={() => { setCartOpen(true); setNavMenuOpen(false) }}
-                      className="p-2 rounded-lg hover:bg-[#E8D9C8] text-[#2D1206] relative"
+                      className="p-2 rounded-lg hover:bg-[#E8D9C8] dark:hover:bg-[#3a1a08] text-[#2D1206] dark:text-[#C49A6C] relative"
                     >
                       <ShoppingCart className="w-5 h-5" />
+                      {cartCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 bg-[#C49A6C] text-[#2D1206] text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                          {cartCount > 9 ? "9+" : cartCount}
+                        </span>
+                      )}
                     </button>
                   </div>
                 </div>
                 <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
                   <button
                     onClick={() => { router.push("/"); setNavMenuOpen(false) }}
-                    className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] hover:text-[#8B5E3C] font-medium transition-colors ${pathname === "/" ? "bg-[#8B5E3C] text-white" : "text-[#333]"}`}
+                    className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#3a1a08] hover:text-[#8B5E3C] font-medium transition-colors ${pathname === "/" ? "bg-[#8B5E3C] text-white" : "text-[#333] dark:text-[#D4C0A0]"}`}
                   >
                     Home
                   </button>
                   <button
                     onClick={() => { setActiveCategory("all"); setNavMenuOpen(false) }}
-                    className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] hover:text-[#8B5E3C] font-medium transition-colors ${activeCategory === "all" ? "bg-[#8B5E3C] text-white" : "text-[#333]"}`}
+                    className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#3a1a08] hover:text-[#8B5E3C] font-medium transition-colors ${activeCategory === "all" ? "bg-[#8B5E3C] text-white" : "text-[#333] dark:text-[#D4C0A0]"}`}
                   >
                     Alle Produkte
                   </button>
@@ -653,32 +670,32 @@ export default function ShopGrid() {
                     <button
                       key={cat.slug}
                       onClick={() => { setActiveCategory(cat.slug); setNavMenuOpen(false) }}
-                      className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] hover:text-[#8B5E3C] font-medium transition-colors ${activeCategory === cat.slug ? "bg-[#8B5E3C] text-white" : "text-[#333]"}`}
+                      className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#3a1a08] hover:text-[#8B5E3C] font-medium transition-colors ${activeCategory === cat.slug ? "bg-[#8B5E3C] text-white" : "text-[#333] dark:text-[#D4C0A0]"}`}
                     >
                       {cat.name.replace(/\s*\d{4}$/, "")}
                     </button>
                   ))}
-                  <div className="pt-2 mt-1 border-t border-[#EDE0D4] space-y-0.5">
+                  <div className="pt-2 mt-1 border-t border-[#EDE0D4] dark:border-[#3a2010] flex gap-1">
                     <button
                       onClick={() => { router.push("/blog"); setNavMenuOpen(false) }}
-                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] text-[#8B5E3C] font-semibold"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] font-semibold"
                     >
                       <Newspaper className="w-4 h-4" />
                       Blog
                     </button>
                     <button
                       onClick={() => { router.push("/galerie"); setNavMenuOpen(false) }}
-                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] text-[#8B5E3C] font-semibold"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] font-semibold"
                     >
                       <Images className="w-4 h-4" />
                       Galerie
                     </button>
                     <button
                       onClick={() => { handleDownloadVCard(); setNavMenuOpen(false) }}
-                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] text-[#8B5E3C] font-semibold"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] font-semibold"
                     >
                       <Download className="w-4 h-4" />
-                      Digitale Visitenkarte
+                      Vcard
                     </button>
                   </div>
                 </nav>
@@ -686,12 +703,12 @@ export default function ShopGrid() {
             </Sheet>
 
             {/* Mobile: divider + page title (like blog header) */}
-            <div className="lg:hidden w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
+            <div className="lg:hidden w-px h-6 bg-[#E5E5E5] dark:bg-[#3a2010] flex-shrink-0" />
             <div
               className="lg:hidden px-3 py-1 rounded-lg flex-shrink-0"
-              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
             >
-              <span className="text-sm font-black text-[#2D1206]">Unsere Produkte</span>
+              <span className="text-sm font-black text-[#2D1206] dark:text-[#FAF7F4]">Unsere Produkte</span>
             </div>
 
             {/* Desktop: Home button */}
@@ -699,14 +716,14 @@ export default function ShopGrid() {
               onClick={() => router.push("/")}
               className="hidden lg:flex items-center gap-2 group flex-shrink-0"
             >
-              <div className="w-8 h-8 rounded-full border border-[#E5E5E5] group-hover:border-[#8B5E3C]/60 group-hover:bg-[#8B5E3C]/5 flex items-center justify-center transition-all">
-                <ChevronLeft className="w-4 h-4 text-[#555] group-hover:text-[#8B5E3C]" />
+              <div className="w-8 h-8 rounded-full border border-[#E5E5E5] dark:border-[#3a2010] group-hover:border-[#8B5E3C]/60 group-hover:bg-[#8B5E3C]/5 flex items-center justify-center transition-all">
+                <ChevronLeft className="w-4 h-4 text-[#555] dark:text-[#D4C0A0] group-hover:text-[#8B5E3C]" />
               </div>
               <div
                 className="px-3 py-1 rounded-lg"
-                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
               >
-                <span className="text-sm font-black text-[#2D1206]">Home</span>
+                <span className="text-sm font-black text-[#2D1206] dark:text-[#FAF7F4]">Home</span>
               </div>
             </button>
 
@@ -718,17 +735,17 @@ export default function ShopGrid() {
                 placeholder="Produkte suchen…"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 text-sm bg-[#F3F4F6] rounded-full border border-transparent focus:outline-none focus:bg-white focus:border-[#8B5E3C] focus:ring-2 focus:ring-[#8B5E3C]/10 transition-all placeholder-[#9CA3AF]"
+                className="w-full pl-10 pr-9 py-2.5 text-sm bg-[#F3F4F6] dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] rounded-full border border-transparent focus:outline-none focus:bg-white dark:focus:bg-[#1a0b04] focus:border-[#8B5E3C] focus:ring-2 focus:ring-[#8B5E3C]/10 transition-all placeholder-[#9CA3AF]"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AAA] hover:text-[#555]">
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AAA] hover:text-[#555] dark:hover:text-[#D4C0A0]">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
-            <span className="text-xs text-[#999] font-semibold hidden lg:block whitespace-nowrap">
-              <span className="text-[#1A1A1A] font-black">{filtered.length}</span> Produkte
+            <span className="text-xs text-[#999] dark:text-[#A89070] font-semibold hidden lg:block whitespace-nowrap">
+              <span className="text-[#1A1A1A] dark:text-[#FAF7F4] font-black">{filtered.length}</span> Produkte
             </span>
 
             {/* Right group: wishlist + login + cart */}
@@ -737,7 +754,7 @@ export default function ShopGrid() {
             {/* Wishlist icon — mobile only */}
             <button
               onClick={() => setShowWishlist(p => !p)}
-              className={`relative flex flex-col items-center p-2 rounded-xl transition-colors ${showWishlist ? "text-red-500 bg-red-50" : "text-[#555] hover:bg-[#F5F5F5]"}`}
+              className={`relative flex flex-col items-center p-2 rounded-xl transition-colors ${showWishlist ? "text-red-500 bg-red-50 dark:bg-red-950" : "text-[#555] dark:text-[#D4C0A0] hover:bg-[#F5F5F5] dark:hover:bg-[#2D1206]"}`}
             >
               <Heart className="w-6 h-6" />
               <span className="text-[10px] mt-0.5 leading-none hidden sm:block">Wunsch</span>
@@ -762,10 +779,10 @@ export default function ShopGrid() {
             {/* Cart icon */}
             <button
               onClick={() => setCartOpen(true)}
-              className="relative flex flex-col items-center p-2 hover:bg-[#F5F5F5] rounded-xl transition-colors"
+              className="relative flex flex-col items-center p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#2D1206] rounded-xl transition-colors"
             >
-              <ShoppingCart className="w-6 h-6 text-[#555]" />
-              <span className="text-[10px] text-[#555] mt-0.5 leading-none hidden sm:block">Warenkorb</span>
+              <ShoppingCart className="w-6 h-6 text-[#555] dark:text-[#D4C0A0]" />
+              <span className="text-[10px] text-[#555] dark:text-[#D4C0A0] mt-0.5 leading-none hidden sm:block">Warenkorb</span>
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-[#8B5E3C] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
                   {cartCount > 9 ? "9+" : cartCount}
@@ -781,10 +798,10 @@ export default function ShopGrid() {
 
           {/* ── Sidebar ── */}
           <aside className={`${sidebarOpen ? "block" : "hidden"} lg:block w-full lg:w-52 xl:w-60 flex-shrink-0 lg:sticky lg:top-20 lg:self-start`}>
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#EBEBEB] space-y-5">
+            <div className="bg-white dark:bg-[#2D1206] rounded-2xl p-4 shadow-sm border border-[#EBEBEB] dark:border-[#3a2010] space-y-5">
 
               <div>
-                <p className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.15em] mb-3">Kategorien</p>
+                <p className="text-[10px] font-black text-[#AAAAAA] dark:text-[#A89070] uppercase tracking-[0.15em] mb-3">Kategorien</p>
                 <ul className="space-y-0.5">
                   {[{ slug: "all", name: "Alle" }, ...categories].map(cat => {
                     const count = cat.slug === "all" ? products.filter(p => (p.stock ?? 0) > 0).length : products.filter(p => p.category === cat.slug).length
@@ -796,11 +813,11 @@ export default function ShopGrid() {
                           className={`w-full text-left flex items-center justify-between text-sm px-3 py-2 rounded-xl transition-all font-medium ${
                             isActive
                               ? "bg-[#8B5E3C] text-white shadow-sm"
-                              : "text-[#555] hover:bg-[#F5F5F5] hover:text-[#1A1A1A]"
+                              : "text-[#555] dark:text-[#D4C0A0] hover:bg-[#F5F5F5] dark:hover:bg-[#3a1a08] hover:text-[#1A1A1A] dark:hover:text-[#FAF7F4]"
                           }`}
                         >
                           <span className="truncate">{cat.name.replace(/\s*\d{4}$/, "")}</span>
-                          <span className={`text-[10px] font-bold ml-2 px-1.5 py-0.5 rounded-full flex-shrink-0 ${isActive ? "bg-white/25 text-white" : "bg-[#F0F0F0] text-[#888]"}`}>{count}</span>
+                          <span className={`text-[10px] font-bold ml-2 px-1.5 py-0.5 rounded-full flex-shrink-0 ${isActive ? "bg-white/25 text-white" : "bg-[#F0F0F0] dark:bg-[#1a0b04] text-[#888] dark:text-[#A89070]"}`}>{count}</span>
                         </button>
                       </li>
                     )
@@ -808,15 +825,15 @@ export default function ShopGrid() {
                 </ul>
               </div>
 
-              <div className="border-t border-[#F3F3F3] pt-4">
-                <p className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.15em] mb-3">Verfügbarkeit</p>
+              <div className="border-t border-[#F3F3F3] dark:border-[#3a2010] pt-4">
+                <p className="text-[10px] font-black text-[#AAAAAA] dark:text-[#A89070] uppercase tracking-[0.15em] mb-3">Verfügbarkeit</p>
                 <ul className="space-y-0.5">
                   {([["all", "Auf Lager"], ["out_of_stock", "Ausverkauft"]] as const).map(([val, label]) => (
                     <li key={val}>
                       <button
                         onClick={() => { setShowWishlist(false); setStockFilter(val); setSidebarOpen(false) }}
                         className={`w-full text-left text-sm px-3 py-2 rounded-xl transition-all font-medium ${
-                          stockFilter === val ? "bg-[#8B5E3C] text-white shadow-sm" : "text-[#555] hover:bg-[#F5F5F5]"
+                          stockFilter === val ? "bg-[#8B5E3C] text-white shadow-sm" : "text-[#555] dark:text-[#D4C0A0] hover:bg-[#F5F5F5] dark:hover:bg-[#3a1a08]"
                         }`}
                       >
                         {label}
@@ -826,11 +843,11 @@ export default function ShopGrid() {
                 </ul>
               </div>
 
-              <div className="border-t border-[#F3F3F3] pt-4">
+              <div className="border-t border-[#F3F3F3] dark:border-[#3a2010] pt-4">
                 <button
                   onClick={() => { setShowWishlist(p => !p); setActiveCategory("all"); setStockFilter("all"); setSearch(""); setSidebarOpen(false) }}
                   className={`w-full text-left flex items-center justify-between text-sm px-3 py-2 rounded-xl transition-all font-medium ${
-                    showWishlist ? "bg-rose-100 text-rose-600 shadow-sm" : "text-[#555] hover:bg-rose-50 hover:text-rose-500"
+                    showWishlist ? "bg-rose-100 dark:bg-rose-950 text-rose-600 shadow-sm" : "text-[#555] dark:text-[#D4C0A0] hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:text-rose-500"
                   }`}
                 >
                   <span className="flex items-center gap-2">
@@ -864,7 +881,7 @@ export default function ShopGrid() {
               <div className="w-1 self-stretch bg-[#8B5E3C] rounded-full flex-shrink-0" />
               <div>
                 <p className="font-black text-[#8B5E3C] text-2xl leading-tight">Unsere Kategorien</p>
-                <p className="text-sm text-[#888] mt-1">Lederartikel & Accessoires</p>
+                <p className="text-sm text-[#888] dark:text-[#A89070] mt-1">Lederartikel & Accessoires</p>
               </div>
             </div>
 
@@ -874,10 +891,9 @@ export default function ShopGrid() {
                 {/* Alle — default card */}
                 <button
                   onClick={() => setActiveCategory("all")}
-                  className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300 flex flex-col justify-between p-4"
+                  className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300 flex flex-col justify-between p-4 bg-white dark:bg-[#2D1206]"
                   style={{
                     height: "180px", minWidth: "210px", width: "210px", flexShrink: 0,
-                    backgroundColor: "#ffffff",
                     border: activeCategory === "all" ? "2px solid #8B5E3C" : "2px solid #E0E0E0",
                     boxShadow: activeCategory === "all" ? "0 8px 32px rgba(139,94,60,0.2)" : "none",
                   }}
@@ -895,7 +911,7 @@ export default function ShopGrid() {
                       </span>
                     )}
                     <p className="font-black text-base leading-tight tracking-tight" style={{ color: "#8B5E3C" }}>Alle Kategorien</p>
-                    <p className="text-[11px] mt-0.5 font-medium text-[#999]">Alles anzeigen →</p>
+                    <p className="text-[11px] mt-0.5 font-medium text-[#999] dark:text-[#A89070]">Alles anzeigen →</p>
                   </div>
                 </button>
                 {categories.map(cat => {
@@ -929,10 +945,9 @@ export default function ShopGrid() {
                 {/* Alle card — mobile */}
                 <button
                   onClick={() => setActiveCategory("all")}
-                  className="relative overflow-hidden rounded-xl flex-shrink-0 flex flex-col justify-between p-3 transition-all duration-200"
+                  className="relative overflow-hidden rounded-xl flex-shrink-0 flex flex-col justify-between p-3 transition-all duration-200 bg-white dark:bg-[#2D1206]"
                   style={{
                     width: "110px", height: "120px",
-                    backgroundColor: "#fff",
                     border: activeCategory === "all" ? "2px solid #8B5E3C" : "2px solid #E0E0E0",
                     boxShadow: activeCategory === "all" ? "0 4px 16px rgba(139,94,60,0.2)" : "none",
                   }}
@@ -944,7 +959,7 @@ export default function ShopGrid() {
                   </div>
                   <div className="relative">
                     <p className="font-black text-[15px] leading-tight" style={{ color: "#8B5E3C" }}>Alle</p>
-                    <p className="text-[12px] text-[#999] mt-0.5">Anzeigen</p>
+                    <p className="text-[12px] text-[#999] dark:text-[#A89070] mt-0.5">Anzeigen</p>
                   </div>
                 </button>
                 {categories.map(cat => {
@@ -978,8 +993,8 @@ export default function ShopGrid() {
               <div className="hidden lg:flex items-start gap-3 mb-3">
                 <div className="w-1 self-stretch bg-[#8B5E3C] rounded-full flex-shrink-0" />
                 <div>
-                  <p className="font-black text-[#1A1A1A] text-base leading-tight">Unsere Lieferanten</p>
-                  <p className="text-xs text-[#999] mt-0.5">Qualitätsmarken aus aller Welt</p>
+                  <p className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base leading-tight">Unsere Lieferanten</p>
+                  <p className="text-xs text-[#999] dark:text-[#A89070] mt-0.5">Qualitätsmarken aus aller Welt</p>
                 </div>
               </div>
             )}
@@ -1043,10 +1058,10 @@ export default function ShopGrid() {
                 placeholder="Produkte suchen…"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 text-sm bg-[#F3F4F6] rounded-full border border-transparent focus:outline-none focus:bg-white focus:border-[#8B5E3C] focus:ring-2 focus:ring-[#8B5E3C]/10 transition-all placeholder-[#9CA3AF]"
+                className="w-full pl-10 pr-9 py-2.5 text-sm bg-[#F3F4F6] dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] rounded-full border border-transparent focus:outline-none focus:bg-white dark:focus:bg-[#1a0b04] focus:border-[#8B5E3C] focus:ring-2 focus:ring-[#8B5E3C]/10 transition-all placeholder-[#9CA3AF]"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AAA] hover:text-[#555]">
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AAA] hover:text-[#555] dark:hover:text-[#D4C0A0]">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -1054,14 +1069,14 @@ export default function ShopGrid() {
 
             {/* Sort + count */}
             <div className="flex items-center justify-between mb-4 gap-3">
-              <p className="text-sm text-[#888] font-medium">
-                <span className="font-black text-[#1A1A1A]">{filtered.length}</span> Produkte
+              <p className="text-sm text-[#888] dark:text-[#A89070] font-medium">
+                <span className="font-black text-[#1A1A1A] dark:text-[#FAF7F4]">{filtered.length}</span> Produkte
               </p>
               <div className="relative">
                 <select
                   value={sortBy}
                   onChange={e => setSortBy(e.target.value as typeof sortBy)}
-                  className="appearance-none text-sm font-semibold text-[#555] bg-white border border-[#E5E5E5] rounded-full pl-4 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 cursor-pointer"
+                  className="appearance-none text-sm font-semibold text-[#555] dark:text-[#D4C0A0] bg-white dark:bg-[#2D1206] border border-[#E5E5E5] dark:border-[#3a2010] rounded-full pl-4 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/20 cursor-pointer"
                 >
                   <option value="default">Empfehlung</option>
                   <option value="name_asc">Name A–Z</option>
@@ -1078,14 +1093,14 @@ export default function ShopGrid() {
                 {showWishlist ? (
                   <>
                     <Heart className="w-14 h-14 text-red-200 mx-auto mb-4" />
-                    <p className="text-lg font-bold text-gray-300 mb-2">Wunschliste ist leer</p>
-                    <p className="text-sm text-gray-400 mb-4">Klicke auf das Herz bei einem Produkt, um es hinzuzufügen.</p>
+                    <p className="text-lg font-bold text-gray-300 dark:text-[#A89070] mb-2">Wunschliste ist leer</p>
+                    <p className="text-sm text-gray-400 dark:text-[#A89070] mb-4">Klicke auf das Herz bei einem Produkt, um es hinzuzufügen.</p>
                     <button onClick={() => setShowWishlist(false)} className="text-sm font-semibold text-[#8B5E3C] hover:underline">Alle Produkte anzeigen</button>
                   </>
                 ) : (
                   <>
-                    <p className="text-lg font-bold text-gray-300 mb-3">Keine Produkte gefunden</p>
-                    <button onClick={() => { setSearch(""); setActiveCategory("all"); setActiveSupplier("all"); setStockFilter("all") }} className="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors">
+                    <p className="text-lg font-bold text-gray-300 dark:text-[#A89070] mb-3">Keine Produkte gefunden</p>
+                    <button onClick={() => { setSearch(""); setActiveCategory("all"); setActiveSupplier("all"); setStockFilter("all") }} className="text-sm font-semibold text-gray-500 dark:text-[#A89070] hover:text-gray-900 dark:hover:text-[#FAF7F4] transition-colors">
                       Filter zurücksetzen
                     </button>
                   </>
@@ -1111,7 +1126,7 @@ export default function ShopGrid() {
                   <div className="text-center mt-10">
                     <button
                       onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
-                      className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-white hover:bg-[#8B5E3C] hover:text-white text-[#1A1A1A] border-2 border-[#8B5E3C]/25 hover:border-[#8B5E3C] rounded-full text-sm font-bold transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[#8B5E3C]/15 active:scale-[0.98]"
+                      className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-white dark:bg-[#2D1206] hover:bg-[#8B5E3C] hover:text-white text-[#1A1A1A] dark:text-[#FAF7F4] border-2 border-[#8B5E3C]/25 hover:border-[#8B5E3C] dark:border-[#3a2010] rounded-full text-sm font-bold transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[#8B5E3C]/15 active:scale-[0.98]"
                     >
                       Mehr laden
                       <span className="bg-[#8B5E3C]/10 text-[#8B5E3C] text-xs font-black px-2.5 py-0.5 rounded-full">
@@ -1128,17 +1143,17 @@ export default function ShopGrid() {
 
       {/* Payment methods */}
       {paySettings && (paySettings.enable_invoice || paySettings.enable_stripe || paySettings.enable_twint || paySettings.enable_paypal) && (
-      <div className="border-t border-[#E0E0E0] py-5 bg-white">
+      <div className="border-t border-[#E0E0E0] dark:border-[#3a2010] py-5 bg-white dark:bg-[#1a0b04]">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0]">
+            <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0] dark:border-[#3a2010]">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-[#8B5E3C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span className="text-[11px] font-semibold text-[#555] tracking-widest uppercase">Sichere Zahlung</span>
+              <span className="text-[11px] font-semibold text-[#555] dark:text-[#D4C0A0] tracking-widest uppercase">Sichere Zahlung</span>
             </div>
             {paySettings.enable_invoice && (
-              <div className="h-8 px-3 rounded-lg bg-[#F5F5F5] border border-[#E0E0E0] flex items-center gap-1.5 shadow-sm">
+              <div className="h-8 px-3 rounded-lg bg-[#F5F5F5] dark:bg-[#2D1206] border border-[#E0E0E0] dark:border-[#3a2010] flex items-center gap-1.5 shadow-sm">
                 <span className="text-base">🏦</span>
-                <span className="text-[11px] font-bold text-[#444]">Rechnung</span>
+                <span className="text-[11px] font-bold text-[#444] dark:text-[#D4C0A0]">Rechnung</span>
               </div>
             )}
             {paySettings.enable_twint && (

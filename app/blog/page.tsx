@@ -201,10 +201,10 @@ export default function BlogPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#FAF7F4]">
+    <div className="min-h-screen bg-[#FAF7F4] dark:bg-[#120804]">
 
       {/* Header */}
-      <div className="bg-white border-b border-[#E0E0E0] sticky top-0 z-30 shadow-sm">
+      <div className="bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010] sticky top-0 z-30 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-20 flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
@@ -215,9 +215,9 @@ export default function BlogPage() {
           <div className="w-px h-6 bg-[#E5E5E5]" />
           <div
             className="px-3 py-1.5 rounded-xl"
-            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
           >
-            <div className="font-black text-[#2D1206] text-base leading-tight tracking-tight">Blog</div>
+            <div className="font-black text-[#2D1206] dark:text-[#C49A6C] text-base leading-tight tracking-tight">Blog</div>
           </div>
         </div>
       </div>
@@ -226,9 +226,9 @@ export default function BlogPage() {
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-2">
         <div className="flex items-center gap-3 mb-1">
           <div className="w-1 h-7 bg-[#8B5E3C] rounded-full" />
-          <h1 className="text-3xl font-black text-[#6B4226] tracking-tight">Aktuelles & Tipps</h1>
+          <h1 className="text-3xl font-black text-[#6B4226] dark:text-[#C49A6C] tracking-tight">Aktuelles & Tipps</h1>
         </div>
-        <p className="text-sm text-[#888] ml-4">Neuigkeiten, Pflegetipps und Wissenswertes rund um echtes Leder.</p>
+        <p className="text-sm text-[#888] dark:text-[#A89070] ml-4">Neuigkeiten, Pflegetipps und Wissenswertes rund um echtes Leder.</p>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-8">
@@ -262,7 +262,7 @@ export default function BlogPage() {
           const extraImgs = [post.image2_url, post.image3_url, post.image4_url].filter(Boolean) as string[]
           const allImgs = [post.hero_image_url, ...extraImgs].filter(Boolean) as string[]
           return (
-            <article key={post.id} className="bg-white rounded-3xl overflow-hidden border border-[#EBEBEB] shadow-sm mb-10">
+            <article key={post.id} className="bg-white dark:bg-[#2D1206] rounded-3xl overflow-hidden border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm mb-10">
               {post.hero_image_url && (
                 <div
                   className="h-[420px] overflow-hidden bg-[#F0F0F0] cursor-zoom-in"
@@ -282,9 +282,9 @@ export default function BlogPage() {
                     {formatDate(post.created_at)}
                   </span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-black text-[#1A1A1A] tracking-tight leading-tight mb-5">{post.title}</h2>
+                <h2 className="text-3xl sm:text-4xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight leading-tight mb-5">{post.title}</h2>
                 <div className="w-12 h-1 bg-[#8B5E3C] rounded-full mb-6" />
-                <p className="text-base text-[#444] leading-[1.85] whitespace-pre-line">{post.content}</p>
+                <p className="text-base text-[#444] dark:text-[#C49A6C] leading-[1.85] whitespace-pre-line">{post.content}</p>
                 {extraImgs.length > 0 && (
                   <div className={`mt-8 grid gap-4 ${extraImgs.length === 1 ? "grid-cols-1" : extraImgs.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
                     {extraImgs.map((url, i) => (
@@ -307,7 +307,7 @@ export default function BlogPage() {
         {!loading && posts.length > 1 && (
           <div className="flex items-center gap-3 mb-6">
             <div className="w-1 h-6 bg-[#8B5E3C] rounded-full" />
-            <h2 className="text-xl font-black text-[#1A1A1A] tracking-tight">Weitere Beiträge</h2>
+            <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Weitere Beiträge</h2>
           </div>
         )}
         {!loading && posts.length > 1 && (
@@ -316,7 +316,7 @@ export default function BlogPage() {
               <article
                 key={post.id}
                 onClick={() => setSelectedPost(post)}
-                className="bg-white rounded-3xl overflow-hidden border border-[#EBEBEB] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+                className="bg-white dark:bg-[#2D1206] rounded-3xl overflow-hidden border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
               >
                 <div className="h-52 overflow-hidden bg-[#F0F0F0]">
                   {post.hero_image_url ? (
@@ -330,8 +330,8 @@ export default function BlogPage() {
                     <Calendar className="w-3 h-3" />
                     {formatDate(post.created_at)}
                   </span>
-                  <h2 className="font-black text-[#1A1A1A] text-base leading-tight mb-2 line-clamp-2">{post.title}</h2>
-                  <p className="text-sm text-[#666] leading-relaxed line-clamp-3">{post.content}</p>
+                  <h2 className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base leading-tight mb-2 line-clamp-2">{post.title}</h2>
+                  <p className="text-sm text-[#666] dark:text-[#B8A080] leading-relaxed line-clamp-3">{post.content}</p>
                   <div className="mt-4 text-xs font-bold text-[#8B5E3C] group-hover:underline">Weiterlesen →</div>
                 </div>
               </article>

@@ -38,7 +38,7 @@ const qualities = [
 
 export function HandwerkSection() {
   return (
-    <section className="bg-[#F9F5F0] py-24 px-4 overflow-hidden">
+    <section className="bg-[#F9F5F0] dark:bg-[#120804] py-24 px-4 overflow-hidden">
       <div className="container mx-auto max-w-6xl">
 
         {/* Header */}
@@ -51,9 +51,9 @@ export function HandwerkSection() {
 
           <div
             className="inline-block px-8 py-3 rounded-2xl mb-6"
-            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 4px #F9F5F0, 0 0 0 1px #C49A6C44" }}
+            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 4px var(--box-inset), 0 0 0 1px #C49A6C44" }}
           >
-            <h2 className="text-2xl md:text-3xl font-black text-[#2D1206] tracking-tight leading-none">
+            <h2 className="text-2xl md:text-3xl font-black text-[#2D1206] dark:text-[#C49A6C] tracking-tight leading-none">
               Das Handwerk
             </h2>
           </div>
@@ -69,8 +69,8 @@ export function HandwerkSection() {
           {steps.map(({ icon: Icon, label, desc, num }) => (
             <div
               key={num}
-              className="relative bg-white rounded-2xl p-6 group hover:-translate-y-1 transition-transform duration-300"
-              style={{ border: "1.5px solid #E8D9C8", boxShadow: "0 2px 16px rgba(139,94,60,0.07)" }}
+              className="relative bg-white dark:bg-[#2D1206] rounded-2xl p-6 group hover:-translate-y-1 transition-transform duration-300 border border-[#E8D9C8] dark:border-[#3a2010]"
+              style={{ boxShadow: "0 2px 16px rgba(139,94,60,0.07)" }}
             >
               {/* Step number */}
               <span
@@ -82,14 +82,14 @@ export function HandwerkSection() {
 
               {/* Icon */}
               <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                style={{ border: "2px dashed #8B5E3C", background: "#FDF8F3" }}
+                className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-[#FDF8F3] dark:bg-[#1a0b04]"
+                style={{ border: "2px dashed #8B5E3C" }}
               >
                 <Icon className="w-5 h-5 text-[#8B5E3C]" />
               </div>
 
-              <h3 className="font-black text-[#2D1206] text-base mb-2">{label}</h3>
-              <p className="text-[#9B8B7A] text-sm leading-relaxed">{desc}</p>
+              <h3 className="font-black text-[#2D1206] dark:text-[#C49A6C] text-base mb-2">{label}</h3>
+              <p className="text-[#9B8B7A] dark:text-[#A89070] text-sm leading-relaxed">{desc}</p>
 
               {/* Bottom accent */}
               <div className="absolute bottom-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-[#8B5E3C] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
@@ -134,11 +134,11 @@ export function HandwerkSection() {
           {qualities.map(({ icon: Icon, text }) => (
             <div
               key={text}
-              className="flex items-center gap-2.5 bg-white px-5 py-3 rounded-full"
-              style={{ border: "1.5px solid #E8D9C8", boxShadow: "0 1px 6px rgba(139,94,60,0.06)" }}
+              className="flex items-center gap-2.5 bg-white dark:bg-[#2D1206] px-5 py-3 rounded-full border border-[#E8D9C8] dark:border-[#3a2010]"
+              style={{ boxShadow: "0 1px 6px rgba(139,94,60,0.06)" }}
             >
               <Icon className="w-4 h-4 text-[#8B5E3C] flex-shrink-0" />
-              <span className="text-sm font-semibold text-[#5A3E2B]">{text}</span>
+              <span className="text-sm font-semibold text-[#5A3E2B] dark:text-[#C49A6C]">{text}</span>
             </div>
           ))}
         </div>

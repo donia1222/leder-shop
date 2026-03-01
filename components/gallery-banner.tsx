@@ -14,7 +14,7 @@ export function GalleryBanner() {
   const router = useRouter()
 
   return (
-    <section className="bg-white border-t border-[#E0E0E0] py-12">
+    <section className="bg-white dark:bg-[#1a0b04] border-t border-[#E0E0E0] dark:border-[#3a2010] py-12">
       <div className="container mx-auto px-4">
         <button
           onClick={() => router.push("/galerie")}

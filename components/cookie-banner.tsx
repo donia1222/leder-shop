@@ -22,10 +22,10 @@ export function CookieBanner() {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] w-[calc(100%-2rem)] max-w-xl">
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-lg px-5 py-4 flex items-center gap-4">
-        <p className="text-sm text-gray-600 flex-1">
+      <div className="bg-white dark:bg-[#2D1206] border border-gray-200 dark:border-[#3a2010] rounded-2xl shadow-lg px-5 py-4 flex items-center gap-4">
+        <p className="text-sm text-gray-600 dark:text-[#C49A6C] flex-1">
           Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.{" "}
-          <span className="text-gray-400">Durch die weitere Nutzung stimmen Sie zu.</span>
+          <span className="text-gray-400 dark:text-[#A89070]">Durch die weitere Nutzung stimmen Sie zu.</span>
         </p>
         <Button
           onClick={accept}

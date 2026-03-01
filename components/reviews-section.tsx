@@ -68,7 +68,7 @@ function Stars({ count }: { count: number }) {
 
 export function ReviewsSection() {
   return (
-    <section className="bg-[#F5EDE0] border-t border-[#E8D9C8] py-16">
+    <section className="bg-[#F5EDE0] dark:bg-[#1a0b04] border-t border-[#E8D9C8] dark:border-[#3a2010] py-16">
       <div className="container mx-auto px-4">
 
         {/* Header */}
@@ -83,22 +83,22 @@ export function ReviewsSection() {
             </div>
             <div
               className="inline-block px-5 py-2 rounded-xl mb-2"
-              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #F5EDE0, 0 0 0 1px #C49A6C33" }}
+              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
             >
-              <h2 className="text-xl font-black text-[#2D1206] tracking-tight">Was unsere Kunden sagen</h2>
+              <h2 className="text-xl font-black text-[#2D1206] dark:text-[#C49A6C] tracking-tight">Was unsere Kunden sagen</h2>
             </div>
             <p className="text-sm text-[#9B8B7A] mt-1">Echte Erfahrungen — direkt von Google.</p>
           </div>
 
           {/* Google rating badge */}
           <div
-            className="flex items-center gap-4 bg-white rounded-2xl px-6 py-4 self-start sm:self-auto"
+            className="flex items-center gap-4 bg-white dark:bg-[#2D1206] rounded-2xl px-6 py-4 self-start sm:self-auto"
             style={{ border: "1.5px solid #E8D9C8", boxShadow: "0 2px 12px rgba(139,94,60,0.08)" }}
           >
             <GoogleLogo size={8} />
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-3xl text-[#2D1206] leading-none">4.8</span>
+                <span className="font-black text-3xl text-[#2D1206] dark:text-[#C49A6C] leading-none">4.8</span>
                 <div className="flex flex-col gap-0.5">
                   <Stars count={5} />
                   <span className="text-xs text-[#9B8B7A]">41 Bewertungen</span>
@@ -110,13 +110,13 @@ export function ReviewsSection() {
 
         {/* Reviews carousel */}
         <div className="relative">
-          <div className="absolute right-0 top-0 bottom-4 w-20 bg-gradient-to-l from-[#F5EDE0] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-4 w-20 bg-gradient-to-l from-[#F5EDE0] dark:from-[#1a0b04] to-transparent z-10 pointer-events-none" />
 
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4">
             {reviews.map((review, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 bg-white rounded-2xl p-5 hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
+                className="flex-shrink-0 bg-white dark:bg-[#2D1206] rounded-2xl p-5 hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
                 style={{ width: "296px", border: "1.5px solid #E8D9C8", boxShadow: "0 2px 10px rgba(139,94,60,0.07)" }}
               >
                 {/* Quote mark */}
@@ -128,12 +128,12 @@ export function ReviewsSection() {
                 </div>
 
                 {/* Review text */}
-                <p className="text-[#5A4030] text-sm leading-relaxed line-clamp-4 flex-1 -mt-2">
+                <p className="text-[#5A4030] dark:text-[#C49A6C] text-sm leading-relaxed line-clamp-4 flex-1 -mt-2">
                   {review.text}
                 </p>
 
                 {/* Footer */}
-                <div className="mt-4 pt-4 border-t border-[#F0E6D8] flex items-center justify-between gap-2">
+                <div className="mt-4 pt-4 border-t border-[#F0E6D8] dark:border-[#3a2010] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
@@ -142,7 +142,7 @@ export function ReviewsSection() {
                       <span className="text-white font-bold text-sm">{review.name.charAt(0)}</span>
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-[#2D1206] text-sm leading-tight truncate">{review.name}</p>
+                      <p className="font-bold text-[#2D1206] dark:text-[#FAF7F4] text-sm leading-tight truncate">{review.name}</p>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <Stars count={review.stars} />
                         <span className="text-[#BBA898] text-xs">· {review.date}</span>

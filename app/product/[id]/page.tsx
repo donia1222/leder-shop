@@ -173,20 +173,20 @@ export default function ProductPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#F7F7F8]">
-      <div className="bg-white border-b border-[#E0E0E0] h-14 animate-pulse" />
+    <div className="min-h-screen bg-[#F7F7F8] dark:bg-[#120804]">
+      <div className="bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010] h-14 animate-pulse" />
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-3xl border border-[#EBEBEB] overflow-hidden animate-pulse">
+        <div className="bg-white dark:bg-[#2D1206] rounded-3xl border border-[#EBEBEB] dark:border-[#3a2010] overflow-hidden animate-pulse">
           <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="bg-gray-100 aspect-square" />
+            <div className="bg-gray-100 dark:bg-[#1a0b04] aspect-square" />
             <div className="p-8 flex flex-col gap-4">
-              <div className="h-3 w-24 bg-gray-100 rounded-full" />
-              <div className="h-8 w-4/5 bg-gray-200 rounded-full" />
-              <div className="h-6 w-32 bg-gray-100 rounded-full" />
-              <div className="h-28 bg-gray-100 rounded-2xl" />
-              <div className="mt-auto pt-4 border-t border-gray-100 space-y-3">
-                <div className="h-8 w-32 bg-gray-200 rounded-full" />
-                <div className="h-14 bg-gray-100 rounded-2xl" />
+              <div className="h-3 w-24 bg-gray-100 dark:bg-[#1a0b04] rounded-full" />
+              <div className="h-8 w-4/5 bg-gray-200 dark:bg-[#3a2010] rounded-full" />
+              <div className="h-6 w-32 bg-gray-100 dark:bg-[#1a0b04] rounded-full" />
+              <div className="h-28 bg-gray-100 dark:bg-[#1a0b04] rounded-2xl" />
+              <div className="mt-auto pt-4 border-t border-gray-100 dark:border-[#3a2010] space-y-3">
+                <div className="h-8 w-32 bg-gray-200 dark:bg-[#3a2010] rounded-full" />
+                <div className="h-14 bg-gray-100 dark:bg-[#1a0b04] rounded-2xl" />
               </div>
             </div>
           </div>
@@ -196,9 +196,9 @@ export default function ProductPage() {
   )
 
   if (error || !product) return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
-      <p className="text-[#666] font-semibold">{error || "Produkt nicht gefunden"}</p>
-      <button onClick={() => backTo ? router.push(`/${backTo}`) : router.back()} className="text-sm text-[#2C5F2E] font-bold underline">
+    <div className="min-h-screen bg-white dark:bg-[#120804] flex flex-col items-center justify-center gap-4">
+      <p className="text-[#666] dark:text-[#A89070] font-semibold">{error || "Produkt nicht gefunden"}</p>
+      <button onClick={() => backTo ? router.push(`/${backTo}`) : router.back()} className="text-sm text-[#2C5F2E] dark:text-[#C49A6C] font-bold underline">
         Zurück
       </button>
     </div>
@@ -208,29 +208,29 @@ export default function ProductPage() {
   const inStock = (product.stock ?? 0) > 0
 
   return (
-    <div className="min-h-screen bg-[#F7F7F8]">
+    <div className="min-h-screen bg-[#F7F7F8] dark:bg-[#120804]">
 
       {/* Header */}
-      <div className="bg-white border-b border-[#E0E0E0] sticky top-0 z-30 shadow-sm">
+      <div className="bg-white dark:bg-[#1a0b04] border-b border-[#E0E0E0] dark:border-[#3a2010] sticky top-0 z-30 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={() => backTo ? router.push(`/${backTo}`) : router.back()}
-            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 text-[#6B4226] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all flex-shrink-0"
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[#6B4226]/30 dark:border-[#3a2010] text-[#6B4226] dark:text-[#C49A6C] hover:bg-[#6B4226] hover:text-white hover:border-[#6B4226] transition-all flex-shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <div className="w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
+          <div className="w-px h-6 bg-[#E5E5E5] dark:bg-[#3a2010] flex-shrink-0" />
           <div
             className="px-3 py-1 rounded-lg min-w-0"
-            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
           >
-            <p className="text-sm font-black text-[#2D1206] truncate">{product.name}</p>
+            <p className="text-sm font-black text-[#2D1206] dark:text-[#FAF7F4] truncate">{product.name}</p>
           </div>
           <button
             onClick={() => router.push("/?checkout=true")}
-            className="ml-auto relative flex items-center justify-center w-10 h-10 hover:bg-[#F5F5F5] rounded-xl transition-colors flex-shrink-0"
+            className="ml-auto relative flex items-center justify-center w-10 h-10 hover:bg-[#F5F5F5] dark:hover:bg-[#2D1206] rounded-xl transition-colors flex-shrink-0"
           >
-            <ShoppingCart className="w-5 h-5 text-[#555]" />
+            <ShoppingCart className="w-5 h-5 text-[#555] dark:text-[#D4C0A0]" />
             {cartCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 bg-[#CC0000] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
                 {cartCount > 9 ? "9+" : cartCount}
@@ -242,13 +242,13 @@ export default function ProductPage() {
 
       {/* Content */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-3xl shadow-sm border border-[#EBEBEB] overflow-hidden">
+        <div className="bg-white dark:bg-[#2D1206] rounded-3xl shadow-sm border border-[#EBEBEB] dark:border-[#3a2010] overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2">
 
             {/* Image side */}
-            <div className="bg-[#F8F8F8] p-6 flex flex-col items-center gap-4 border-b md:border-b-0 md:border-r border-[#F0F0F0]">
+            <div className="bg-[#F8F8F8] dark:bg-[#1a0b04] p-6 flex flex-col items-center gap-4 border-b md:border-b-0 md:border-r border-[#F0F0F0] dark:border-[#3a2010]">
               <div
-                className="relative w-full max-w-sm aspect-square rounded-2xl overflow-hidden bg-white shadow-sm cursor-zoom-in"
+                className="relative w-full max-w-sm aspect-square rounded-2xl overflow-hidden bg-white dark:bg-[#2D1206] shadow-sm cursor-zoom-in"
                 onClick={() => setLightbox(true)}
                 title="Klicken zum Vergrößern"
               >
@@ -352,32 +352,32 @@ export default function ProductPage() {
               </div>
 
               {product.description && (
-                <div className="bg-[#F8F9FA] rounded-2xl p-4 border border-[#F0F0F0]">
-                  <p className="text-[11px] font-bold text-[#BBBBBB] uppercase tracking-widest mb-2">
+                <div className="bg-[#F8F9FA] dark:bg-[#1a0b04] rounded-2xl p-4 border border-[#F0F0F0] dark:border-[#3a2010]">
+                  <p className="text-[11px] font-bold text-[#BBBBBB] dark:text-[#A89070] uppercase tracking-widest mb-2">
                     Beschreibung
                   </p>
-                  <p className="text-sm text-[#444] leading-relaxed whitespace-pre-line">
+                  <p className="text-sm text-[#444] dark:text-[#D4C0A0] leading-relaxed whitespace-pre-line">
                     {product.description}
                   </p>
                 </div>
               )}
 
               {product.origin && (
-                <div className="flex items-center gap-1.5 text-xs text-[#999]">
+                <div className="flex items-center gap-1.5 text-xs text-[#999] dark:text-[#A89070]">
                   <MapPin className="w-3.5 h-3.5" />
                   <span>{product.origin}</span>
                 </div>
               )}
 
               {/* Price + CTA */}
-              <div className="mt-auto pt-5 border-t border-[#F0F0F0]">
+              <div className="mt-auto pt-5 border-t border-[#F0F0F0] dark:border-[#3a2010]">
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-3xl font-black text-[#1A1A1A] tracking-tight">
+                  <span className="text-3xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">
                     {product.price.toFixed(2)}
                   </span>
-                  <span className="text-base text-[#999] font-medium">CHF</span>
+                  <span className="text-base text-[#999] dark:text-[#A89070] font-medium">CHF</span>
                 </div>
-                <p className="text-xs text-[#999] mb-4">* Preise inkl. MwSt., zzgl. Versandkosten</p>
+                <p className="text-xs text-[#999] dark:text-[#A89070] mb-4">* Preise inkl. MwSt., zzgl. Versandkosten</p>
                 <button
                   onClick={addToCart}
                   disabled={!inStock}
@@ -386,7 +386,7 @@ export default function ProductPage() {
                       ? "bg-emerald-500 text-white"
                       : inStock
                         ? "bg-[#2C5F2E] hover:bg-[#1A4520] text-white shadow-lg shadow-[#2C5F2E]/20 hover:scale-[1.02] active:scale-[0.98]"
-                        : "bg-gray-100 text-gray-300 cursor-not-allowed"
+                        : "bg-gray-100 dark:bg-[#1a0b04] text-gray-300 dark:text-[#A89070] cursor-not-allowed"
                   }`}
                 >
                   {added ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
@@ -405,10 +405,10 @@ export default function ProductPage() {
         if (visible.length === 0) return null
         return (
           <div className="max-w-5xl mx-auto px-4 pb-10">
-            <div className="border-t border-[#E8E8E8] pt-8">
+            <div className="border-t border-[#E8E8E8] dark:border-[#3a2010] pt-8">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-1 h-6 bg-[#2C5F2E] rounded-full" />
-                <h2 className="text-base font-black text-[#1A1A1A] tracking-tight">Ähnliche Produkte</h2>
+                <h2 className="text-base font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Ähnliche Produkte</h2>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {visible.map(p => {
@@ -417,9 +417,9 @@ export default function ProductPage() {
                     <div
                       key={p.id}
                       onClick={() => router.replace(`/product/${p.id}?back=shop`)}
-                      className="bg-white rounded-2xl border border-[#EBEBEB] overflow-hidden cursor-pointer group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                      className="bg-white dark:bg-[#2D1206] rounded-2xl border border-[#EBEBEB] dark:border-[#3a2010] overflow-hidden cursor-pointer group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                     >
-                      <div className="aspect-square bg-[#F8F8F8] overflow-hidden">
+                      <div className="aspect-square bg-[#F8F8F8] dark:bg-[#1a0b04] overflow-hidden">
                         {imgs.length > 0 ? (
                           <img
                             src={imgs[0]}
@@ -440,7 +440,7 @@ export default function ProductPage() {
                         )}
                       </div>
                       <div className="p-3">
-                        <p className="text-xs font-semibold text-[#1A1A1A] line-clamp-2 leading-tight mb-1">
+                        <p className="text-xs font-semibold text-[#1A1A1A] dark:text-[#FAF7F4] line-clamp-2 leading-tight mb-1">
                           {p.name}
                         </p>
                         <p className="text-sm font-black text-[#2C5F2E]">
@@ -467,12 +467,12 @@ export default function ProductPage() {
           ].map((feat) => (
             <div
               key={feat}
-              className="flex items-center gap-2 bg-white border border-[#E8E8E8] rounded-full px-4 py-2 shadow-sm"
+              className="flex items-center gap-2 bg-white dark:bg-[#2D1206] border border-[#E8E8E8] dark:border-[#3a2010] rounded-full px-4 py-2 shadow-sm"
             >
               <span className="w-5 h-5 rounded-full bg-[#2C5F2E] flex items-center justify-center flex-shrink-0">
                 <Check className="w-3 h-3 text-white stroke-[3]" />
               </span>
-              <span className="text-xs font-semibold text-[#333]">{feat}</span>
+              <span className="text-xs font-semibold text-[#333] dark:text-[#D4C0A0]">{feat}</span>
             </div>
           ))}
         </div>
@@ -560,14 +560,14 @@ export default function ProductPage() {
       {paySettings && (paySettings.enable_invoice || paySettings.enable_stripe || paySettings.enable_twint || paySettings.enable_paypal) && (
       <div className="max-w-5xl mx-auto px-4 pb-12">
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0]">
+          <div className="flex items-center gap-1.5 pr-4 border-r border-[#E0E0E0] dark:border-[#3a2010]">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-[#2C5F2E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span className="text-[11px] font-semibold text-[#555] tracking-widest uppercase">Sichere Zahlung</span>
+            <span className="text-[11px] font-semibold text-[#555] dark:text-[#D4C0A0] tracking-widest uppercase">Sichere Zahlung</span>
           </div>
           {paySettings.enable_invoice && (
-            <div className="h-8 px-3 rounded-lg bg-[#F5F5F5] border border-[#E0E0E0] flex items-center gap-1.5 shadow-sm">
+            <div className="h-8 px-3 rounded-lg bg-[#F5F5F5] dark:bg-[#2D1206] border border-[#E0E0E0] dark:border-[#3a2010] flex items-center gap-1.5 shadow-sm">
               <span className="text-base">🏦</span>
-              <span className="text-[11px] font-bold text-[#444]">Rechnung</span>
+              <span className="text-[11px] font-bold text-[#444] dark:text-[#D4C0A0]">Rechnung</span>
             </div>
           )}
           {paySettings.enable_twint && (
@@ -580,15 +580,15 @@ export default function ProductPage() {
               <div className="h-8 px-4 rounded-lg bg-[#1A1F71] flex items-center shadow-sm">
                 <span className="font-black text-white text-base italic tracking-tight">VISA</span>
               </div>
-              <div className="h-8 px-3 rounded-lg bg-white border border-[#E0E0E0] flex items-center gap-1 shadow-sm">
+              <div className="h-8 px-3 rounded-lg bg-white dark:bg-[#2D1206] border border-[#E0E0E0] dark:border-[#3a2010] flex items-center gap-1 shadow-sm">
                 <div className="w-4 h-4 rounded-full bg-[#EB001B]" />
                 <div className="w-4 h-4 rounded-full bg-[#F79E1B] -ml-2" />
-                <span className="text-[11px] font-bold text-[#333] ml-1.5">Mastercard</span>
+                <span className="text-[11px] font-bold text-[#333] dark:text-[#D4C0A0] ml-1.5">Mastercard</span>
               </div>
             </>
           )}
           {paySettings.enable_paypal && (
-            <div className="h-8 px-3 rounded-lg bg-white border border-[#E0E0E0] flex items-center shadow-sm">
+            <div className="h-8 px-3 rounded-lg bg-white dark:bg-[#2D1206] border border-[#E0E0E0] dark:border-[#3a2010] flex items-center shadow-sm">
               <img src="/0014294_paypal-express-payment-plugin.png" alt="PayPal" className="h-6 w-auto object-contain" />
             </div>
           )}
