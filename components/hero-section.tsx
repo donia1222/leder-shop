@@ -70,7 +70,7 @@ export function HeroSection() {
             {/* Mobile image — above text */}
             <div className="lg:hidden w-full flex justify-center py-4" style={{ opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
               <img src={HERO_IMAGE} alt="Premium Lederartikel"
-                className="w-64 h-64 object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer"
+                className="w-64 h-64  mt-10 object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer"
               />
             </div>
 

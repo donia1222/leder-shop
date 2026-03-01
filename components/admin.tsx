@@ -33,7 +33,10 @@ import {
   Save,
   Megaphone,
   Bell,
+  Sun,
+  Moon,
 } from "lucide-react"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -143,6 +146,8 @@ export default function AdminPage() {
 
 export function Admin({ onClose }: AdminProps) {
   const { toast } = useToast()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState("orders")
 
   // Payment Settings
@@ -414,6 +419,8 @@ export function Admin({ onClose }: AdminProps) {
 
   const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
+  useEffect(() => { setMounted(true) }, [])
+
   useEffect(() => {
     const onScroll = () => {
       const el = filterCardRef.current
@@ -515,10 +522,11 @@ export function Admin({ onClose }: AdminProps) {
   }
 
   // Gallery Functions
-  const loadGalleryImages = async () => {
+  const loadGalleryImages = async (bustCache = false) => {
     setGalleryLoading(true)
     try {
-      const res = await fetch("/api/gallery")
+      const url = bustCache ? `/api/gallery?t=${Date.now()}` : "/api/gallery"
+      const res = await fetch(url)
       const d = await res.json()
       if (d.success) setGalleryImages(d.images ?? d.gallery ?? [])
     } catch {}
@@ -548,7 +556,7 @@ export function Admin({ onClose }: AdminProps) {
       if (!d.success) throw new Error(d.error)
       toast({ title: "Bild hinzugefügt" })
       setIsGalleryModalOpen(false)
-      await loadGalleryImages()
+      await loadGalleryImages(true)
     } catch (e: any) {
       toast({ title: "Fehler", description: e.message, variant: "destructive" })
     } finally { setGallerySaving(false) }
@@ -561,7 +569,8 @@ export function Admin({ onClose }: AdminProps) {
       if (!d.success) throw new Error(d.error)
       toast({ title: "Bild gelöscht" })
       setDeleteGalleryId(null)
-      await loadGalleryImages()
+      setGalleryImages(prev => prev.filter(img => img.id !== id))
+      await loadGalleryImages(true)
     } catch (e: any) {
       toast({ title: "Fehler", description: e.message, variant: "destructive" })
     }
@@ -1257,15 +1266,15 @@ export function Admin({ onClose }: AdminProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
       case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800"
       case "processing":
-        return "bg-blue-100 text-blue-800 border-blue-200"
+        return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
       case "cancelled":
-        return "bg-red-100 text-red-800 border-red-200"
+        return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-[#2D1206] dark:text-[#A89070] dark:border-[#3a2010]"
     }
   }
 
@@ -1287,13 +1296,13 @@ export function Admin({ onClose }: AdminProps) {
   const getStockStatusColor = (status: string) => {
     switch (status) {
       case "in_stock":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
       case "low_stock":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800"
       case "out_of_stock":
-        return "bg-red-100 text-red-800 border-red-200"
+        return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-[#2D1206] dark:text-[#A89070] dark:border-[#3a2010]"
     }
   }
 
@@ -1393,6 +1402,18 @@ export function Admin({ onClose }: AdminProps) {
                   </span>
                 </button>
               )}
+              {mounted && (
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="w-9 h-9 flex items-center justify-center hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] rounded-xl transition-colors"
+                  aria-label="Farbschema wechseln"
+                >
+                  {theme === "dark"
+                    ? <Sun className="w-5 h-5 text-[#C49A6C]" />
+                    : <Moon className="w-5 h-5 text-[#8B5E3C]" />
+                  }
+                </button>
+              )}
               <button
                 onClick={activeTab === "orders" ? loadOrders : loadProducts}
                 disabled={ordersLoading || productsLoading}
@@ -1476,8 +1497,8 @@ export function Admin({ onClose }: AdminProps) {
                           {Number.parseInt(String(orderStats.total_orders ?? 0)) || 0}
                         </p>
                       </div>
-                      <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center">
-                        <ShoppingBag className="w-5 h-5 text-blue-500" />
+                      <div className="w-11 h-11 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                        <ShoppingBag className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -1525,8 +1546,8 @@ export function Admin({ onClose }: AdminProps) {
                           {Number.parseInt(String(orderStats.pending_orders ?? 0)) || 0}
                         </p>
                       </div>
-                      <div className="w-11 h-11 bg-yellow-50 rounded-xl flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-yellow-500" />
+                      <div className="w-11 h-11 bg-yellow-50 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -1734,8 +1755,8 @@ export function Admin({ onClose }: AdminProps) {
                         <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Produkte</p>
                         <p className="text-3xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] mt-1">{productStats.total_products}</p>
                       </div>
-                      <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center">
-                        <Package className="w-5 h-5 text-blue-500" />
+                      <div className="w-11 h-11 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                        <Package className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -1762,8 +1783,8 @@ export function Admin({ onClose }: AdminProps) {
                         <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Wenig Lager</p>
                         <p className="text-3xl font-black text-yellow-600 mt-1">{productStats.low_stock}</p>
                       </div>
-                      <div className="w-11 h-11 bg-yellow-50 rounded-xl flex items-center justify-center">
-                        <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                      <div className="w-11 h-11 bg-yellow-50 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                        <AlertTriangle className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -1776,8 +1797,8 @@ export function Admin({ onClose }: AdminProps) {
                         <p className="text-[#888] dark:text-[#A89070] text-xs font-medium uppercase tracking-wide">Ausverkauft</p>
                         <p className="text-3xl font-black text-red-500 mt-1">{productStats.out_of_stock}</p>
                       </div>
-                      <div className="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center">
-                        <X className="w-5 h-5 text-red-500" />
+                      <div className="w-11 h-11 bg-red-50 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+                        <X className="w-5 h-5 text-red-500 dark:text-red-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -1786,6 +1807,7 @@ export function Admin({ onClose }: AdminProps) {
             )}
 
             {/* Excel Import */}
+            {false && <>
             <Card className="mb-6 border-dashed border-2 border-[#8B5E3C]/25 rounded-2xl shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center text-base">
@@ -1946,6 +1968,7 @@ export function Admin({ onClose }: AdminProps) {
                 )}
               </CardContent>
             </Card>
+            </>}
 
             {/* Products Header Actions */}
             <div className="flex items-center justify-between mb-6">
@@ -2100,7 +2123,7 @@ export function Admin({ onClose }: AdminProps) {
             </div>{/* end filterCardRef wrapper */}
 
             {/* Bulk action bar — sticky */}
-            <div className="sticky top-16 z-20 bg-blue-200/95 backdrop-blur-sm border border-blue-300 rounded-2xl px-3 py-2 mb-4 shadow-sm flex flex-wrap items-center gap-3">
+            <div className="sticky top-16 z-20 bg-blue-200/95 dark:bg-[#2D1206] backdrop-blur-sm border border-blue-300 dark:border-[#3a2010] rounded-2xl px-3 py-2 mb-4 shadow-sm flex flex-wrap items-center gap-3">
               <Button
                 variant="outline"
                 size="sm"
@@ -2115,11 +2138,11 @@ export function Admin({ onClose }: AdminProps) {
 
               {selectedProductIds.size > 0 && (
                 <>
-                  <span className="text-sm text-gray-600 font-medium">
+                  <span className="text-sm text-gray-600 dark:text-[#D4C0A0] font-medium">
                     {selectedProductIds.size} ausgewählt
                   </span>
                   <Select value={bulkStatus} onValueChange={setBulkStatus}>
-                    <SelectTrigger className="w-48 bg-white border-gray-300 text-sm">
+                    <SelectTrigger className="w-48 bg-white dark:bg-[#1a0b04] border-gray-300 dark:border-[#3a2010] dark:text-[#FAF7F4] text-sm">
                       <SelectValue placeholder="Status ändern..." />
                     </SelectTrigger>
                     <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">

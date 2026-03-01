@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="de" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
           <Analytics />
           <CookieBanner />
