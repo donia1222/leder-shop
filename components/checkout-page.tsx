@@ -112,6 +112,9 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
   const [shippingCost, setShippingCost] = useState(0)
   const [shippingInfo, setShippingInfo] = useState({ zone: "", range: "" })
   const [enabledCountries, setEnabledCountries] = useState<string[]>(["CH"])
+  const [paySettings, setPaySettings] = useState<{
+    enable_paypal: boolean; enable_stripe: boolean; enable_twint: boolean; enable_invoice: boolean
+  } | null>(null)
 
   const [orderStatus, setOrderStatus] = useState<"pending" | "processing" | "completed" | "error">("pending")
   const [orderDetails, setOrderDetails] = useState<any>(null)
@@ -183,6 +186,23 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
   // Check if user is logged in on component mount
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/get_payment_settings.php`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          const s = data.settings
+          setPaySettings({
+            enable_paypal: !!s.enable_paypal,
+            enable_stripe: !!s.enable_stripe,
+            enable_twint: !!s.enable_twint,
+            enable_invoice: s.enable_invoice !== false,
+          })
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   useEffect(() => {
     const initializeAuth = async () => {
       console.log("🔍 CheckoutPage: Inicializando autenticación...")
@@ -1218,9 +1238,11 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <div>
-              <h1 className="text-2xl font-black text-[#6B4226] tracking-tight">Warenkorb</h1>
-              <p className="text-xs text-[#888] mt-0.5">Sicher & verschlüsselt</p>
+            <div
+              className="px-3 py-1.5 rounded-xl"
+              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+            >
+              <h1 className="text-base font-black text-[#2D1206] leading-none tracking-tight">Warenkorb</h1>
             </div>
           </div>
           <div className="flex items-center gap-2 text-xs text-[#888]">

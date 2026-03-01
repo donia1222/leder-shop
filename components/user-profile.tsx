@@ -857,12 +857,12 @@ export function UserProfile({ onClose, onAccountDeleted }: UserProfileProps) {
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div className="w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8B5E3C] rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-[#6B4226]">Mein Profil</h1>
-      
+                <div
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
+                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                >
+                  <User className="w-4 h-4 text-[#2D1206]" />
+                  <h1 className="text-base font-black text-[#2D1206]">Mein Profil</h1>
                 </div>
               </div>
 

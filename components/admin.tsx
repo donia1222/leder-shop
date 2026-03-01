@@ -1370,13 +1370,12 @@ export function Admin({ onClose }: AdminProps) {
                 <ArrowLeft className="w-4 h-4" />
               </button>
               <div className="w-px h-6 bg-[#E0E0E0]" />
-              <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain" />
-              <div className="hidden sm:block">
-                <div className="font-black text-[#1A1A1A] text-base leading-none tracking-tight">Leder-Shop</div>
-                <div className="text-[10px] text-[#888] tracking-widest uppercase flex items-center gap-1.5 mt-0.5">
-                  <Shield className="w-3 h-3 text-[#8B5E3C]" />
-                  Verwaltungspanel
-                </div>
+              <div
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
+                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+              >
+                <Shield className="w-4 h-4 text-[#2D1206]" />
+                <span className="font-black text-[#2D1206] text-sm tracking-tight">Verwaltungspanel</span>
               </div>
             </div>
 

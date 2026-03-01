@@ -213,10 +213,11 @@ export default function BlogPage() {
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="w-px h-6 bg-[#E5E5E5]" />
-          <img src="/logo.png" alt="Leder-Shop" className="h-12 w-auto object-contain" />
-          <div className="hidden sm:block">
-            <div className="font-black text-[#1A1A1A] text-base leading-tight tracking-tight">Leder-Shop</div>
-            <div className="text-[11px] text-[#888] uppercase tracking-widest mt-0.5">Handgemachte Lederartikel</div>
+          <div
+            className="px-3 py-1.5 rounded-xl"
+            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+          >
+            <div className="font-black text-[#2D1206] text-base leading-tight tracking-tight">Blog</div>
           </div>
         </div>
       </div>

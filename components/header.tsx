@@ -89,14 +89,14 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
                   <Menu className="w-5 h-5 text-[#444]" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-full sm:w-72 bg-white p-0 flex flex-col h-full">
-                <div className="bg-[#2D1206] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-12">
-                  <div className="flex items-center gap-2.5">
-                    <img src="/logo.png" alt="Logo" className="h-8 w-auto object-contain" />
-                    <div>
-                      <div className="font-black text-white text-sm leading-none">Leder-Shop</div>
-                      <div className="text-[#C49A6C] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
-                    </div>
+              <SheetContent side="left" className="w-full sm:w-72 bg-white p-0 flex flex-col h-full [&>button]:border-2 [&>button]:border-dashed [&>button]:border-[#8B5E3C] [&>button]:rounded-lg [&>button]:text-[#2D1206] [&>button]:opacity-100">
+                <div className="bg-[#F5EDE0] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8]">
+                  <div
+                    className="flex flex-col px-3 py-1.5 rounded-xl"
+                    style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #F5EDE0, 0 0 0 1px #C49A6C33" }}
+                  >
+                    <div className="font-black text-[#2D1206] text-sm leading-none">Leder-Shop</div>
+                    <div className="text-[#8B5E3C] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="[&_span]:hidden flex items-center">
@@ -110,7 +110,7 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
                     </div>
                     <button
                       onClick={() => { onCartOpen?.(); setIsMenuOpen(false) }}
-                      className="p-2 rounded-lg hover:bg-[#3D2010] text-white relative"
+                      className="p-2 rounded-lg hover:bg-[#E8D9C8] text-[#2D1206] relative"
                     >
                       <ShoppingCart className="w-5 h-5" />
                       {cartCount > 0 && (
@@ -159,11 +159,15 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
             </Sheet>
 
             {/* Logo */}
-            <button onClick={() => router.push("/")} className="flex items-center gap-2.5 flex-shrink-0">
-              <img src="/logo.png" alt="Leder-Shop" className="h-12 w-auto object-contain" />
-              <div className="hidden sm:block text-left">
-                <div className="font-black text-[#1A1A1A] text-lg leading-none tracking-tight">Leder-Shop</div>
-                <div className="text-[10px] text-[#8B5E3C] tracking-[0.15em] uppercase mt-0.5 font-semibold">Handgemacht</div>
+            <button onClick={() => router.push("/")} className="flex items-center flex-shrink-0">
+              <div
+                className="px-3 py-1.5 rounded-xl"
+                style={{
+                  border: "2px dashed #8B5E3C",
+                  boxShadow: "inset 0 0 0 3px #FAF7F4, 0 0 0 1px #C49A6C33",
+                }}
+              >
+                <div className="font-black text-[#2D1206] text-base leading-none tracking-tight">Leder-Shop</div>
               </div>
             </button>
           </div>
@@ -208,6 +212,7 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
               />
             </div>
             <button
+              id="header-cart-icon"
               onClick={() => onCartOpen?.()}
               className="relative w-10 h-10 flex items-center justify-center hover:bg-[#F5EDE0] rounded-xl transition-colors"
             >

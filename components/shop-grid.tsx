@@ -5,7 +5,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import {
   ShoppingCart, ChevronLeft, ChevronRight,
   Search, X, Check, LayoutGrid,
-  ArrowUp, ChevronDown, Heart, Menu, Newspaper, Download
+  ArrowUp, ChevronDown, Heart, Menu, Newspaper, Download, Images
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ShoppingCartComponent } from "./shopping-cart"
@@ -47,6 +47,37 @@ interface ProductCardProps {
   onSelect: (p: Product) => void
   onAddToCart: (p: Product) => void
   onToggleWishlist: (id: number) => void
+}
+
+const flyToCart = (sourceEl: HTMLElement) => {
+  const cartEl = document.getElementById("header-cart-icon")
+  if (!cartEl) return
+  const sourceRect = sourceEl.getBoundingClientRect()
+  const targetRect = cartEl.getBoundingClientRect()
+  const startX = sourceRect.left + sourceRect.width / 2
+  const startY = sourceRect.top + sourceRect.height / 2
+  const endX = targetRect.left + targetRect.width / 2
+  const endY = targetRect.top + targetRect.height / 2
+  const fly = document.createElement("div")
+  fly.style.cssText = `position:fixed;z-index:9999;left:${startX}px;top:${startY}px;width:20px;height:20px;pointer-events:none;color:#8B5E3C;transform:translate(-50%,-50%);`
+  fly.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>`
+  document.body.appendChild(fly)
+  const dx = endX - startX
+  const dy = endY - startY
+  const arc = -Math.abs(dx) * 0.5 - 60
+  fly.animate([
+    { transform: "translate(-50%,-50%) scale(1)", opacity: 1 },
+    { transform: `translate(calc(-50% + ${dx * 0.5}px), calc(-50% + ${arc}px)) scale(0.9)`, opacity: 1 },
+    { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.2)`, opacity: 0 },
+  ], { duration: 650, easing: "cubic-bezier(0.25,0.46,0.45,0.94)", fill: "forwards" })
+    .addEventListener("finish", () => {
+      fly.remove()
+      cartEl.animate([
+        { transform: "scale(1)" },
+        { transform: "scale(1.4)" },
+        { transform: "scale(1)" },
+      ], { duration: 300, easing: "ease-out" })
+    })
 }
 
 const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onSelect, onAddToCart, onToggleWishlist }: ProductCardProps) {
@@ -148,17 +179,18 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
         <div className="mt-auto pt-2.5 flex items-center justify-between gap-2 border-t border-[#F5F5F5]">
           <span className="text-base font-black text-[#1A1A1A] tracking-tight">CHF {product.price.toFixed(2)}</span>
           <button
-            onClick={() => onAddToCart(product)}
+            onClick={(e) => { onAddToCart(product); if (inStock) flyToCart(e.currentTarget) }}
             disabled={!inStock}
             className={`flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition-all duration-200 ${
               isAdded
-                ? "bg-emerald-500 text-white"
+                ? "bg-[#2D1206] text-white border-2 border-dashed border-[#8B5E3C]"
                 : inStock
-                  ? "bg-[#8B5E3C] hover:bg-[#6B4226] text-white hover:shadow-md active:scale-95"
-                  : "bg-[#F0F0F0] text-[#CCC] cursor-not-allowed"
+                  ? "bg-transparent text-[#2D1206] hover:bg-[#F5EDE0] active:scale-95"
+                  : "text-[#CCC] cursor-not-allowed border-2 border-dashed border-[#DDD]"
             }`}
+            style={inStock && !isAdded ? { border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 2px #FAF7F4" } : {}}
           >
-            {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingCart className="w-3.5 h-3.5" />}
+            {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingCart className="w-3.5 h-3.5 text-[#8B5E3C]" />}
             {isAdded ? "✓" : "Kaufen"}
           </button>
         </div>
@@ -577,23 +609,43 @@ export default function ShopGrid() {
                   <Menu className="w-5 h-5 text-[#333]" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-white p-0 flex flex-col">
-                <div className="flex items-center p-4 pr-12 border-b border-[#E0E0E0] flex-shrink-0">
-                  <div className="flex items-center gap-2">
-                    <img src="/logo.png" alt="Logo" className="h-8 w-auto object-contain" />
-                    <span className="font-black text-[#1A1A1A] text-sm">Leder-Shop</span>
+              <SheetContent side="left" className="w-full sm:w-72 bg-white p-0 flex flex-col h-full [&>button]:border-2 [&>button]:border-dashed [&>button]:border-[#8B5E3C] [&>button]:rounded-lg [&>button]:text-[#2D1206] [&>button]:opacity-100">
+                <div className="bg-[#F5EDE0] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8]">
+                  <div
+                    className="flex flex-col px-3 py-1.5 rounded-xl"
+                    style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #F5EDE0, 0 0 0 1px #C49A6C33" }}
+                  >
+                    <div className="font-black text-[#2D1206] text-sm leading-none">Leder-Shop</div>
+                    <div className="text-[#8B5E3C] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="[&_span]:hidden flex items-center">
+                      <LoginAuth
+                        onLoginSuccess={() => {}}
+                        onLogout={() => {}}
+                        onShowProfile={() => { setShowUserProfile(true); setNavMenuOpen(false) }}
+                        isLightSection={false}
+                        variant="button"
+                      />
+                    </div>
+                    <button
+                      onClick={() => { setCartOpen(true); setNavMenuOpen(false) }}
+                      className="p-2 rounded-lg hover:bg-[#E8D9C8] text-[#2D1206] relative"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
-                <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
+                <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
                   <button
                     onClick={() => { router.push("/"); setNavMenuOpen(false) }}
-                    className={`w-full text-left px-3 py-2.5 text-sm rounded hover:bg-[#F5F5F5] font-medium ${pathname === "/" ? "bg-[#8B5E3C] text-white" : "text-[#333333]"}`}
+                    className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] hover:text-[#8B5E3C] font-medium transition-colors ${pathname === "/" ? "bg-[#8B5E3C] text-white" : "text-[#333]"}`}
                   >
                     Home
                   </button>
                   <button
                     onClick={() => { setActiveCategory("all"); setNavMenuOpen(false) }}
-                    className={`w-full text-left px-3 py-2.5 text-sm rounded hover:bg-[#F5F5F5] font-medium ${activeCategory === "all" ? "bg-[#8B5E3C] text-white" : "text-[#333333]"}`}
+                    className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] hover:text-[#8B5E3C] font-medium transition-colors ${activeCategory === "all" ? "bg-[#8B5E3C] text-white" : "text-[#333]"}`}
                   >
                     Alle Produkte
                   </button>
@@ -601,43 +653,33 @@ export default function ShopGrid() {
                     <button
                       key={cat.slug}
                       onClick={() => { setActiveCategory(cat.slug); setNavMenuOpen(false) }}
-                      className={`w-full text-left px-3 py-2.5 text-sm rounded hover:bg-[#F5F5F5] font-medium ${activeCategory === cat.slug ? "bg-[#8B5E3C] text-white" : "text-[#333333]"}`}
+                      className={`w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] hover:text-[#8B5E3C] font-medium transition-colors ${activeCategory === cat.slug ? "bg-[#8B5E3C] text-white" : "text-[#333]"}`}
                     >
                       {cat.name.replace(/\s*\d{4}$/, "")}
                     </button>
                   ))}
-                  <div className="pt-2 mt-1 border-t border-[#E0E0E0] space-y-0.5">
+                  <div className="pt-2 mt-1 border-t border-[#EDE0D4] space-y-0.5">
                     <button
                       onClick={() => { router.push("/blog"); setNavMenuOpen(false) }}
-                      className={`w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded hover:bg-[#F5F5F5] font-semibold ${pathname === "/blog" ? "bg-[#8B5E3C] text-white" : "text-[#8B5E3C]"}`}
+                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] text-[#8B5E3C] font-semibold"
                     >
                       <Newspaper className="w-4 h-4" />
                       Blog
                     </button>
                     <button
+                      onClick={() => { router.push("/galerie"); setNavMenuOpen(false) }}
+                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] text-[#8B5E3C] font-semibold"
+                    >
+                      <Images className="w-4 h-4" />
+                      Galerie
+                    </button>
+                    <button
                       onClick={() => { handleDownloadVCard(); setNavMenuOpen(false) }}
-                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded hover:bg-[#F5F5F5] font-semibold text-[#8B5E3C]"
+                      className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] text-[#8B5E3C] font-semibold"
                     >
                       <Download className="w-4 h-4" />
                       Digitale Visitenkarte
                     </button>
-                    <div className="flex items-center gap-1 pt-1 px-1 justify-end">
-                      <div className="[&_span]:hidden flex items-center">
-                        <LoginAuth
-                          onLoginSuccess={() => {}}
-                          onLogout={() => {}}
-                          onShowProfile={() => { setShowUserProfile(true); setNavMenuOpen(false) }}
-                          isLightSection={true}
-                          variant="button"
-                        />
-                      </div>
-                      <button
-                        onClick={() => { setCartOpen(true); setNavMenuOpen(false) }}
-                        className="p-2 rounded-xl hover:bg-[#F5F5F5] text-[#555]"
-                      >
-                        <ShoppingCart className="w-5 h-5" />
-                      </button>
-                    </div>
                   </div>
                 </nav>
               </SheetContent>
@@ -645,28 +687,28 @@ export default function ShopGrid() {
 
             {/* Mobile: divider + page title (like blog header) */}
             <div className="lg:hidden w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
-            <span className="lg:hidden text-sm font-bold text-[#555] flex-shrink-0">Unsere Produkte</span>
-
-            {/* Desktop: ← Home button */}
-            <button
-              onClick={() => router.push("/")}
-              className="hidden lg:flex items-center gap-2 text-[#555] hover:text-[#8B5E3C] transition-colors group flex-shrink-0"
+            <div
+              className="lg:hidden px-3 py-1 rounded-lg flex-shrink-0"
+              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
             >
-              <div className="w-8 h-8 rounded-full border border-[#E5E5E5] group-hover:border-[#8B5E3C]/60 group-hover:bg-[#8B5E3C]/5 flex items-center justify-center transition-all">
-                <ChevronLeft className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-bold">Home</span>
-            </button>
-
-            {/* Divider (desktop only) */}
-            <div className="hidden lg:block w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
-
-            {/* Logo */}
-            <div className="hidden md:flex items-center flex-shrink-0">
-              <img src="/logo.png" alt="Logo" className="h-12 w-auto object-contain" />
+              <span className="text-sm font-black text-[#2D1206]">Unsere Produkte</span>
             </div>
 
-            <div className="hidden md:block w-px h-6 bg-[#E5E5E5] flex-shrink-0" />
+            {/* Desktop: Home button */}
+            <button
+              onClick={() => router.push("/")}
+              className="hidden lg:flex items-center gap-2 group flex-shrink-0"
+            >
+              <div className="w-8 h-8 rounded-full border border-[#E5E5E5] group-hover:border-[#8B5E3C]/60 group-hover:bg-[#8B5E3C]/5 flex items-center justify-center transition-all">
+                <ChevronLeft className="w-4 h-4 text-[#555] group-hover:text-[#8B5E3C]" />
+              </div>
+              <div
+                className="px-3 py-1 rounded-lg"
+                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+              >
+                <span className="text-sm font-black text-[#2D1206]">Home</span>
+              </div>
+            </button>
 
             {/* Search — desktop only */}
             <div className="hidden sm:flex flex-1 max-w-lg relative mr-4">

@@ -364,9 +364,12 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
               {/* Logo + name */}
               <div className="flex items-center gap-3 mb-6">
                 <img src="/logo.png" alt="Logo" className="h-14 w-auto object-contain flex-shrink-0" />
-                <div>
-                  <div className="font-black text-[#1A1A1A] text-lg leading-tight tracking-tight">Leder-Shop</div>
-                  <div className="text-xs text-[#888] uppercase tracking-widest mt-1">Handgemachte Lederartikel</div>
+                <div
+                  className="px-3 py-1.5 rounded-xl"
+                  style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+                >
+                  <div className="font-black text-[#2D1206] text-lg leading-tight tracking-tight">Leder-Shop</div>
+                  <div className="text-xs text-[#8B5E3C] uppercase tracking-widest mt-1">Handgemachte Lederartikel</div>
                 </div>
               </div>
 

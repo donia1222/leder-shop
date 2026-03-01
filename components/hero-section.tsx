@@ -1,14 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
-const HERO_IMAGES = [
-  "/images/ledershop/IMG_0007.JPG",
-  "/images/ledershop/51ba66c7-69d5-4a5a-84d1-2640d7997fa6 2.JPG",
-  "/images/ledershop/588ac1f5-d4cf-4171-a057-4bf8c45a227b.JPG",
-  "/images/ledershop/c89bb77c-1d22-4e31-9dd3-516cc71e2fc3 2.JPG",
-]
+const HERO_IMAGE = "/logo.png"
 
 interface Category { id: number; slug: string; name: string }
 interface Product { id: number; category?: string; image_url?: string; image_urls?: (string | null)[] }
@@ -19,13 +14,15 @@ export function HeroSection() {
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [catImages, setCatImages] = useState<Record<string, string>>({})
-  const [heroIndex, setHeroIndex] = useState(0)
+  const [logoOpacity, setLogoOpacity] = useState(1)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroIndex(i => (i + 1) % HERO_IMAGES.length)
-    }, 3500)
-    return () => clearInterval(interval)
+    const handleScroll = () => {
+      const opacity = Math.max(0, 1 - window.scrollY / 300)
+      setLogoOpacity(opacity)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   useEffect(() => {
@@ -70,24 +67,10 @@ export function HeroSection() {
           <div className="grid lg:grid-cols-2 gap-6 items-center">
 
             {/* Mobile image — above text */}
-            <div className="lg:hidden w-full relative overflow-hidden bg-[#2D1206]" style={{ height: "260px" }}>
-              {HERO_IMAGES.map((src, idx) => (
-                <img key={src} src={src} alt="Premium Lederartikel"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{ opacity: idx === heroIndex ? 1 : 0, transition: "opacity 0.7s ease" }}
-                />
-              ))}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#FAF7F4] to-transparent" />
-              <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
-                <span className="text-[11px] font-black text-[#2D1206] uppercase tracking-wide">Leder-Shop</span>
-              </div>
-              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
-                {HERO_IMAGES.map((_, idx) => (
-                  <button key={idx} onClick={() => setHeroIndex(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 ${idx === heroIndex ? "bg-[#2D1206] w-5" : "bg-[#2D1206]/30 w-2"}`}
-                  />
-                ))}
-              </div>
+            <div className="lg:hidden w-full flex justify-center py-4" style={{ opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
+              <img src={HERO_IMAGE} alt="Premium Lederartikel"
+                className="w-64 h-64 object-contain"
+              />
             </div>
 
             {/* LEFT: Text */}
@@ -156,33 +139,10 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* RIGHT: Collage (desktop only) */}
-            <div className="hidden lg:flex items-center justify-start h-full py-6">
-              <div className="relative" style={{ width: "520px", height: "580px" }}>
-                {/* Image 1 — top-left */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
-                  style={{ width: "240px", height: "300px", top: "0", left: "0", transform: "rotate(-4deg)", zIndex: 1 }}>
-                  <img src={HERO_IMAGES[0]} alt="Premium Leder" className="w-full h-full object-cover" />
-                </div>
-                {/* Image 2 — top-right */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
-                  style={{ width: "240px", height: "255px", top: "40px", right: "0", transform: "rotate(3deg)", zIndex: 2 }}>
-                  <img src={HERO_IMAGES[1]} alt="Premium Leder" className="w-full h-full object-cover" />
-                </div>
-                {/* Image 3 — bottom-left */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
-                  style={{ width: "240px", height: "255px", bottom: "0", left: "15px", transform: "rotate(2.5deg)", zIndex: 3 }}>
-                  <img src={HERO_IMAGES[2]} alt="Premium Leder" className="w-full h-full object-cover" />
-                </div>
-                {/* Image 4 — bottom-right */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl border-0"
-                  style={{ width: "240px", height: "295px", bottom: "10px", right: "0", transform: "rotate(-3deg)", zIndex: 4 }}>
-                  <img src={HERO_IMAGES[3]} alt="Premium Leder" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-3 right-3 bg-[#2D1206]/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-md">
-                    <div className="text-white font-black text-xs leading-none">Swiss</div>
-                    <div className="text-[#C49A6C] text-[9px] tracking-wide mt-0.5">Qualität</div>
-                  </div>
-                </div>
+            {/* RIGHT: Single image (desktop only) */}
+            <div className="hidden lg:flex items-center justify-center h-full py-6">
+              <div className="relative" style={{ width: "520px", height: "580px", opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
+                <img src={HERO_IMAGE} alt="Premium Leder" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -195,7 +155,12 @@ export function HeroSection() {
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-xs font-bold text-[#8B5E3C] uppercase tracking-[0.2em] mb-2">Sortiment</p>
+              <div
+                className="inline-block px-3 py-1 rounded-lg mb-3"
+                style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+              >
+                <span className="text-xs font-black text-[#2D1206] uppercase tracking-[0.25em]">Sortiment</span>
+              </div>
               <h2 className="text-3xl font-black text-[#1A1A1A] tracking-tight">Unsere Leder-Kategorien</h2>
             </div>
             <button

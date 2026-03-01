@@ -56,14 +56,12 @@ export function ShoppingCartComponent({
         {/* Header */}
         <SheetHeader className="px-5 py-4 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-[#2C5F2E] rounded-xl flex items-center justify-center">
-                <ShoppingCart className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <SheetTitle className="text-base font-black text-gray-900 leading-none">Warenkorb</SheetTitle>
-                <p className="text-xs text-gray-400 mt-0.5">{totalItems} {totalItems === 1 ? "Artikel" : "Artikel"}</p>
-              </div>
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
+              style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+            >
+              <ShoppingCart className="w-4 h-4 text-[#2D1206]" />
+              <SheetTitle className="text-base font-black text-[#2D1206] leading-none">Warenkorb</SheetTitle>
             </div>
           </div>
         </SheetHeader>
@@ -99,21 +97,21 @@ export function ShoppingCartComponent({
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-bold text-gray-900 line-clamp-2 leading-tight">{item.name}</p>
-                      <p className="text-sm font-black text-blue-900 mt-1">{item.price.toFixed(2)} <span className="text-xs font-semibold text-gray-400">CHF</span></p>
+                      <p className="text-sm font-black text-[#2D1206] mt-1">{item.price.toFixed(2)} <span className="text-xs font-semibold text-gray-400">CHF</span></p>
                     </div>
 
                     {/* Qty controls */}
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       <button
                         onClick={() => onRemoveFromCart(item.id)}
-                        className="w-7 h-7 rounded-lg bg-white border border-gray-200 hover:border-red-300 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-all text-gray-500 shadow-sm"
+                        className="w-7 h-7 rounded-full bg-white border-2 border-dashed border-[#8B5E3C] hover:bg-[#F5EDE0] flex items-center justify-center transition-all text-[#2D1206] shadow-sm"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <span className="w-6 text-center text-sm font-black text-gray-900">{item.quantity}</span>
                       <button
                         onClick={() => onAddToCart(item)}
-                        className="w-7 h-7 rounded-lg bg-blue-950 hover:bg-blue-900 text-white flex items-center justify-center transition-all shadow-sm"
+                        className="w-7 h-7 rounded-full bg-[#2D1206] hover:bg-[#8B5E3C] text-white flex items-center justify-center transition-all shadow-sm"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -138,15 +136,15 @@ export function ShoppingCartComponent({
             </div>
 
             {/* Free shipping note */}
-            <div className="bg-blue-50 rounded-xl px-3 py-2 flex items-center gap-2">
+            <div className="bg-[#F5EDE0] rounded-xl px-3 py-2 flex items-center gap-2">
               <span className="text-lg">🚚</span>
-              <p className="text-xs font-semibold text-blue-700">Kostenloser Versand · Sichere Zahlung</p>
+              <p className="text-xs font-semibold text-[#8B5E3C]">Kostenloser Versand · Sichere Zahlung</p>
             </div>
 
             {/* Checkout button */}
             <button
               onClick={handleGoToCheckout}
-              className="w-full flex items-center justify-center gap-2 bg-blue-950 hover:bg-blue-900 text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-950/20"
+              className="w-full flex items-center justify-center gap-2 bg-[#2D1206] hover:bg-[#8B5E3C] text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#2D1206]/20"
             >
               Zur Kasse
               <ArrowRight className="w-4 h-4" />

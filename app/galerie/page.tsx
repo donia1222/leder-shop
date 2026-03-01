@@ -101,10 +101,11 @@ export default function GaleriePage() {
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="w-px h-6 bg-[#E0E0E0]" />
-          <img src="/logo.png" alt="Leder-Shop" className="h-10 w-auto object-contain" />
-          <div>
-            <p className="font-black text-[#1A1A1A] text-sm leading-none">Leder-Shop</p>
-            <p className="text-[10px] text-[#999] uppercase tracking-widest mt-0.5">Galerie</p>
+          <div
+            className="px-3 py-1.5 rounded-xl"
+            style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px #fff, 0 0 0 1px #C49A6C33" }}
+          >
+            <div className="font-black text-[#2D1206] text-base leading-tight tracking-tight">Galerie</div>
           </div>
         </div>
       </div>

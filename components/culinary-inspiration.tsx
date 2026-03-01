@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Droplets, Shield, Sun, Package, ChevronDown, ChevronUp, Sparkles, Clock, Star } from "lucide-react"
+import { Droplets, Shield, Sun, Package, ChevronDown, ChevronUp, Clock, Star } from "lucide-react"
 
 const careTips = [
   {
@@ -55,11 +55,13 @@ export function CulinaryInspiration() {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex justify-center mb-6">
-            <div className="w-14 h-14 bg-[#2E1F0F] flex items-center justify-center rounded-2xl">
-              <Sparkles className="w-7 h-7 text-[#B8864E]" />
+            <div
+              className="inline-block px-5 py-2 rounded-xl"
+              style={{ border: "2px dashed #B8864E", boxShadow: "inset 0 0 0 3px #F9F7F4, 0 0 0 1px #B8864E33" }}
+            >
+              <h3 className="text-4xl font-black text-[#2E1F0F]">Pflege & Stil</h3>
             </div>
           </div>
-          <h3 className="text-4xl font-black text-[#2E1F0F] mb-4">Pflege & Stil</h3>
           <p className="text-xl text-[#9B9189] max-w-2xl mx-auto">
             So pflegen Sie Ihre Lederwaren richtig — damit sie ein Leben lang halten
           </p>
