@@ -129,13 +129,8 @@ export function CulinaryInspiration() {
                 seinen ganz eigenen Charakter entwickelt."
               </blockquote>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#B8864E] rounded-full flex items-center justify-center">
-                  <span className="text-white font-black text-sm">GW</span>
-                </div>
-                <div>
-                  <div className="text-white font-bold text-sm">GLUTWERK</div>
-                  <div className="text-white/40 text-xs">Schweizer Lederhandwerk</div>
-                </div>
+       
+  
               </div>
             </div>
 

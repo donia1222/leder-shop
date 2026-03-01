@@ -388,7 +388,7 @@ function PremiumHotSauceStoreInner() {
       <ReviewsSection />
 
                 <CulinaryInspiration />
-      <PairingSuggestions />
+
 
       <ShoppingCartComponent
         isOpen={isCartOpen}
