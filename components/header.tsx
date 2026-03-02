@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ShoppingCart, Menu, ArrowUp, Newspaper, Download, Images, Sun, Moon, MapPin } from "lucide-react"
+import { ShoppingCart, Menu, ArrowUp, Newspaper, Download, Images, Sun, Moon, MapPin, ChevronRight } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { LoginAuth } from "./login-auth"
 import { useTheme } from "next-themes"
@@ -18,7 +18,8 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLightSection] = useState(true)
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [backendCategories, setBackendCategories] = useState<{ slug: string; name: string }[]>([])
+  const [backendCategories, setBackendCategories] = useState<{ id: number; slug: string; name: string; parent_id: number | null }[]>([])
+  const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 
@@ -37,14 +38,8 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
       .catch(() => {})
   }, [])
 
-  const categories: { label: string; href: string }[] = [
-    { label: "Home", href: "/" },
-    { label: "Alle Produkte", href: "/shop" },
-    ...backendCategories.map(cat => ({
-      label: cat.name,
-      href: `/shop?cat=${encodeURIComponent(cat.name)}`,
-    })),
-  ]
+  const rootCategories = backendCategories.filter(c => c.parent_id === null)
+  const getChildren = (parentId: number) => backendCategories.filter(c => c.parent_id === parentId)
 
   const handleLoginSuccess = (_user: any) => {}
   const handleLogout = () => {}
@@ -88,7 +83,7 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
 
           {/* LEFT: Mobile menu + Logo */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <Sheet open={isMenuOpen} onOpenChange={(open) => { setIsMenuOpen(open); if (!open) setExpandedCats(new Set()) }}>
               <SheetTrigger asChild>
                 <button className="w-9 h-9 flex items-center justify-center border border-[#E8D9C8] dark:border-[#3a2010] rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] transition-colors flex-shrink-0">
                   <Menu className="w-5 h-5 text-[#444] dark:text-[#C49A6C]" />
@@ -105,15 +100,51 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
                   </div>
                 </div>
                 <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
-                  {categories.map((cat, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { router.push(cat.href); setIsMenuOpen(false) }}
-                      className="w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] hover:text-[#8B5E3C] text-[#333] dark:text-[#D4C0A0] font-medium transition-colors"
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
+                  <p className="text-[10px] font-black text-[#AAAAAA] dark:text-[#A89070] uppercase tracking-[0.15em] mb-2 px-1">Menü</p>
+                  <button
+                    onClick={() => { router.push("/"); setIsMenuOpen(false) }}
+                    className="w-full text-left text-sm px-3 py-2 rounded-xl hover:bg-[#F5F5F5] dark:hover:bg-[#3a1a08] hover:text-[#1A1A1A] dark:hover:text-[#FAF7F4] text-[#555] dark:text-[#D4C0A0] font-medium transition-all"
+                  >
+                    Home
+                  </button>
+                  <button
+                    onClick={() => { router.push("/shop"); setIsMenuOpen(false) }}
+                    className="w-full text-left text-sm px-3 py-2 rounded-xl hover:bg-[#F5F5F5] dark:hover:bg-[#3a1a08] hover:text-[#1A1A1A] dark:hover:text-[#FAF7F4] text-[#555] dark:text-[#D4C0A0] font-medium transition-all"
+                  >
+                    Alle Produkte
+                  </button>
+
+                  <p className="text-[10px] font-black text-[#AAAAAA] dark:text-[#A89070] uppercase tracking-[0.15em] mt-3 mb-2 px-1">Kategorien</p>
+                  <ul className="space-y-0.5">
+                    {rootCategories.map(cat => {
+                      const children = getChildren(cat.id)
+                      const hasChildren = children.length > 0
+                      return (
+                        <li key={cat.id}>
+                          <button
+                            onClick={() => { router.push(`/shop?cat=${encodeURIComponent(cat.name)}`); setIsMenuOpen(false) }}
+                            className="w-full text-left flex items-center justify-between text-sm px-3 py-2 rounded-xl hover:bg-[#F5F5F5] dark:hover:bg-[#3a1a08] hover:text-[#1A1A1A] dark:hover:text-[#FAF7F4] text-[#555] dark:text-[#D4C0A0] font-medium transition-all"
+                          >
+                            <span className="truncate flex-1">{cat.name.replace(/\s*\d{4}$/, "")}</span>
+                          </button>
+                          {hasChildren && (
+                            <ul className="mt-0.5 ml-2 space-y-0.5 border-l-2 border-[#E8D9C8] dark:border-[#3a2010] pl-2 mb-1">
+                              {children.map(child => (
+                                <li key={child.id}>
+                                  <button
+                                    onClick={() => { router.push(`/shop?cat=${encodeURIComponent(child.name)}`); setIsMenuOpen(false) }}
+                                    className="w-full text-left flex items-center text-xs px-3 py-1.5 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#3a1a08] hover:text-[#333] text-[#666] dark:text-[#A89070] font-medium transition-all"
+                                  >
+                                    <span className="truncate">{child.name.replace(/\s*\d{4}$/, "")}</span>
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
                   <div className="pt-2 mt-1 border-t border-[#EDE0D4] dark:border-[#3a2010] flex flex-wrap gap-1">
                     <button
                       onClick={() => { router.push("/blog"); setIsMenuOpen(false) }}

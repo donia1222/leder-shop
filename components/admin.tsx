@@ -134,6 +134,7 @@ interface Category {
   slug: string
   name: string
   description: string
+  parent_id: number | null
 }
 
 interface AdminProps {
@@ -800,6 +801,8 @@ export function Admin({ onClose }: AdminProps) {
     const formData = new FormData(e.currentTarget)
     const isEditing = editingCategory !== null
     if (isEditing) formData.append("id", editingCategory.id.toString())
+    // Convertir "none" a cadena vacía para que PHP lo trate como null
+    if (formData.get("parent_id") === "none") formData.set("parent_id", "")
     const url = isEditing ? `${API_BASE_URL}/edit_category.php` : `${API_BASE_URL}/add_category.php`
     try {
       const response = await fetch(url, { method: "POST", body: formData })
@@ -1995,35 +1998,50 @@ export function Admin({ onClose }: AdminProps) {
             {categories.length > 0 && (
               <div className="mb-6">
                 <h3 className="text-sm font-semibold text-gray-500 dark:text-[#A89070] uppercase tracking-wider mb-3">Vorhandene Kategorien</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {categories.map((cat) => {
-                    const productCount = products.filter((p) => p.category === cat.slug).length
+                <div className="space-y-2">
+                  {categories.filter((c) => c.parent_id === null).map((parent) => {
+                    const children = categories.filter((c) => c.parent_id === parent.id)
+                    const parentCount = products.filter((p) => p.category === parent.slug).length
                     return (
-                      <div key={cat.slug} className="flex items-center justify-between bg-white dark:bg-[#2D1206] border border-gray-200 dark:border-[#3a2010] rounded-xl px-4 py-3 shadow-sm">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-800 dark:text-[#FAF7F4] truncate">{cat.name}</p>
-                          <p className="text-xs text-gray-400 dark:text-[#A89070]">{productCount} Produkt{productCount !== 1 ? "e" : ""}</p>
+                      <div key={parent.slug}>
+                        {/* Categoría padre */}
+                        <div className="flex items-center justify-between bg-white dark:bg-[#2D1206] border border-gray-200 dark:border-[#3a2010] rounded-xl px-4 py-3 shadow-sm">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-800 dark:text-[#FAF7F4] truncate">{parent.name}</p>
+                            <p className="text-xs text-gray-400 dark:text-[#A89070]">{parentCount} Produkt{parentCount !== 1 ? "e" : ""} · {children.length} Unterkategorie{children.length !== 1 ? "n" : ""}</p>
+                          </div>
+                          <div className="flex items-center space-x-1 ml-2">
+                            <Button size="sm" variant="ghost" onClick={() => { setEditingCategory(parent); setIsCategoryModalOpen(true) }} className="text-blue-500 hover:text-blue-700 bg-white hover:bg-blue-50 p-1.5">
+                              <Edit className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDeleteCategory(parent)} disabled={parentCount > 0 || children.length > 0} title={parentCount > 0 ? `${parentCount} Produkte – zuerst löschen` : children.length > 0 ? "Zuerst Unterkategorien löschen" : "Löschen"} className="text-red-300 bg-white p-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-1 ml-2">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => { setEditingCategory(cat); setIsCategoryModalOpen(true) }}
-                            className="text-blue-500 hover:text-blue-700 bg-white hover:bg-blue-50 p-1.5"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDeleteCategory(cat)}
-                            disabled={productCount > 0}
-                            title={productCount > 0 ? `${productCount} Produkte – zuerst löschen` : "Löschen"}
-                            className="text-red-300 bg-white p-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </div>
+                        {/* Subcategorías */}
+                        {children.map((child) => {
+                          const childCount = products.filter((p) => p.category === child.slug).length
+                          return (
+                            <div key={child.slug} className="flex items-center justify-between bg-gray-50 dark:bg-[#1a0b04] border border-gray-100 dark:border-[#3a2010] rounded-xl px-4 py-2.5 shadow-sm ml-6 mt-1.5 border-l-2 border-l-[#8B5E3C]/40">
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
+                                <span className="text-[#8B5E3C] text-xs">↳</span>
+                                <div className="min-w-0">
+                                  <p className="font-medium text-gray-700 dark:text-[#D4C0A0] text-sm truncate">{child.name}</p>
+                                  <p className="text-xs text-gray-400 dark:text-[#A89070]">{childCount} Produkt{childCount !== 1 ? "e" : ""}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-1 ml-2">
+                                <Button size="sm" variant="ghost" onClick={() => { setEditingCategory(child); setIsCategoryModalOpen(true) }} className="text-blue-500 hover:text-blue-700 bg-white hover:bg-blue-50 p-1.5">
+                                  <Edit className="w-3.5 h-3.5" />
+                                </Button>
+                                <Button size="sm" variant="ghost" onClick={() => handleDeleteCategory(child)} disabled={childCount > 0} title={childCount > 0 ? `${childCount} Produkte – zuerst löschen` : "Löschen"} className="text-red-300 bg-white p-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </Button>
+                              </div>
+                            </div>
+                          )
+                        })}
                       </div>
                     )
                   })}
@@ -3070,6 +3088,26 @@ export function Admin({ onClose }: AdminProps) {
                   {editingCategory && (
                     <p className="text-xs text-gray-400 mt-1">Slug: <span className="font-mono">{editingCategory.slug}</span> (wird nicht geändert)</p>
                   )}
+                </div>
+                <div>
+                  <Label htmlFor="cat-parent" className="text-sm font-medium">Übergeordnete Kategorie</Label>
+                  <Select
+                    name="parent_id"
+                    key={(editingCategory?.id ?? "new") + "-parent"}
+                    defaultValue={editingCategory?.parent_id?.toString() ?? "none"}
+                  >
+                    <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] h-12 text-base sm:h-10 sm:text-sm mt-1">
+                      <SelectValue placeholder="Keine (Hauptkategorie)" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
+                      <SelectItem value="none">Keine (Hauptkategorie)</SelectItem>
+                      {categories
+                        .filter((c) => c.parent_id === null && c.id !== editingCategory?.id)
+                        .map((c) => (
+                          <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="cat-description" className="text-sm font-medium">Beschreibung</Label>

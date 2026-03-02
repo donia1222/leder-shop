@@ -21,6 +21,7 @@ try {
     $id          = intval($_POST['id'] ?? 0);
     $name        = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
+    $parent_id   = !empty($_POST['parent_id']) ? intval($_POST['parent_id']) : null;
 
     if ($id <= 0) throw new Exception('ID de categoría requerido');
     if (empty($name)) throw new Exception('El nombre es requerido');
@@ -31,14 +32,24 @@ try {
     $existing = $stmt->fetch();
     if (!$existing) throw new Exception('Kategorie nicht gefunden');
 
-    // Actualizar solo nombre y descripción (el slug no cambia para no romper productos)
-    $stmt = $pdo->prepare("UPDATE categories SET name = :name, description = :description WHERE id = :id");
-    $stmt->execute([':name' => $name, ':description' => $description, ':id' => $id]);
+    // Verificar que el parent_id existe y no crea referencia circular
+    if ($parent_id !== null) {
+        if ($parent_id === $id) throw new Exception('Eine Kategorie kann nicht ihr eigenes Elternteil sein');
+        $stmt = $pdo->prepare("SELECT id, parent_id FROM categories WHERE id = :id");
+        $stmt->execute([':id' => $parent_id]);
+        $parent = $stmt->fetch();
+        if (!$parent) throw new Exception('Übergeordnete Kategorie nicht gefunden');
+        if ($parent['parent_id'] !== null) throw new Exception('Nur zwei Ebenen erlaubt');
+    }
+
+    // Actualizar nombre, descripción y parent_id (el slug no cambia para no romper productos)
+    $stmt = $pdo->prepare("UPDATE categories SET name = :name, description = :description, parent_id = :parent_id WHERE id = :id");
+    $stmt->execute([':name' => $name, ':description' => $description, ':parent_id' => $parent_id, ':id' => $id]);
 
     echo json_encode([
         'success' => true,
         'message' => 'Kategorie erfolgreich aktualisiert',
-        'category' => ['id' => $id, 'slug' => $existing['slug'], 'name' => $name, 'description' => $description]
+        'category' => ['id' => $id, 'slug' => $existing['slug'], 'name' => $name, 'description' => $description, 'parent_id' => $parent_id]
     ]);
 
 } catch (Exception $e) {

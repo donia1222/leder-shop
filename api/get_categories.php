@@ -18,11 +18,12 @@ if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])) {
 try {
     $pdo = getDBConnection();
 
-    $stmt = $pdo->query("SELECT id, slug, name, description, created_at FROM categories ORDER BY id ASC");
+    $stmt = $pdo->query("SELECT id, slug, name, description, parent_id, created_at FROM categories ORDER BY COALESCE(parent_id, id), parent_id IS NOT NULL, id ASC");
     $categories = $stmt->fetchAll();
 
     foreach ($categories as &$cat) {
-        $cat['id'] = intval($cat['id']);
+        $cat['id']        = intval($cat['id']);
+        $cat['parent_id'] = $cat['parent_id'] !== null ? intval($cat['parent_id']) : null;
     }
 
     echo json_encode([

@@ -379,19 +379,13 @@ function PremiumHotSauceStoreInner() {
 
       <SplashScreen />
       <Header onCartOpen={() => setIsCartOpen(true)} cartCount={getTotalItems()} />
-
       <HeroSection />
-
       <CategoryPreviewSection />
-
       <RecommendedProducts />
-
       <GalleryBanner />
       <BlogBanner />
-
-
-                <HandwerkSection />
-                <CulinaryInspiration />
+      <HandwerkSection />
+      <CulinaryInspiration />
       <ReviewsSection />
 
       <ShoppingCartComponent

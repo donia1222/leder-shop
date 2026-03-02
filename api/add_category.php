@@ -20,6 +20,7 @@ try {
 
     $name        = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
+    $parent_id   = !empty($_POST['parent_id']) ? intval($_POST['parent_id']) : null;
 
     if (empty($name)) {
         throw new Exception('El nombre de la categoría es requerido');
@@ -41,11 +42,21 @@ try {
         throw new Exception('Ya existe una categoría con ese nombre');
     }
 
-    $stmt = $pdo->prepare("INSERT INTO categories (slug, name, description) VALUES (:slug, :name, :description)");
+    // Verificar que el parent_id existe y no tiene ya un padre (solo 2 niveles)
+    if ($parent_id !== null) {
+        $stmt = $pdo->prepare("SELECT id, parent_id FROM categories WHERE id = :id");
+        $stmt->execute([':id' => $parent_id]);
+        $parent = $stmt->fetch();
+        if (!$parent) throw new Exception('Kategorie übergeordnet nicht gefunden');
+        if ($parent['parent_id'] !== null) throw new Exception('Nur zwei Ebenen erlaubt');
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO categories (slug, name, description, parent_id) VALUES (:slug, :name, :description, :parent_id)");
     $stmt->execute([
         ':slug'        => $slug,
         ':name'        => $name,
-        ':description' => $description
+        ':description' => $description,
+        ':parent_id'   => $parent_id
     ]);
 
     $new_id = intval($pdo->lastInsertId());
@@ -57,7 +68,8 @@ try {
             'id'          => $new_id,
             'slug'        => $slug,
             'name'        => $name,
-            'description' => $description
+            'description' => $description,
+            'parent_id'   => $parent_id
         ]
     ]);
 
