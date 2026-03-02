@@ -289,7 +289,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
   }
 
   return (
-    <footer className="bg-white dark:bg-[#1a0b04] mt-0">
+    <footer id="kontakt" className="bg-white dark:bg-[#1a0b04] mt-0">
 
       {/* ── Payment icons strip ── */}
       {paySettings && (paySettings.enable_invoice || paySettings.enable_stripe || paySettings.enable_twint || paySettings.enable_paypal) && (

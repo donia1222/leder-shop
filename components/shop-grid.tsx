@@ -614,7 +614,7 @@ export default function ShopGrid() {
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="w-full sm:w-72 bg-white dark:bg-[#1a0b04] p-0 flex flex-col h-full [&>button]:border-2 [&>button]:border-dashed [&>button]:border-[#8B5E3C] [&>button]:rounded-lg [&>button]:text-[#2D1206] dark:[&>button]:text-[#FAF7F4] [&>button]:opacity-100">
-                <div className="bg-[#F5EDE0] dark:bg-[#2D1206] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8] dark:border-[#3a2010]">
+                <div className="px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8] dark:border-[#3a2010]">
                   <div
                     className="flex flex-col px-3 py-1.5 rounded-xl"
                     style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
@@ -623,14 +623,6 @@ export default function ShopGrid() {
                     <div className="text-[#8B5E3C] dark:text-[#A07848] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
                   </div>
                   <div className="flex items-center gap-1">
-                    {mounted && (
-                      <button
-                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                        className="p-2 rounded-lg hover:bg-[#E8D9C8] dark:hover:bg-[#3a1a08] text-[#2D1206] dark:text-[#C49A6C] transition-colors"
-                      >
-                        {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                      </button>
-                    )}
                     <div className="[&_span]:hidden flex items-center">
                       <LoginAuth
                         onLoginSuccess={() => {}}

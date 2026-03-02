@@ -237,13 +237,13 @@ export default function BlogPage() {
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[0,1,2].map(i => (
-              <div key={i} className="bg-white rounded-3xl overflow-hidden border border-[#EBEBEB] shadow-sm animate-pulse">
-                <div className="h-52 bg-gray-100" />
+              <div key={i} className="bg-white dark:bg-[#2D1206] rounded-3xl overflow-hidden border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm animate-pulse">
+                <div className="h-52 bg-gray-100 dark:bg-[#3a1a08]" />
                 <div className="p-5 space-y-3">
-                  <div className="h-3 w-28 bg-gray-100 rounded-full" />
-                  <div className="h-5 w-4/5 bg-gray-200 rounded-full" />
-                  <div className="h-3 w-full bg-gray-100 rounded-full" />
-                  <div className="h-3 w-3/4 bg-gray-100 rounded-full" />
+                  <div className="h-3 w-28 bg-gray-100 dark:bg-[#3a1a08] rounded-full" />
+                  <div className="h-5 w-4/5 bg-gray-200 dark:bg-[#3a1a08] rounded-full" />
+                  <div className="h-3 w-full bg-gray-100 dark:bg-[#3a1a08] rounded-full" />
+                  <div className="h-3 w-3/4 bg-gray-100 dark:bg-[#3a1a08] rounded-full" />
                 </div>
               </div>
             ))}

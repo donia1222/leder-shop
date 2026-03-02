@@ -134,7 +134,7 @@ export default function GaleriePage() {
         <div className="container mx-auto px-4 py-12">
           <div className="columns-2 sm:columns-3 lg:columns-4 gap-3" style={{ columnGap: "12px" }}>
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="break-inside-avoid mb-3 rounded-2xl bg-gray-200 animate-pulse" style={{ height: `${160 + (i % 3) * 60}px` }} />
+              <div key={i} className="break-inside-avoid mb-3 rounded-2xl bg-gray-200 dark:bg-[#3a1a08] animate-pulse" style={{ height: `${160 + (i % 3) * 60}px` }} />
             ))}
           </div>
         </div>

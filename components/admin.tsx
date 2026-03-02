@@ -148,6 +148,7 @@ export function Admin({ onClose }: AdminProps) {
   const { toast } = useToast()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const prevThemeRef = useRef<string | undefined>(undefined)
   const [activeTab, setActiveTab] = useState("orders")
 
   // Payment Settings
@@ -419,7 +420,12 @@ export function Admin({ onClose }: AdminProps) {
 
   const API_BASE_URL = "https://web.lweb.ch/ledershop"
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+    prevThemeRef.current = theme
+    setTheme("light")
+    return () => { setTheme(prevThemeRef.current || "dark") }
+  }, [])
 
   useEffect(() => {
     const onScroll = () => {

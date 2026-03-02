@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ShoppingCart, Menu, ArrowUp, Newspaper, Download, Images, Sun, Moon } from "lucide-react"
+import { ShoppingCart, Menu, ArrowUp, Newspaper, Download, Images, Sun, Moon, MapPin } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { LoginAuth } from "./login-auth"
 import { useTheme } from "next-themes"
@@ -90,48 +90,18 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
           <div className="flex items-center gap-3 flex-shrink-0">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
-                <button className="lg:hidden w-9 h-9 flex items-center justify-center border border-[#E8D9C8] dark:border-[#3a2010] rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] transition-colors flex-shrink-0">
+                <button className="w-9 h-9 flex items-center justify-center border border-[#E8D9C8] dark:border-[#3a2010] rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] transition-colors flex-shrink-0">
                   <Menu className="w-5 h-5 text-[#444] dark:text-[#C49A6C]" />
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="w-full sm:w-72 bg-white dark:bg-[#1a0b04] p-0 flex flex-col h-full [&>button]:border-2 [&>button]:border-dashed [&>button]:border-[#8B5E3C] [&>button]:rounded-lg [&>button]:text-[#2D1206] dark:[&>button]:text-[#C49A6C] [&>button]:opacity-100">
-                <div className="bg-[#F5EDE0] dark:bg-[#2D1206] px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8] dark:border-[#3a2010]">
+                <div className="px-4 py-4 flex items-center justify-between flex-shrink-0 pr-16 border-b border-[#E8D9C8] dark:border-[#3a2010]">
                   <div
                     className="flex flex-col px-3 py-1.5 rounded-xl"
                     style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
                   >
                     <div className="font-black text-[#2D1206] dark:text-[#C49A6C] text-sm leading-none">Leder-Shop</div>
                     <div className="text-[#8B5E3C] dark:text-[#A07848] text-[10px] tracking-widest uppercase mt-0.5">Handgemacht</div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {mounted && (
-                      <button
-                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                        className="p-2 rounded-lg hover:bg-[#E8D9C8] dark:hover:bg-[#3a1a08] text-[#2D1206] dark:text-[#C49A6C] transition-colors"
-                      >
-                        {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                      </button>
-                    )}
-                    <div className="[&_span]:hidden flex items-center">
-                      <LoginAuth
-                        onLoginSuccess={handleLoginSuccess}
-                        onLogout={handleLogout}
-                        onShowProfile={handleShowProfile}
-                        isLightSection={false}
-                        variant="button"
-                      />
-                    </div>
-                    <button
-                      onClick={() => { onCartOpen?.(); setIsMenuOpen(false) }}
-                      className="p-2 rounded-lg hover:bg-[#E8D9C8] dark:hover:bg-[#3a1a08] text-[#2D1206] dark:text-[#C49A6C] relative"
-                    >
-                      <ShoppingCart className="w-5 h-5" />
-                      {cartCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 bg-[#C49A6C] text-[#2D1206] text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
-                          {cartCount > 9 ? "9+" : cartCount}
-                        </span>
-                      )}
-                    </button>
                   </div>
                 </div>
                 <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
@@ -144,7 +114,7 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
                       {cat.label}
                     </button>
                   ))}
-                  <div className="pt-2 mt-1 border-t border-[#EDE0D4] dark:border-[#3a2010] flex gap-1">
+                  <div className="pt-2 mt-1 border-t border-[#EDE0D4] dark:border-[#3a2010] flex flex-wrap gap-1">
                     <button
                       onClick={() => { router.push("/blog"); setIsMenuOpen(false) }}
                       className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2.5 text-sm rounded-lg hover:bg-[#F5EDE0] dark:hover:bg-[#2D1206] text-[#8B5E3C] dark:text-[#C49A6C] font-semibold"
@@ -186,29 +156,37 @@ export function Header({ onCartOpen, cartCount = 0 }: HeaderProps) {
           </div>
 
           {/* CENTER: Desktop nav */}
-          <nav className="hidden lg:flex items-center flex-1 justify-center">
-            {categories.filter(c => c.label !== "Home").map((cat, i) => (
-              <button
-                key={i}
-                onClick={() => router.push(cat.href)}
-                className="relative px-3.5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150"
-              >
-                {cat.label}
-                <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#8B5E3C] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
-              </button>
-            ))}
+          <nav className="hidden lg:flex items-center flex-1 overflow-x-auto min-w-0 justify-center [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
+            <button
+              onClick={() => router.push("/shop")}
+              className="relative px-5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150 inline-flex items-center gap-1.5"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Online-Shop
+              <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#8B5E3C] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
+            </button>
             <button
               onClick={() => router.push("/blog")}
-              className="relative px-3.5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150"
+              className="relative px-5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150 inline-flex items-center gap-1.5"
             >
+              <Newspaper className="w-4 h-4" />
               Blog
               <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#8B5E3C] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
             </button>
             <button
               onClick={() => router.push("/galerie")}
-              className="relative px-3.5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150"
+              className="relative px-5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150 inline-flex items-center gap-1.5"
             >
+              <Images className="w-4 h-4" />
               Galerie
+              <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#8B5E3C] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
+            </button>
+            <button
+              onClick={() => document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" })}
+              className="relative px-5 py-2 text-[14px] font-semibold text-[#555] dark:text-[#C49A6C] hover:text-[#2D1206] dark:hover:text-[#FAF7F4] whitespace-nowrap group transition-colors duration-150 inline-flex items-center gap-1.5"
+            >
+              <MapPin className="w-4 h-4" />
+              Kontakt
               <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#8B5E3C] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
             </button>
           </nav>
