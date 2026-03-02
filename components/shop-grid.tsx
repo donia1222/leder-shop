@@ -202,12 +202,13 @@ const ProductCard = memo(function ProductCard({ product, addedIds, wishlist, onS
 
 // ─── MobileCatCard: smaller version for mobile scroll ─────────────────────────
 
-function MobileCatCard({ srcs, displayName, isActive, onClick, id }: {
+function MobileCatCard({ srcs, displayName, isActive, onClick, id, isDark }: {
   srcs: string[]
   displayName: string
   isActive: boolean
   onClick: () => void
   id?: string
+  isDark: boolean
 }) {
   const [idx, setIdx] = useState(0)
   const img = srcs[idx] ?? null
@@ -217,9 +218,11 @@ function MobileCatCard({ srcs, displayName, isActive, onClick, id }: {
       onClick={onClick}
       className="relative overflow-hidden rounded-xl flex-shrink-0 text-left transition-all duration-200"
       style={{
-        width: "110px", height: "120px",
+        width: "160px", height: "160px",
         backgroundColor: "#111",
-        border: isActive ? "2px solid #8B5E3C" : "2px solid transparent",
+        border: isActive
+          ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
+          : `2px solid ${isDark ? "#8B5E3C" : "transparent"}`,
         boxShadow: isActive ? "0 4px 16px rgba(139,94,60,0.3)" : "none",
       }}
     >
@@ -253,11 +256,12 @@ function MobileCatCard({ srcs, displayName, isActive, onClick, id }: {
 
 // ─── CatCard: category card with image fallback chain ─────────────────────────
 
-function CatCard({ srcs, displayName, isActive, onClick }: {
+function CatCard({ srcs, displayName, isActive, onClick, isDark }: {
   srcs: string[]
   displayName: string
   isActive: boolean
   onClick: () => void
+  isDark: boolean
 }) {
   const [idx, setIdx] = useState(0)
   const img = srcs[idx] ?? null
@@ -267,9 +271,11 @@ function CatCard({ srcs, displayName, isActive, onClick }: {
       onClick={onClick}
       className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300"
       style={{
-        height: "180px", minWidth: "210px", width: "210px", flexShrink: 0,
+        height: "260px", minWidth: "280px", width: "280px", flexShrink: 0,
         backgroundColor: "#f5f5f5",
-        border: isActive ? "2px solid #8B5E3C" : "2px solid #E0E0E0",
+        border: isActive
+          ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
+          : `2px solid ${isDark ? "#8B5E3C" : "#E0E0E0"}`,
         boxShadow: isActive ? "0 8px 32px rgba(139,94,60,0.3)" : "none",
       }}
     >
@@ -371,7 +377,8 @@ export default function ShopGrid() {
 
   const PAGE_SIZE = 20
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
@@ -926,24 +933,26 @@ export default function ShopGrid() {
                 {/* Alle / Zurück card */}
                 <button
                   onClick={() => { setViewingParentCat(null); setActiveCategory("all") }}
-                  className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300 flex flex-col justify-between p-4 bg-white dark:bg-[#2D1206]"
+                  className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300 flex flex-col justify-between p-4 bg-[#F5EDE0] dark:bg-[#3a1a08]"
                   style={{
-                    height: "180px", minWidth: "210px", width: "210px", flexShrink: 0,
-                    border: !viewingParentCat && activeCategory === "all" ? "2px solid #8B5E3C" : "2px solid #E0E0E0",
+                    height: "260px", minWidth: "280px", width: "280px", flexShrink: 0,
+                    border: !viewingParentCat && activeCategory === "all"
+                      ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
+                      : `2px solid ${isDark ? "#8B5E3C" : "#D9C4AD"}`,
                     boxShadow: !viewingParentCat && activeCategory === "all" ? "0 8px 32px rgba(139,94,60,0.2)" : "none",
                   }}
                 >
-                  <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.08)" }} />
-                  <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.06)" }} />
-                  <div className="absolute top-1/2 right-6 -translate-y-1/2 w-14 h-14 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.05)" }} />
-                  <div className="relative w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(139,94,60,0.12)" }}>
+                  <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.10)" }} />
+                  <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.08)" }} />
+                  <div className="absolute top-1/2 right-6 -translate-y-1/2 w-14 h-14 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.06)" }} />
+                  <div className="relative w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(139,94,60,0.15)" }}>
                     {viewingParentCat ? <ChevronLeft className="w-6 h-6" style={{ color: "#8B5E3C" }} /> : <LayoutGrid className="w-6 h-6" style={{ color: "#8B5E3C" }} />}
                   </div>
                   <div className="relative">
                     <p className="font-black text-base leading-tight tracking-tight" style={{ color: "#8B5E3C" }}>
                       {viewingParentCat ? "Zurück zu Kategorien" : "Alle Kategorien"}
                     </p>
-                    <p className="text-[11px] mt-0.5 font-medium text-[#999] dark:text-[#A89070]">
+                    <p className="text-[11px] mt-0.5 font-medium text-[#A07850] dark:text-[#C49A6C]">
                       {viewingParentCat ? "← Alle anzeigen" : "Alles anzeigen →"}
                     </p>
                   </div>
@@ -971,6 +980,7 @@ export default function ShopGrid() {
                       srcs={uniqueSrcs}
                       displayName={displayName}
                       isActive={isActive}
+                      isDark={isDark}
                       onClick={() => {
                         if (!viewingParentCat && hasChildren) {
                           setViewingParentCat(cat)
@@ -991,23 +1001,25 @@ export default function ShopGrid() {
                 {/* Alle / Zurück card — mobile */}
                 <button
                   onClick={() => { setViewingParentCat(null); setActiveCategory("all") }}
-                  className="relative overflow-hidden rounded-xl flex-shrink-0 flex flex-col justify-between p-3 transition-all duration-200 bg-white dark:bg-[#2D1206]"
+                  className="relative overflow-hidden rounded-xl flex-shrink-0 flex flex-col justify-between p-3 transition-all duration-200 bg-[#F5EDE0] dark:bg-[#3a1a08]"
                   style={{
-                    width: "110px", height: "120px",
-                    border: !viewingParentCat && activeCategory === "all" ? "2px solid #8B5E3C" : "2px solid #E0E0E0",
+                    width: "160px", height: "160px",
+                    border: !viewingParentCat && activeCategory === "all"
+                      ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
+                      : `2px solid ${isDark ? "#8B5E3C" : "#D9C4AD"}`,
                     boxShadow: !viewingParentCat && activeCategory === "all" ? "0 4px 16px rgba(139,94,60,0.2)" : "none",
                   }}
                 >
-                  <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.07)" }} />
-                  <div className="absolute -bottom-3 -left-3 w-12 h-12 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.05)" }} />
-                  <div className="relative w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(139,94,60,0.12)" }}>
+                  <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.10)" }} />
+                  <div className="absolute -bottom-3 -left-3 w-12 h-12 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.08)" }} />
+                  <div className="relative w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(139,94,60,0.15)" }}>
                     {viewingParentCat ? <ChevronLeft className="w-4 h-4" style={{ color: "#8B5E3C" }} /> : <LayoutGrid className="w-4 h-4" style={{ color: "#8B5E3C" }} />}
                   </div>
                   <div className="relative">
                     <p className="font-black text-[13px] leading-tight" style={{ color: "#8B5E3C" }}>
                       {viewingParentCat ? "Zurück" : "Alle"}
                     </p>
-                    <p className="text-[11px] text-[#999] dark:text-[#A89070] mt-0.5">
+                    <p className="text-[11px] mt-0.5 text-[#A07850] dark:text-[#C49A6C]">
                       {viewingParentCat ? "← Kategorien" : "Anzeigen"}
                     </p>
                   </div>
@@ -1036,6 +1048,7 @@ export default function ShopGrid() {
                       srcs={uniqueSrcs}
                       displayName={displayName}
                       isActive={isActive}
+                      isDark={isDark}
                       onClick={() => {
                         if (!viewingParentCat && hasChildren) {
                           setViewingParentCat(cat)
