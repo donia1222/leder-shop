@@ -22,6 +22,8 @@ import {
   X,
   AlertTriangle,
   Package2,
+  FolderPlus,
+  PackagePlus,
   Upload,
   FileSpreadsheet,
   BookOpen,
@@ -1983,13 +1985,11 @@ export function Admin({ onClose }: AdminProps) {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produktverwaltung</h2>
               <div className="flex items-center space-x-2">
-                <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-full">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Kategorie
+                <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-full w-9 h-9 p-0" title="Kategorie hinzufügen">
+                  <FolderPlus className="w-4 h-4" />
                 </Button>
-                <Button onClick={showAddProductModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Produkt
+                <Button onClick={showAddProductModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full w-9 h-9 p-0" title="Produkt hinzufügen">
+                  <PackagePlus className="w-4 h-4" />
                 </Button>
               </div>
             </div>
