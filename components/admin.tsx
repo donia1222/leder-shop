@@ -37,6 +37,8 @@ import {
   Bell,
   Sun,
   Moon,
+  XCircle,
+  TrendingUp,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 import { PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts"
@@ -244,6 +246,8 @@ export function Admin({ onClose }: AdminProps) {
   const [showCategoryFilterModal, setShowCategoryFilterModal] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
   const filterCardRef = useRef<HTMLDivElement>(null)
+  const statusSectionRef = useRef<HTMLDivElement>(null)
+  const [showExcelImport, setShowExcelImport] = useState(false)
   const [bulkLoading, setBulkLoading] = useState(false)
   const [removedImages, setRemovedImages] = useState<boolean[]>([false, false, false, false])
 
@@ -990,6 +994,9 @@ export function Admin({ onClose }: AdminProps) {
     setSelectedProductIds((prev) => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)
+      if (next.size > 0) {
+        setTimeout(() => statusSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50)
+      }
       return next
     })
   }
@@ -2176,69 +2183,64 @@ export function Admin({ onClose }: AdminProps) {
             </Card>
             </>}
 
-            {/* Products Header Actions */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produktverwaltung</h2>
-              <div className="flex flex-col items-end gap-2">
-                <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-xl gap-2">
-                  <FolderPlus className="w-4 h-4" />
-                  Kategorie erstellen
-                </Button>
-                <Button onClick={showAddProductModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl gap-2">
-                  <PackagePlus className="w-4 h-4" />
-                  Produkt hinzufügen
-                </Button>
-              </div>
+            {/* ── Kategorieverwaltung ── */}
+            <div className="mb-6">
+              <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Kategorieverwaltung</h2>
+              <p className="text-xs text-gray-400 dark:text-[#A89070] mt-0.5 mb-4">Kategorien verwalten</p>
+              <button
+                onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#8B5E3C] to-[#A0734F] hover:from-[#6B4226] hover:to-[#8B5E3C] p-5 text-left shadow-md shadow-[#8B5E3C]/20 hover:shadow-lg transition-all duration-200 w-full sm:w-auto sm:min-w-[220px]"
+              >
+                <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+                <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-6 -translate-x-4" />
+                <div className="relative">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+                    <Plus className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-white font-bold text-base leading-tight">Neue Kategorie</p>
+                  <p className="text-[#FAF7F4]/70 text-xs mt-1">Kategorie erstellen</p>
+                </div>
+              </button>
             </div>
 
             {/* Categories List */}
             {categories.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-500 dark:text-[#A89070] uppercase tracking-wider mb-3">Vorhandene Kategorien</h3>
-                <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-gray-400 dark:text-[#A89070] uppercase tracking-wider mb-3">Kategorien</h3>
+                <div className="flex flex-wrap gap-3">
                   {categories.filter((c) => c.parent_id === null).map((parent) => {
                     const children = categories.filter((c) => c.parent_id === parent.id)
                     const parentCount = products.filter((p) => p.category === parent.slug).length
                     return (
-                      <div key={parent.slug}>
-                        {/* Categoría padre */}
-                        <div className="flex items-center justify-between bg-white dark:bg-[#2D1206] border border-gray-200 dark:border-[#3a2010] rounded-xl px-4 py-3 shadow-sm">
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-gray-800 dark:text-[#FAF7F4] truncate">{parent.name}</p>
-                            <p className="text-xs text-gray-400 dark:text-[#A89070]">{parentCount} Produkt{parentCount !== 1 ? "e" : ""} · {children.length} Unterkategorie{children.length !== 1 ? "n" : ""}</p>
+                      <div key={parent.slug} className="flex flex-col rounded-2xl bg-white dark:bg-[#2D1206] border border-gray-100 dark:border-[#3a2010] shadow-sm hover:shadow-md transition-all overflow-hidden w-full sm:w-56">
+                        <div className="flex items-center gap-2.5 px-3.5 pt-3 pb-2">
+                          <div className="w-8 h-8 bg-gradient-to-br from-[#8B5E3C] to-[#A0734F] rounded-xl flex items-center justify-center shrink-0 shadow-sm shadow-[#8B5E3C]/20">
+                            <Flame className="w-4 h-4 text-white" />
                           </div>
-                          <div className="flex items-center space-x-1 ml-2">
-                            <Button size="sm" variant="ghost" onClick={() => { setEditingCategory(parent); setIsCategoryModalOpen(true) }} className="text-blue-500 hover:text-blue-700 bg-white hover:bg-blue-50 p-1.5">
-                              <Edit className="w-3.5 h-3.5" />
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => handleDeleteCategory(parent)} disabled={parentCount > 0 || children.length > 0} title={parentCount > 0 ? `${parentCount} Produkte – zuerst löschen` : children.length > 0 ? "Zuerst Unterkategorien löschen" : "Löschen"} className="text-red-300 bg-white p-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 dark:text-[#FAF7F4] text-sm truncate">{parent.name}</p>
+                            <p className="text-[11px] text-gray-400 dark:text-[#A89070] font-medium">{parentCount} Produkt{parentCount !== 1 ? "e" : ""}{children.length > 0 ? ` · ${children.length} Sub` : ""}</p>
                           </div>
                         </div>
-                        {/* Subcategorías */}
-                        {children.map((child) => {
-                          const childCount = products.filter((p) => p.category === child.slug).length
-                          return (
-                            <div key={child.slug} className="flex items-center justify-between bg-gray-50 dark:bg-[#1a0b04] border border-gray-100 dark:border-[#3a2010] rounded-xl px-4 py-2.5 shadow-sm ml-6 mt-1.5 border-l-2 border-l-[#8B5E3C]/40">
-                              <div className="flex items-center gap-2 flex-1 min-w-0">
-                                <span className="text-[#8B5E3C] text-xs">↳</span>
-                                <div className="min-w-0">
-                                  <p className="font-medium text-gray-700 dark:text-[#D4C0A0] text-sm truncate">{child.name}</p>
-                                  <p className="text-xs text-gray-400 dark:text-[#A89070]">{childCount} Produkt{childCount !== 1 ? "e" : ""}</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-1 ml-2">
-                                <Button size="sm" variant="ghost" onClick={() => { setEditingCategory(child); setIsCategoryModalOpen(true) }} className="text-blue-500 hover:text-blue-700 bg-white hover:bg-blue-50 p-1.5">
-                                  <Edit className="w-3.5 h-3.5" />
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => handleDeleteCategory(child)} disabled={childCount > 0} title={childCount > 0 ? `${childCount} Produkte – zuerst löschen` : "Löschen"} className="text-red-300 bg-white p-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </Button>
-                              </div>
-                            </div>
-                          )
-                        })}
+                        <div className="flex border-t border-gray-100 dark:border-[#3a2010] mt-1">
+                          <button
+                            onClick={() => { setEditingCategory(parent); setIsCategoryModalOpen(true) }}
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 text-[11px] font-semibold text-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors"
+                          >
+                            <Edit className="w-3 h-3" />
+                            Bearbeiten
+                          </button>
+                          <div className="w-px bg-gray-100 dark:bg-[#3a2010]" />
+                          <button
+                            onClick={() => handleDeleteCategory(parent)}
+                            disabled={parentCount > 0 || children.length > 0}
+                            title={parentCount > 0 ? `${parentCount} Produkte – zuerst löschen` : children.length > 0 ? "Zuerst Unterkategorien löschen" : "Löschen"}
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 text-[11px] font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            Löschen
+                          </button>
+                        </div>
                       </div>
                     )
                   })}
@@ -2246,124 +2248,181 @@ export function Admin({ onClose }: AdminProps) {
               </div>
             )}
 
-            {/* Products Filters */}
-            <div ref={filterCardRef}>
-            <Card className="mb-4 rounded-2xl border-[#c8e6c9] dark:border-[#3a2010] shadow-sm bg-[#e8f5e9] dark:bg-[#1a0b04]">
-              <CardHeader>
-                <CardTitle className="flex items-center text-base">
-                  <Filter className="w-4 h-4 mr-2 text-[#8B5E3C]" />
-                  Produktfilter
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                  <div>
-                    <Label htmlFor="product-search">Suchen</Label>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        id="product-search"
-                        placeholder="Produkte suchen..."
-                        value={productFilters.search}
-                        onChange={(e) => setProductFilters((prev) => ({ ...prev, search: e.target.value }))}
-                        className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] pl-10"
-                      />
+            {/* ── Produkte hinzufügen ── */}
+            <div className="mb-4">
+              <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produkte hinzufügen</h2>
+              <p className="text-xs text-gray-400 dark:text-[#A89070] mt-0.5 mb-4">Produkte verwalten</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={showAddProductModal}
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#8B5E3C] to-[#A0734F] hover:from-[#6B4226] hover:to-[#8B5E3C] p-5 text-left shadow-md shadow-[#8B5E3C]/20 hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-6 -translate-x-4" />
+                  <div className="relative">
+                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+                      <PackagePlus className="w-5 h-5 text-white" />
                     </div>
+                    <p className="text-white font-bold text-base leading-tight">Neues Produkt</p>
+                    <p className="text-[#FAF7F4]/70 text-xs mt-1">Produkt manuell erstellen</p>
                   </div>
+                </button>
 
-                  <div>
-                    <Label htmlFor="product-category">Kategorie</Label>
-                    <Select
-                      value={productFilters.category || "all"}
-                      onValueChange={(value) => setProductFilters((prev) => ({ ...prev, category: value === "all" ? "" : value }))}
-                    >
-                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
-                        <SelectValue placeholder="Alle Kategorien" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
-                        <SelectItem value="all">Alle Kategorien</SelectItem>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+              </div>
+            </div>
 
-                  <div>
-                    <Label htmlFor="product-stock-status">Lagerstatus</Label>
-                    <Select
-                      value={productFilters.stock_status || "all"}
-                      onValueChange={(value) => setProductFilters((prev) => ({ ...prev, stock_status: value === "all" ? "" : value }))}
-                    >
-                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
-                        <SelectValue placeholder="Alle Status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
-                        <SelectItem value="all">Alle Status</SelectItem>
-                        <SelectItem value="in_stock">Auf Lager</SelectItem>
-                        <SelectItem value="low_stock">Geringer Lagerbestand</SelectItem>
-                        <SelectItem value="out_of_stock">Nicht vorrätig</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="product-sort">Sortieren nach</Label>
-                    <Select
-                      value={productFilters.sortBy}
-                      onValueChange={(value) => setProductFilters((prev) => ({ ...prev, sortBy: value }))}
-                    >
-                      <SelectTrigger className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010] dark:text-[#FAF7F4] border-gray-300">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="price">Preis</SelectItem>
-                        <SelectItem value="stock">Lagerbestand</SelectItem>
-                        <SelectItem value="rating">Bewertung</SelectItem>
-                        <SelectItem value="heat_level">Schärfegrad</SelectItem>
-                        <SelectItem value="category">Kategorie</SelectItem>
-                        <SelectItem value="created_at">Datum</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-end">
-                    <Button
-                      onClick={() => {
-                        setProductFilters({ search: "", category: "", stock_status: "", sortBy: "name" })
-                      }}
-                      className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full text-sm"
-                    >
-                      Filter zurücksetzen
+            {/* Excel Import expandable */}
+            {showExcelImport && (
+              <Card className="mb-6 border border-[#8B5E3C]/20 dark:border-[#3a2010] bg-[#FDF8F4] dark:bg-[#2D1206] rounded-2xl shadow-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-base text-[#1A1A1A] dark:text-[#FAF7F4]">
+                    <div className="w-8 h-8 bg-[#8B5E3C]/10 rounded-lg flex items-center justify-center mr-2">
+                      <FileSpreadsheet className="w-4 h-4 text-[#8B5E3C]" />
+                    </div>
+                    Excel-Import (Produkte synchronisieren)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <label className="flex-1 min-w-[220px] cursor-pointer">
+                      <div className="flex items-center gap-2 border border-gray-300 dark:border-[#3a2010] rounded-lg px-4 py-2 bg-white dark:bg-[#1a0b04] hover:bg-gray-50 dark:hover:bg-[#3a1a08] transition-colors">
+                        <Upload className="w-4 h-4 text-gray-500 dark:text-[#A89070] shrink-0" />
+                        <span className="text-sm text-gray-600 dark:text-[#D4C0A0] truncate">
+                          {importFile ? importFile.name : ".xlsx / .xls auswählen"}
+                        </span>
+                      </div>
+                      <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportFile(e.target.files?.[0] ?? null); setImportResult(null) }} />
+                    </label>
+                    <Button onClick={handleExcelImport} disabled={!importFile || importLoading} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white">
+                      <RefreshCw className={`w-4 h-4 mr-2 ${importLoading ? "animate-spin" : ""}`} />
+                      {importLoading ? "Importiere..." : "Importieren"}
                     </Button>
                   </div>
+                  {importResult && (
+                    <div className={`mt-4 rounded-lg p-3 text-sm ${importResult.success ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
+                      {importResult.success ? (
+                        <div className="space-y-1">
+                          <p className="font-medium text-green-800">Import abgeschlossen ({importResult.parsed} verarbeitet)</p>
+                          <div className="flex gap-4 text-green-700 flex-wrap">
+                            <span>✅ Neu: <strong>{importResult.inserted}</strong></span>
+                            <span>🔄 Aktualisiert: <strong>{importResult.updated}</strong></span>
+                            <span>🗑 Gelöscht: <strong>{importResult.deleted ?? 0}</strong></span>
+                            <span>⏭ Übersprungen: <strong>{importResult.skipped}</strong></span>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-red-700 font-medium">Fehler: {importResult.error}</p>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Produkte suchen ── */}
+            <div className="mb-3">
+              <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produkte suchen</h2>
+              <p className="text-xs text-gray-400 dark:text-[#A89070] mt-0.5">Produkte filtern und suchen</p>
+            </div>
+            <div ref={filterCardRef}>
+            <div className="mb-4 rounded-2xl bg-white dark:bg-[#2D1206] border border-gray-100 dark:border-[#3a2010] shadow-sm overflow-hidden">
+              <div className="p-3 border-b border-gray-100 dark:border-[#3a2010]">
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-[#A89070]" />
+                  <Input
+                    placeholder="Produkte suchen..."
+                    value={productFilters.search}
+                    onChange={(e) => setProductFilters((prev) => ({ ...prev, search: e.target.value }))}
+                    className="pl-10 bg-gray-50 dark:bg-[#1a0b04] border-0 rounded-xl h-10 focus:bg-white dark:focus:bg-[#2D1206] dark:text-[#FAF7F4] dark:placeholder:text-[#A89070] transition-all text-sm"
+                  />
+                  {productFilters.search && (
+                    <button onClick={() => setProductFilters(prev => ({ ...prev, search: "" }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 px-3 py-2.5 border-b border-gray-100 dark:border-[#3a2010]">
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-[#A89070] uppercase tracking-wider mr-1">Kategorie:</span>
+                {[{ value: "", label: "Alle" }, ...categories.map(c => ({ value: c.slug, label: c.name }))].map(opt => (
+                  <button
+                    key={opt.value || "all"}
+                    onClick={() => setProductFilters(prev => ({ ...prev, category: opt.value }))}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                      (productFilters.category || "") === opt.value
+                        ? "bg-[#8B5E3C] border-[#8B5E3C] text-white shadow-sm shadow-[#8B5E3C]/20"
+                        : "bg-gray-50 dark:bg-[#1a0b04] border-gray-200 dark:border-[#3a2010] text-gray-600 dark:text-[#D4C0A0] hover:border-gray-300 hover:bg-gray-100 dark:hover:bg-[#3a1a08]"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-2 px-3 py-2.5 border-b border-gray-100 dark:border-[#3a2010]">
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-[#A89070] uppercase tracking-wider mr-1">Status:</span>
+                {[
+                  { value: "", label: "Alle", icon: null },
+                  { value: "in_stock", label: "Lager", icon: <CheckCircle className="w-3.5 h-3.5" />, active: "bg-emerald-600 border-emerald-600 text-white shadow-sm shadow-emerald-500/20" },
+                  { value: "low_stock", label: "Wenig", icon: <AlertTriangle className="w-3.5 h-3.5" />, active: "bg-amber-500 border-amber-500 text-white shadow-sm shadow-amber-500/20" },
+                  { value: "out_of_stock", label: "Leer", icon: <XCircle className="w-3.5 h-3.5" />, active: "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/20" },
+                ].map(opt => (
+                  <button
+                    key={opt.value || "all-stock"}
+                    onClick={() => setProductFilters(prev => ({ ...prev, stock_status: opt.value }))}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                      (productFilters.stock_status || "") === opt.value
+                        ? (opt.active ?? "bg-[#8B5E3C] border-[#8B5E3C] text-white shadow-sm shadow-[#8B5E3C]/20")
+                        : "bg-gray-50 dark:bg-[#1a0b04] border-gray-200 dark:border-[#3a2010] text-gray-600 dark:text-[#D4C0A0] hover:border-gray-300 hover:bg-gray-100 dark:hover:bg-[#3a1a08]"
+                    }`}
+                  >
+                    {opt.icon}
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-2 px-3 py-2.5">
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-[#A89070] uppercase tracking-wider mr-1">Sortieren:</span>
+                <Select value={productFilters.sortBy} onValueChange={(value) => setProductFilters((prev) => ({ ...prev, sortBy: value }))}>
+                  <SelectTrigger className="h-8 text-xs border-gray-200 dark:border-[#3a2010] bg-gray-50 dark:bg-[#1a0b04] dark:text-[#FAF7F4] rounded-full px-4 w-40 gap-1 font-semibold text-gray-600">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="price">Preis</SelectItem>
+                    <SelectItem value="stock">Lagerbestand</SelectItem>
+                    <SelectItem value="rating">Bewertung</SelectItem>
+                    <SelectItem value="heat_level">Schärfegrad</SelectItem>
+                    <SelectItem value="category">Kategorie</SelectItem>
+                    <SelectItem value="created_at">Datum</SelectItem>
+                  </SelectContent>
+                </Select>
+                {(productFilters.search || productFilters.category || productFilters.stock_status) && (
+                  <button
+                    onClick={() => setProductFilters({ search: "", category: "", stock_status: "", sortBy: "name" })}
+                    className="ml-auto flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
             </div>{/* end filterCardRef wrapper */}
 
-            {/* Bulk action bar — sticky */}
-            <div className="sticky top-16 z-20 bg-blue-200/95 dark:bg-[#2D1206] backdrop-blur-sm border border-blue-300 dark:border-[#3a2010] rounded-2xl px-3 py-2 mb-4 shadow-sm flex flex-wrap items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={toggleSelectAll}
-                className="text-sm"
-              >
-                {selectedProductIds.size === filteredProducts.length && filteredProducts.length > 0
-                  ? "Alle abwählen"
-                  : "Alle auswählen"}
-              </Button>
-
-
-              {selectedProductIds.size > 0 && (
-                <>
-                  <span className="text-sm text-gray-600 dark:text-[#D4C0A0] font-medium">
-                    {selectedProductIds.size} ausgewählt
-                  </span>
+            {/* ── Produktstatus sticky bar ── */}
+            <div ref={statusSectionRef} />
+            {selectedProductIds.size > 0 && (
+              <div className="sticky top-16 z-20 mb-4">
+                <div className="bg-gradient-to-r from-[#8B5E3C] to-[#A0734F] rounded-2xl px-4 py-3 shadow-lg shadow-[#8B5E3C]/20 flex flex-wrap items-center gap-3">
+                  <div className="mr-2">
+                    <p className="text-white font-bold text-sm leading-tight">Produktstatus ändern</p>
+                    <p className="text-[#FAF7F4]/70 text-xs">{selectedProductIds.size} Produkt{selectedProductIds.size !== 1 ? "e" : ""} ausgewählt</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={toggleSelectAll} className="text-sm bg-white/10 border-white/30 text-white hover:bg-white/20">
+                    {selectedProductIds.size === filteredProducts.length && filteredProducts.length > 0 ? "Alle abwählen" : "Alle auswählen"}
+                  </Button>
                   <Select value={bulkStatus} onValueChange={setBulkStatus}>
-                    <SelectTrigger className="w-48 bg-white dark:bg-[#1a0b04] border-gray-300 dark:border-[#3a2010] dark:text-[#FAF7F4] text-sm">
+                    <SelectTrigger className="w-44 bg-white border-0 text-sm rounded-xl h-8 dark:text-[#1A1A1A]">
                       <SelectValue placeholder="Status ändern..." />
                     </SelectTrigger>
                     <SelectContent className="bg-white dark:bg-[#2D1206] dark:border-[#3a2010]">
@@ -2372,117 +2431,92 @@ export function Admin({ onClose }: AdminProps) {
                       <SelectItem value="out_of_stock">Nicht vorrätig</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button
-                    size="sm"
-                    onClick={handleBulkStatusUpdate}
-                    disabled={!bulkStatus || bulkLoading}
-                    className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white"
-                  >
+                  <Button size="sm" onClick={handleBulkStatusUpdate} disabled={!bulkStatus || bulkLoading} className="bg-white text-[#8B5E3C] hover:bg-[#FDF8F4] font-semibold">
                     {bulkLoading ? "Speichern..." : "Anwenden"}
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setSelectedProductIds(new Set())}
-                  >
+                  <Button size="sm" variant="ghost" onClick={() => setSelectedProductIds(new Set())} className="text-white hover:bg-white/20 ml-auto">
                     Abbrechen
                   </Button>
-                </>
-              )}
+                </div>
+              </div>
+            )}
+
+            {/* ── Produkte ── */}
+            <div className="mb-3">
+              <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produkte</h2>
+              <p className="text-xs text-gray-400 dark:text-[#A89070] mt-0.5">Alle Produkte im Überblick</p>
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {filteredProducts.map((product) => (
-                <Card
+                <div
                   key={product.id}
-                  className={`rounded-2xl border-[#EBEBEB] dark:border-[#3a2010] shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
-                    selectedProductIds.has(product.id) ? "ring-2 ring-[#8B5E3C] border-[#8B5E3C]" : "dark:bg-[#2D1206]"
+                  className={`group relative rounded-xl bg-white dark:bg-[#2D1206] border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden ${
+                    selectedProductIds.has(product.id) ? "ring-2 ring-[#8B5E3C] border-[#8B5E3C]" : "border-gray-100 dark:border-[#3a2010] hover:border-gray-200 dark:hover:border-[#5a3020]"
                   }`}
                   onClick={() => toggleProductSelection(product.id)}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                            selectedProductIds.has(product.id)
-                              ? "bg-[#8B5E3C] border-[#8B5E3C]"
-                              : "border-gray-300"
-                          }`}
-                        >
-                          {selectedProductIds.has(product.id) && (
-                            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </div>
-                        <ProductImage
-                          src={product.image_url}
-                          candidates={product.image_url_candidates}
-                          alt={product.name}
-                          className="w-20 h-20 object-cover rounded-lg"
-                        />
-                      </div>
-                      <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          size="sm"
-                          onClick={() => showEditProductModal(product.id)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => showDeleteProductModal(product.id, product.name)}
-                          className="bg-red-500 hover:bg-red-600 text-white"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    <h3 className="font-bold text-lg mb-2 text-gray-800 dark:text-[#FAF7F4]">{product.name}</h3>
-                    <p className="text-gray-600 dark:text-[#D4C0A0] text-sm mb-3 line-clamp-2">{product.description}</p>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Badge className="bg-[#8B5E3C]/10 text-[#8B5E3C]">{getCategoryDisplay(product.category)}</Badge>
-                        <span className="font-bold text-lg text-gray-800 dark:text-[#FAF7F4]">
-                          {Number.parseFloat(product.price.toString()).toFixed(2)} CHF
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <Badge className={getStockStatusColor(product.stock_status)}>
-                            {getStockStatusText(product.stock_status)}
-                          </Badge>
-                          <span className="text-sm font-medium text-gray-700 dark:text-[#D4C0A0]">
-                            Lager: {product.stock}
-                          </span>
-                        </div>
-                      </div>
-
-
-                      {product.badge && (
-                        <Badge variant="outline" className="text-xs">
-                          {product.badge}
-                        </Badge>
+                  {/* Checkbox */}
+                  <div className="absolute top-2 left-2 z-10">
+                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${selectedProductIds.has(product.id) ? "bg-[#8B5E3C] border-[#8B5E3C]" : "border-gray-300 bg-white/80 backdrop-blur-sm"}`}>
+                      {selectedProductIds.has(product.id) && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
                       )}
-
-                      {product.supplier && <p className="text-xs text-gray-500 dark:text-[#A89070]">Lieferant: {product.supplier}</p>}
-                      {product.origin && <p className="text-xs text-gray-500 dark:text-[#A89070]">Hersteller: {product.origin}</p>}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                  {/* Image */}
+                  <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#1a0b04] dark:to-[#2D1206] overflow-hidden">
+                    <ProductImage src={product.image_url} candidates={product.image_url_candidates} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-2 right-2">
+                      <div className={`w-2.5 h-2.5 rounded-full ring-2 ring-white shadow-sm ${product.stock_status === "in_stock" ? "bg-emerald-500" : product.stock_status === "low_stock" ? "bg-amber-500" : "bg-red-500"}`} title={getStockStatusText(product.stock_status)} />
+                    </div>
+                  </div>
+                  {/* Info */}
+                  <div className="p-3">
+                    <h3 className="font-bold text-sm text-gray-900 dark:text-[#FAF7F4] line-clamp-1 mb-1">{product.name}</h3>
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-base text-gray-900 dark:text-[#FAF7F4]">
+                        {Number.parseFloat(product.price.toString()).toFixed(2)} <span className="text-gray-400 font-medium text-xs">CHF</span>
+                      </span>
+                      <span className="text-xs text-gray-400 dark:text-[#A89070] font-medium">{product.stock} Stk.</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[#8B5E3C]/10 text-[#8B5E3C]">{getCategoryDisplay(product.category)}</span>
+                      {product.badge && <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">{product.badge}</span>}
+                    </div>
+                  </div>
+                  {/* Footer buttons */}
+                  <div className="flex border-t border-gray-100 dark:border-[#3a2010]">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); showEditProductModal(product.id) }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors rounded-bl-xl"
+                    >
+                      <Edit className="w-3 h-3" />
+                      Bearbeiten
+                    </button>
+                    <div className="w-px bg-gray-100 dark:bg-[#3a2010]" />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); showDeleteProductModal(product.id, product.name) }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-br-xl"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Löschen
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
 
             {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 text-gray-400 dark:text-[#A89070] mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-[#D4C0A0] text-lg">Keine Produkte gefunden</p>
+              <div className="flex flex-col items-center justify-center py-16 px-6">
+                <div className="w-16 h-16 bg-gray-100 dark:bg-[#2D1206] rounded-2xl flex items-center justify-center mb-4">
+                  <Package className="w-8 h-8 text-gray-300 dark:text-[#A89070]" />
+                </div>
+                <p className="text-gray-500 dark:text-[#A89070] font-medium">Keine Produkte gefunden</p>
+                <p className="text-gray-400 dark:text-[#A89070] text-sm mt-1">Versuche andere Filteroptionen</p>
               </div>
             )}
           </TabsContent>
