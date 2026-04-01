@@ -271,7 +271,7 @@ function CatCard({ srcs, displayName, isActive, onClick, isDark }: {
       onClick={onClick}
       className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300"
       style={{
-        height: "260px", minWidth: "280px", width: "280px", flexShrink: 0,
+        height: "200px", minWidth: "220px", width: "220px", flexShrink: 0,
         backgroundColor: "#f5f5f5",
         border: isActive
           ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
@@ -314,7 +314,6 @@ export default function ShopGrid() {
   const searchParams = useSearchParams()
   const [products, setProducts]     = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const [viewingParentCat, setViewingParentCat] = useState<Category | null>(null)
   const [expandedSidebarCats, setExpandedSidebarCats] = useState<Set<number>>(new Set())
   const [loading, setLoading]       = useState(true)
   const [error, setError]           = useState("")
@@ -921,47 +920,38 @@ export default function ShopGrid() {
               <div className="w-1 self-stretch bg-[#8B5E3C] rounded-full flex-shrink-0" />
               <div>
                 <p className="font-black text-[#8B5E3C] text-2xl leading-tight">Unsere Kategorien</p>
-                <p className="text-sm text-[#888] dark:text-[#A89070] mt-1">
-                  {viewingParentCat ? viewingParentCat.name.replace(/\s*\d{4}$/, "") : "Lederartikel & Accessoires"}
-                </p>
+                <p className="text-sm text-[#888] dark:text-[#A89070] mt-1">Lederartikel & Accessoires</p>
               </div>
             </div>
 
             {/* ── Category image banners — desktop only ── */}
             <div className="hidden lg:block mb-6 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex gap-3" style={{ flexWrap: "nowrap" }}>
-                {/* Alle / Zurück card */}
+                {/* Alle card */}
                 <button
-                  onClick={() => { setViewingParentCat(null); setActiveCategory("all") }}
+                  onClick={() => setActiveCategory("all")}
                   className="relative overflow-hidden rounded-2xl group text-left transition-all duration-300 flex flex-col justify-between p-4 bg-[#F5EDE0] dark:bg-[#3a1a08]"
                   style={{
-                    height: "260px", minWidth: "280px", width: "280px", flexShrink: 0,
-                    border: !viewingParentCat && activeCategory === "all"
+                    height: "200px", minWidth: "220px", width: "220px", flexShrink: 0,
+                    border: activeCategory === "all"
                       ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
                       : `2px solid ${isDark ? "#8B5E3C" : "#D9C4AD"}`,
-                    boxShadow: !viewingParentCat && activeCategory === "all" ? "0 8px 32px rgba(139,94,60,0.2)" : "none",
+                    boxShadow: activeCategory === "all" ? "0 8px 32px rgba(139,94,60,0.2)" : "none",
                   }}
                 >
                   <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.10)" }} />
                   <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.08)" }} />
                   <div className="absolute top-1/2 right-6 -translate-y-1/2 w-14 h-14 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.06)" }} />
                   <div className="relative w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(139,94,60,0.15)" }}>
-                    {viewingParentCat ? <ChevronLeft className="w-6 h-6" style={{ color: "#8B5E3C" }} /> : <LayoutGrid className="w-6 h-6" style={{ color: "#8B5E3C" }} />}
+                    <LayoutGrid className="w-6 h-6" style={{ color: "#8B5E3C" }} />
                   </div>
                   <div className="relative">
-                    <p className="font-black text-base leading-tight tracking-tight" style={{ color: "#8B5E3C" }}>
-                      {viewingParentCat ? "Zurück zu Kategorien" : "Alle Kategorien"}
-                    </p>
-                    <p className="text-[11px] mt-0.5 font-medium text-[#A07850] dark:text-[#C49A6C]">
-                      {viewingParentCat ? "← Alle anzeigen" : "Alles anzeigen →"}
-                    </p>
+                    <p className="font-black text-base leading-tight tracking-tight" style={{ color: "#8B5E3C" }}>Alle Kategorien</p>
+                    <p className="text-[11px] mt-0.5 font-medium text-[#A07850] dark:text-[#C49A6C]">Alles anzeigen →</p>
                   </div>
                 </button>
-                {/* Root categories or subcategories depending on viewingParentCat */}
-                {(viewingParentCat
-                  ? categories.filter(c => c.parent_id === viewingParentCat.id)
-                  : categories.filter(c => c.parent_id === null)
-                ).map(cat => {
+                {/* Parent categories only */}
+                {categories.filter(c => c.parent_id === null).map(cat => {
                   const catProds = products.filter(p => p.category === cat.slug || p.category === cat.name)
                   const srcs: string[] = []
                   for (const p of catProds) {
@@ -973,7 +963,6 @@ export default function ShopGrid() {
                   const uniqueSrcs = [...new Set(srcs)]
                   const isActive = activeCategory === cat.slug
                   const displayName = cat.name.replace(/\s*\d{4}$/, "")
-                  const hasChildren = categories.some(c => c.parent_id === cat.id)
                   return (
                     <CatCard
                       key={cat.slug}
@@ -981,14 +970,7 @@ export default function ShopGrid() {
                       displayName={displayName}
                       isActive={isActive}
                       isDark={isDark}
-                      onClick={() => {
-                        if (!viewingParentCat && hasChildren) {
-                          setViewingParentCat(cat)
-                          setActiveCategory("all")
-                        } else {
-                          setActiveCategory(prev => prev === cat.slug ? "all" : cat.slug)
-                        }
-                      }}
+                      onClick={() => setActiveCategory(prev => prev === cat.slug ? "all" : cat.slug)}
                     />
                   )
                 })}
@@ -998,37 +980,30 @@ export default function ShopGrid() {
             {/* ── Category cards — mobile only ── */}
             <div ref={mobileCatScrollRef} className="lg:hidden overflow-x-auto mb-3 -mx-4 px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex gap-2.5 pb-1" style={{ flexWrap: "nowrap" }}>
-                {/* Alle / Zurück card — mobile */}
+                {/* Alle card — mobile */}
                 <button
-                  onClick={() => { setViewingParentCat(null); setActiveCategory("all") }}
+                  onClick={() => setActiveCategory("all")}
                   className="relative overflow-hidden rounded-xl flex-shrink-0 flex flex-col justify-between p-3 transition-all duration-200 bg-[#F5EDE0] dark:bg-[#3a1a08]"
                   style={{
                     width: "160px", height: "160px",
-                    border: !viewingParentCat && activeCategory === "all"
+                    border: activeCategory === "all"
                       ? `2px solid ${isDark ? "#FFFFFF" : "#8B5E3C"}`
                       : `2px solid ${isDark ? "#8B5E3C" : "#D9C4AD"}`,
-                    boxShadow: !viewingParentCat && activeCategory === "all" ? "0 4px 16px rgba(139,94,60,0.2)" : "none",
+                    boxShadow: activeCategory === "all" ? "0 4px 16px rgba(139,94,60,0.2)" : "none",
                   }}
                 >
                   <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.10)" }} />
                   <div className="absolute -bottom-3 -left-3 w-12 h-12 rounded-full" style={{ backgroundColor: "rgba(139,94,60,0.08)" }} />
                   <div className="relative w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(139,94,60,0.15)" }}>
-                    {viewingParentCat ? <ChevronLeft className="w-4 h-4" style={{ color: "#8B5E3C" }} /> : <LayoutGrid className="w-4 h-4" style={{ color: "#8B5E3C" }} />}
+                    <LayoutGrid className="w-4 h-4" style={{ color: "#8B5E3C" }} />
                   </div>
                   <div className="relative">
-                    <p className="font-black text-[13px] leading-tight" style={{ color: "#8B5E3C" }}>
-                      {viewingParentCat ? "Zurück" : "Alle"}
-                    </p>
-                    <p className="text-[11px] mt-0.5 text-[#A07850] dark:text-[#C49A6C]">
-                      {viewingParentCat ? "← Kategorien" : "Anzeigen"}
-                    </p>
+                    <p className="font-black text-[13px] leading-tight" style={{ color: "#8B5E3C" }}>Alle</p>
+                    <p className="text-[11px] mt-0.5 text-[#A07850] dark:text-[#C49A6C]">Anzeigen</p>
                   </div>
                 </button>
-                {/* Root categories or subcategories */}
-                {(viewingParentCat
-                  ? categories.filter(c => c.parent_id === viewingParentCat.id)
-                  : categories.filter(c => c.parent_id === null)
-                ).map(cat => {
+                {/* Parent categories only — mobile */}
+                {categories.filter(c => c.parent_id === null).map(cat => {
                   const catProds = products.filter(p => p.category === cat.slug || p.category === cat.name)
                   const srcs: string[] = []
                   for (const p of catProds) {
@@ -1040,7 +1015,6 @@ export default function ShopGrid() {
                   const uniqueSrcs = [...new Set(srcs)]
                   const isActive = activeCategory === cat.slug
                   const displayName = cat.name.replace(/\s*\d{4}$/, "")
-                  const hasChildren = categories.some(c => c.parent_id === cat.id)
                   return (
                     <MobileCatCard
                       key={cat.slug}
@@ -1049,19 +1023,50 @@ export default function ShopGrid() {
                       displayName={displayName}
                       isActive={isActive}
                       isDark={isDark}
-                      onClick={() => {
-                        if (!viewingParentCat && hasChildren) {
-                          setViewingParentCat(cat)
-                          setActiveCategory("all")
-                        } else {
-                          setActiveCategory(prev => prev === cat.slug ? "all" : cat.slug)
-                        }
-                      }}
+                      onClick={() => setActiveCategory(prev => prev === cat.slug ? "all" : cat.slug)}
                     />
                   )
                 })}
               </div>
             </div>
+
+            {/* ── Subcategory pills — show only for active parent ── */}
+            {(() => {
+              const activeCat = categories.find(c => c.slug === activeCategory)
+              if (!activeCat) return null
+              const resolvedParent = activeCat.parent_id === null
+                ? activeCat
+                : categories.find(c => c.id === activeCat.parent_id) ?? null
+              if (!resolvedParent) return null
+              const children = categories.filter(c => c.parent_id === resolvedParent.id)
+              if (children.length === 0) return null
+              return (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[11px] font-bold text-gray-400 dark:text-[#7a6050] uppercase tracking-wider whitespace-nowrap">
+                      {resolvedParent.name.replace(/\s*\d{4}$/, "")}
+                    </span>
+                    <span className="text-gray-300 dark:text-[#3a2010]">›</span>
+                    {children.map(child => {
+                      const isActive = activeCategory === child.slug
+                      return (
+                        <button
+                          key={child.slug}
+                          onClick={() => setActiveCategory(prev => prev === child.slug ? resolvedParent.slug : child.slug)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border whitespace-nowrap ${
+                            isActive
+                              ? "bg-[#8B5E3C] text-white border-[#8B5E3C] shadow-sm"
+                              : "bg-white dark:bg-[#2D1206] text-gray-600 dark:text-[#D4C0A0] border-gray-200 dark:border-[#3a2010] hover:border-[#8B5E3C] hover:text-[#8B5E3C]"
+                          }`}
+                        >
+                          {child.name.replace(/\s*\d{4}$/, "")}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* ── Supplier section title ── */}
             {suppliers.length > 0 && (

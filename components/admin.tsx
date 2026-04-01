@@ -2198,7 +2198,7 @@ export function Admin({ onClose }: AdminProps) {
                     <Plus className="w-5 h-5 text-white" />
                   </div>
                   <p className="text-white font-bold text-base leading-tight">Neue Kategorie</p>
-                  <p className="text-[#FAF7F4]/70 text-xs mt-1">Kategorie erstellen</p>
+                  <p className="text-[#FAF7F4]/70 text-xs mt-1">Kategorie oder Unterkategorie erstellen</p>
                 </div>
               </button>
             </div>
@@ -2207,40 +2207,78 @@ export function Admin({ onClose }: AdminProps) {
             {categories.length > 0 && (
               <div className="mb-6">
                 <h3 className="text-xs font-semibold text-gray-400 dark:text-[#A89070] uppercase tracking-wider mb-3">Kategorien</h3>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-col gap-4">
                   {categories.filter((c) => c.parent_id === null).map((parent) => {
                     const children = categories.filter((c) => c.parent_id === parent.id)
                     const parentCount = products.filter((p) => p.category === parent.slug).length
                     return (
-                      <div key={parent.slug} className="flex flex-col rounded-2xl bg-white dark:bg-[#2D1206] border border-gray-100 dark:border-[#3a2010] shadow-sm hover:shadow-md transition-all overflow-hidden w-full sm:w-56">
+                      <div key={parent.slug} className="rounded-2xl bg-white dark:bg-[#2D1206] border border-gray-100 dark:border-[#3a2010] shadow-sm overflow-hidden">
+                        {/* Parent category row */}
                         <div className="flex items-center gap-2.5 px-3.5 pt-3 pb-2">
                           <div className="w-8 h-8 bg-gradient-to-br from-[#8B5E3C] to-[#A0734F] rounded-xl flex items-center justify-center shrink-0 shadow-sm shadow-[#8B5E3C]/20">
                             <Flame className="w-4 h-4 text-white" />
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="font-bold text-gray-900 dark:text-[#FAF7F4] text-sm truncate">{parent.name}</p>
-                            <p className="text-[11px] text-gray-400 dark:text-[#A89070] font-medium">{parentCount} Produkt{parentCount !== 1 ? "e" : ""}{children.length > 0 ? ` · ${children.length} Sub` : ""}</p>
+                            <p className="text-[11px] text-gray-400 dark:text-[#A89070] font-medium">{parentCount} Produkt{parentCount !== 1 ? "e" : ""}{children.length > 0 ? ` · ${children.length} Unterkategorie${children.length !== 1 ? "n" : ""}` : ""}</p>
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              onClick={() => { setEditingCategory(parent); setIsCategoryModalOpen(true) }}
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#8B5E3C] hover:bg-[#8B5E3C]/8 rounded-lg transition-colors"
+                            >
+                              <Edit className="w-3 h-3" />
+                              Bearbeiten
+                            </button>
+                            <button
+                              onClick={() => handleDeleteCategory(parent)}
+                              disabled={parentCount > 0 || children.length > 0}
+                              title={parentCount > 0 ? `${parentCount} Produkte – zuerst löschen` : children.length > 0 ? "Zuerst Unterkategorien löschen" : "Löschen"}
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              Löschen
+                            </button>
                           </div>
                         </div>
-                        <div className="flex border-t border-gray-100 dark:border-[#3a2010] mt-1">
-                          <button
-                            onClick={() => { setEditingCategory(parent); setIsCategoryModalOpen(true) }}
-                            className="flex-1 flex items-center justify-center gap-1 py-1.5 text-[11px] font-semibold text-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-colors"
-                          >
-                            <Edit className="w-3 h-3" />
-                            Bearbeiten
-                          </button>
-                          <div className="w-px bg-gray-100 dark:bg-[#3a2010]" />
-                          <button
-                            onClick={() => handleDeleteCategory(parent)}
-                            disabled={parentCount > 0 || children.length > 0}
-                            title={parentCount > 0 ? `${parentCount} Produkte – zuerst löschen` : children.length > 0 ? "Zuerst Unterkategorien löschen" : "Löschen"}
-                            className="flex-1 flex items-center justify-center gap-1 py-1.5 text-[11px] font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                            Löschen
-                          </button>
-                        </div>
+                        {/* Subcategory tabs */}
+                        {children.length > 0 && (
+                          <div className="border-t border-gray-100 dark:border-[#3a2010] px-3.5 py-3 bg-gray-50/60 dark:bg-[#1a0b04]/40">
+                            <p className="text-[10px] font-semibold text-gray-400 dark:text-[#7a6050] uppercase tracking-wider mb-2.5">Unterkategorien</p>
+                            <div className="flex flex-wrap gap-2">
+                              {children.map((child) => {
+                                const childCount = products.filter((p) => p.category === child.slug).length
+                                return (
+                                  <div key={child.slug} className="flex items-center rounded-xl border border-gray-200 dark:border-[#3a2010] bg-white dark:bg-[#2D1206] overflow-hidden shadow-sm">
+                                    <div className="pl-3.5 pr-3 py-2.5">
+                                      <p className="text-sm font-bold text-gray-800 dark:text-[#FAF7F4] leading-tight">{child.name}</p>
+                                      <p className="text-[11px] text-gray-400 dark:text-[#7a6050] mt-0.5">{childCount} Produkt{childCount !== 1 ? "e" : ""}</p>
+                                    </div>
+                                    <div className="flex flex-col border-l border-gray-100 dark:border-[#3a2010] h-full self-stretch">
+                                      <button
+                                        onClick={() => { setEditingCategory(child); setIsCategoryModalOpen(true) }}
+                                        className="flex-1 flex items-center gap-1 px-3 py-1.5 text-[11px] font-semibold text-[#8B5E3C] hover:bg-[#8B5E3C]/8 transition-colors border-b border-gray-100 dark:border-[#3a2010]"
+                                        title="Bearbeiten"
+                                      >
+                                        <Edit className="w-3 h-3" />
+                                        Edit
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteCategory(child)}
+                                        disabled={childCount > 0}
+                                        title={childCount > 0 ? `${childCount} Produkte – zuerst löschen` : "Löschen"}
+                                        className="flex-1 flex items-center gap-1 px-3 py-1.5 text-[11px] font-semibold text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                      >
+                                        <Trash2 className="w-3 h-3" />
+                                        Del
+                                      </button>
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )
                   })}
