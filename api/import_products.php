@@ -57,6 +57,7 @@ try {
             $category    = isset($p['category']) ? trim($p['category'])     : '';
             $categoryName = isset($p['category_name']) ? trim($p['category_name']) : $category;
             $image_url   = isset($p['image_url']) && $p['image_url'] !== '' ? trim($p['image_url']) : null;
+            $weight_kg   = isset($p['weight_kg']) && $p['weight_kg'] > 0 ? floatval($p['weight_kg']) : 0.500;
 
             if ($id <= 0 || $name === '') {
                 $skipped++;
@@ -86,10 +87,10 @@ try {
             // --- UPSERT: INSERT si no existe, UPDATE si ya existe ---
             $sql = "INSERT INTO products
                         (id, name, description, price, stock, supplier, origin, category,
-                         heat_level, rating, badge, image_url)
+                         heat_level, rating, badge, image_url, weight_kg)
                     VALUES
                         (:id, :name, :description, :price, :stock, :supplier, :origin, :category,
-                         1, 0.0, '', :image_url)
+                         1, 0.0, '', :image_url, :weight_kg)
                     ON DUPLICATE KEY UPDATE
                         name        = VALUES(name),
                         description = VALUES(description),
@@ -99,6 +100,7 @@ try {
                         origin      = VALUES(origin),
                         category    = VALUES(category),
                         image_url   = IF(VALUES(image_url) IS NOT NULL, VALUES(image_url), image_url),
+                        weight_kg   = VALUES(weight_kg),
                         updated_at  = CURRENT_TIMESTAMP";
 
             $stmt = $pdo->prepare($sql);
@@ -112,6 +114,7 @@ try {
                 ':origin'      => $origin,
                 ':category'    => $category,
                 ':image_url'   => $image_url,
+                ':weight_kg'   => $weight_kg,
             ]);
 
             // rowCount() = 1 → INSERT, 2 → UPDATE, 0 → sin cambios

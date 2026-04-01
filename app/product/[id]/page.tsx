@@ -377,7 +377,7 @@ export default function ProductPage() {
                   </span>
                   <span className="text-base text-[#999] dark:text-[#A89070] font-medium">CHF</span>
                 </div>
-                <p className="text-xs text-[#999] dark:text-[#A89070] mb-4">* Preise inkl. MwSt., zzgl. Versandkosten</p>
+                <p className="text-xs text-[#999] dark:text-[#A89070] mb-4">* Preise exkl. MwSt., zzgl. Versandkosten</p>
                 <button
                   onClick={addToCart}
                   disabled={!inStock}
@@ -392,6 +392,16 @@ export default function ProductPage() {
                   {added ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
                   {added ? "Hinzugefügt!" : inStock ? "In den Warenkorb" : "Ausverkauft"}
                 </button>
+                {!inStock && (
+                  <p className="text-xs text-center text-[#999] dark:text-[#A89070] mt-3">
+                    <a
+                      href={`mailto:info@leder-shop.ch?subject=Verfügbarkeitsanfrage: ${encodeURIComponent(product.name)}&body=Guten Tag,%0A%0Aich würde gerne wissen, ob der folgende Artikel wieder verfügbar ist:%0A%0AArtikel: ${encodeURIComponent(product.name)}%0AArtikel-Nr.: ${product.id}%0A%0AVielen Dank!`}
+                      className="underline hover:text-[#8B5E3C] dark:hover:text-[#D4C0A0] transition-colors"
+                    >
+                      Nach Verfügbarkeit anfragen
+                    </a>
+                  </p>
+                )}
               </div>
             </div>
 

@@ -525,7 +525,7 @@ export default function ShopGrid() {
       const matchSearch   = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
       const matchCategory = activeCategory === "all" || p.category === activeCategory
       const matchSupplier = activeSupplier === "all" || p.supplier === activeSupplier
-      const matchStock    = stockFilter === "out_of_stock" ? (p.stock ?? 0) === 0 : (p.stock ?? 0) > 0
+      const matchStock    = stockFilter === "out_of_stock" ? (p.stock ?? 0) === 0 : true
       return matchSearch && matchCategory && matchSupplier && matchStock
     })
     .sort((a, b) => {
@@ -809,7 +809,7 @@ export default function ShopGrid() {
                     >
                       <span className="truncate">Alle</span>
                       <span className={`text-[10px] font-bold ml-2 px-1.5 py-0.5 rounded-full flex-shrink-0 ${activeCategory === "all" ? "bg-white/25 text-white" : "bg-[#F0F0F0] dark:bg-[#1a0b04] text-[#888] dark:text-[#A89070]"}`}>
-                        {products.filter(p => (p.stock ?? 0) > 0).length}
+                        {products.length}
                       </span>
                     </button>
                   </li>

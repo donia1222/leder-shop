@@ -124,6 +124,8 @@ export async function POST(request: NextRequest) {
         const description = String(getCol(row, "Beschreibung") ?? "").trim()
         const supplier = String(getCol(row, "Lieferant") ?? "").trim()
         const origin = String(getCol(row, "Hersteller") ?? "").trim()
+        const weightRaw = parseFloat(String(getCol(row, "Gewicht", "Gewicht (kg)", "weight_kg") ?? "").replace(",", "."))
+        const weight_kg = isNaN(weightRaw) || weightRaw <= 0 ? 0.500 : weightRaw
 
         // Guardar URL sin extensión — frontend prueba .jpg / .JPG / .jpeg
         const artikelNr = String(id).trim()
@@ -145,6 +147,7 @@ export async function POST(request: NextRequest) {
           category: categorySlug,
           category_name: categoryName,
           image_url,
+          weight_kg,
         })
       }
     }

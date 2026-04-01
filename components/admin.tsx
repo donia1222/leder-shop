@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import {
   ArrowLeft,
   RefreshCw,
@@ -39,6 +39,7 @@ import {
   Moon,
 } from "lucide-react"
 import { useTheme } from "next-themes"
+import { PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -340,6 +341,40 @@ export function Admin({ onClose }: AdminProps) {
   const [shippingRanges, setShippingRanges] = useState<ShippingRange[]>([])
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([])
   const [shippingLoading, setShippingLoading] = useState(false)
+  const [showCharts, setShowCharts] = useState(false)
+
+  // Chart Data from orders
+  const orderChartData = useMemo(() => {
+    if (!orders.length) return { statusData: [], paymentData: [], dailyData: [] }
+    const statusCounts = { pending: 0, processing: 0, completed: 0, cancelled: 0 }
+    const paymentCounts: Record<string, number> = {}
+    const dailyRevenue: Record<string, number> = {}
+    orders.forEach((order) => {
+      if (order.status in statusCounts) statusCounts[order.status as keyof typeof statusCounts]++
+      const m = (order.payment_method || "").toLowerCase()
+      let method = "Andere"
+      if (m.includes("twint")) method = "TWINT"
+      else if (m.includes("paypal")) method = "PayPal"
+      else if (m.includes("stripe") || m.includes("card")) method = "Kreditkarte"
+      else if (m.includes("invoice") || m.includes("rechnung")) method = "Rechnung"
+      paymentCounts[method] = (paymentCounts[method] || 0) + 1
+      const date = order.created_at?.split(" ")[0] || order.created_at?.split("T")[0] || "Unknown"
+      const shortDate = date.slice(5)
+      dailyRevenue[shortDate] = (dailyRevenue[shortDate] || 0) + (Number.parseFloat(String(order.total_amount)) || 0)
+    })
+    const statusData = [
+      { name: "Abgeschlossen", value: statusCounts.completed, color: "#8B5E3C" },
+      { name: "In Bearbeitung", value: statusCounts.processing, color: "#c4853a" },
+      { name: "Ausstehend", value: statusCounts.pending, color: "#f59e0b" },
+      { name: "Storniert", value: statusCounts.cancelled, color: "#ef4444" },
+    ].filter(d => d.value > 0)
+    const paymentColors: Record<string, string> = {
+      "TWINT": "#9333ea", "PayPal": "#3b82f6", "Kreditkarte": "#6366f1", "Rechnung": "#64748b", "Andere": "#94a3b8"
+    }
+    const paymentData = Object.entries(paymentCounts).map(([name, value]) => ({ name, value, color: paymentColors[name] || "#94a3b8" }))
+    const dailyData = Object.entries(dailyRevenue).sort(([a], [b]) => a.localeCompare(b)).slice(-14).map(([date, revenue]) => ({ date, revenue: Math.round(revenue * 100) / 100 }))
+    return { statusData, paymentData, dailyData }
+  }, [orders])
   const [shippingSavedMsg, setShippingSavedMsg] = useState("")
   const [isSavingShipping, setIsSavingShipping] = useState(false)
 
@@ -531,6 +566,28 @@ export function Admin({ onClose }: AdminProps) {
   }
 
   // Gallery Functions
+  const resizeImage = (file: File, maxSize = 1200, quality = 0.85): Promise<File> =>
+    new Promise((resolve, reject) => {
+      const img = new Image()
+      const url = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(url)
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height))
+        const w = Math.round(img.width * scale)
+        const h = Math.round(img.height * scale)
+        const canvas = document.createElement("canvas")
+        canvas.width = w
+        canvas.height = h
+        canvas.getContext("2d")!.drawImage(img, 0, 0, w, h)
+        canvas.toBlob(blob => {
+          if (!blob) { reject(new Error("Resize failed")); return }
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" }))
+        }, "image/jpeg", quality)
+      }
+      img.onerror = reject
+      img.src = url
+    })
+
   const loadGalleryImages = async (bustCache = false) => {
     setGalleryLoading(true)
     try {
@@ -558,8 +615,10 @@ export function Admin({ onClose }: AdminProps) {
     try {
       const fd = new FormData()
       if (galleryForm.title.trim()) fd.append("title", galleryForm.title.trim())
-      if (galleryImageFile) fd.append("image", galleryImageFile)
-      else if (galleryImageUrl.trim()) fd.append("image_url", galleryImageUrl.trim())
+      if (galleryImageFile) {
+        const resized = await resizeImage(galleryImageFile)
+        fd.append("image", resized)
+      } else if (galleryImageUrl.trim()) fd.append("image_url", galleryImageUrl.trim())
       const res = await fetch("/api/gallery/add", { method: "POST", body: fd })
       const d = await res.json()
       if (!d.success) throw new Error(d.error)
@@ -1201,18 +1260,19 @@ export function Admin({ onClose }: AdminProps) {
     doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(139, 94, 60)
     doc.text("RECHNUNG", pageW - margin, 36, { align: "right" })
     doc.setFontSize(10); doc.setTextColor(100, 100, 100)
-    doc.text(`Nr: ${order.order_number}`, pageW - margin, 43, { align: "right" })
-    doc.text(`Datum: ${formatDate(order.created_at)}`, pageW - margin, 49, { align: "right" })
+    doc.text(`Rechnungsnummer: #FA${String(order.order_number).padStart(8,'0')}`, pageW - margin, 43, { align: "right" })
+    doc.text(`Bestellnummer: ${order.order_number}`, pageW - margin, 49, { align: "right" })
+    doc.text(`Datum: ${formatDate(order.created_at)}`, pageW - margin, 55, { align: "right" })
 
     // Trennlinie
     doc.setDrawColor(139, 94, 60); doc.setLineWidth(0.5)
     doc.line(margin, 62, pageW - margin, 62)
 
-    // Kundendaten
-    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(40, 40, 40)
+    // Kundendaten — Rechnungsadresse (links)
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(40, 40, 40)
     doc.text("Rechnungsadresse:", margin, 70)
-    doc.setFont("helvetica", "normal"); doc.setFontSize(10)
-    const lines = [
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9)
+    const billingLines = [
       `${order.customer_first_name} ${order.customer_last_name}`,
       order.customer_address,
       `${order.customer_postal_code} ${order.customer_city}`,
@@ -1220,7 +1280,20 @@ export function Admin({ onClose }: AdminProps) {
       order.customer_email,
       order.customer_phone,
     ].filter(Boolean)
-    lines.forEach((l, i) => doc.text(l, margin, 77 + i * 5.5))
+    billingLines.forEach((l, i) => doc.text(l, margin, 76 + i * 5))
+
+    // Lieferadresse (rechts)
+    const midX = pageW / 2 + 5
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10)
+    doc.text("Lieferadresse:", midX, 70)
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9)
+    const shippingLines = [
+      `${order.customer_first_name} ${order.customer_last_name}`,
+      order.customer_address,
+      `${order.customer_postal_code} ${order.customer_city}`,
+      order.customer_canton,
+    ].filter(Boolean)
+    shippingLines.forEach((l, i) => doc.text(l, midX, 76 + i * 5))
 
     // Bestellstatus
     doc.setFont("helvetica", "bold"); doc.setFontSize(10)
@@ -1247,26 +1320,46 @@ export function Admin({ onClose }: AdminProps) {
 
     doc.setFont("helvetica", "normal"); doc.setTextColor(40, 40, 40)
     const items = order.items || []
+    let itemsSubtotal = 0
     items.forEach((item, idx) => {
-      if (idx % 2 === 0) { doc.setFillColor(250, 245, 235); doc.rect(margin, y - 2, pageW - margin * 2, 8, "F") }
-      doc.setFontSize(9)
+      const subtotal = Number(item.subtotal) || 0
+      itemsSubtotal += subtotal
+      const rowH = 14
+      if (idx % 2 === 0) { doc.setFillColor(250, 245, 235); doc.rect(margin, y - 2, pageW - margin * 2, rowH, "F") }
+      doc.setFontSize(9); doc.setTextColor(40, 40, 40)
       doc.text(item.product_name.substring(0, 50), margin + 2, y + 4)
       doc.text(`${item.quantity}x`, colQty, y + 4)
       doc.text(`${(Number(item.price) || 0).toFixed(2)} CHF`, colPrice, y + 4, { align: "right" })
-      doc.text(`${(Number(item.subtotal) || 0).toFixed(2)} CHF`, colTotal, y + 4, { align: "right" })
-      y += 9
+      doc.text(`${subtotal.toFixed(2)} CHF`, colTotal, y + 4, { align: "right" })
+      // Steuersatz sub-line
+      const itemMwst = Math.round(subtotal * 0.081 / 0.05) * 0.05
+      doc.setFontSize(7); doc.setTextColor(150, 150, 150)
+      doc.text(`Steuersatz 8.1%: ${itemMwst.toFixed(2)} CHF`, colTotal, y + 9, { align: "right" })
+      doc.setTextColor(40, 40, 40)
+      y += rowH
     })
 
     // Totales
+    const mwstAmount = Math.round(itemsSubtotal * 0.081 / 0.05) * 0.05
+    const shippingAmt = Number(order.shipping_cost) || 0
+    const grossTotal = itemsSubtotal + shippingAmt + mwstAmount
+    const roundedTotal = Math.ceil(grossTotal / 0.5) * 0.5
+
     y += 4
     doc.setDrawColor(200, 200, 200); doc.line(margin, y, pageW - margin, y); y += 6
-    doc.setFontSize(10); doc.setFont("helvetica", "normal")
+    doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(40, 40, 40)
+    doc.text("Zwischensumme:", pageW - 55, y)
+    doc.text(`${itemsSubtotal.toFixed(2)} CHF`, pageW - margin, y, { align: "right" })
+    y += 7
+    doc.text("MwSt. 8.1%:", pageW - 55, y)
+    doc.text(`${mwstAmount.toFixed(2)} CHF`, pageW - margin, y, { align: "right" })
+    y += 7
     doc.text("Versandkosten:", pageW - 55, y)
-    doc.text(`${(Number(order.shipping_cost) || 0).toFixed(2)} CHF`, pageW - margin, y, { align: "right" })
+    doc.text(`${shippingAmt.toFixed(2)} CHF`, pageW - margin, y, { align: "right" })
     y += 7
     doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(139, 94, 60)
     doc.text("TOTAL:", pageW - 55, y)
-    doc.text(`${(Number(order.total_amount) || 0).toFixed(2)} CHF`, pageW - margin, y, { align: "right" })
+    doc.text(`${roundedTotal.toFixed(2)} CHF`, pageW - margin, y, { align: "right" })
 
     doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(150, 150, 150)
     doc.text("Vielen Dank für Ihren Einkauf!", pageW / 2, 285, { align: "center" })
@@ -1566,6 +1659,108 @@ export function Admin({ onClose }: AdminProps) {
               </div>
             )}
 
+            {/* Charts Toggle */}
+            {orders.length > 0 && (
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={() => setShowCharts(v => !v)}
+                  className="flex items-center gap-2 text-xs font-semibold text-[#8B5E3C] hover:text-[#6B4423] border border-[#8B5E3C]/30 rounded-xl px-4 py-2 bg-white dark:bg-[#2D1206] hover:bg-[#8B5E3C]/5 transition-all shadow-sm"
+                >
+                  <span>{showCharts ? "▲" : "▼"}</span>
+                  {showCharts ? "Statistiken ausblenden" : "Statistiken anzeigen"}
+                </button>
+              </div>
+            )}
+
+            {/* Charts Section */}
+            {orders.length > 0 && showCharts && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+                {/* Revenue Area Chart */}
+                <div className="lg:col-span-2 rounded-2xl bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="font-bold text-[#1A1A1A] dark:text-[#FAF7F4] text-sm">Umsatzentwicklung</h3>
+                      <p className="text-xs text-[#888] dark:text-[#A89070] mt-0.5">Letzte Bestellungen nach Datum</p>
+                    </div>
+                    <div className="w-8 h-8 bg-[#8B5E3C]/10 rounded-lg flex items-center justify-center">
+                      <DollarSign className="w-4 h-4 text-[#8B5E3C]" />
+                    </div>
+                  </div>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <AreaChart data={orderChartData.dailyData}>
+                      <defs>
+                        <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#8B5E3C" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#8B5E3C" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                      <Tooltip
+                        contentStyle={{ borderRadius: 12, border: "1px solid #e5e7eb", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", fontSize: 12 }}
+                        formatter={(value: number) => [`${value.toFixed(2)} CHF`, "Umsatz"]}
+                      />
+                      <Area type="monotone" dataKey="revenue" stroke="#8B5E3C" strokeWidth={2.5} fill="url(#revenueGradient)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Status & Payment Pie Charts */}
+                <div className="flex flex-col gap-5">
+                  <div className="rounded-2xl bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm p-5 flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-[#1A1A1A] dark:text-[#FAF7F4] text-sm">Status</h3>
+                      <div className="w-7 h-7 bg-[#8B5E3C]/10 rounded-lg flex items-center justify-center">
+                        <CheckCircle className="w-3.5 h-3.5 text-[#8B5E3C]" />
+                      </div>
+                    </div>
+                    <ResponsiveContainer width="100%" height={120}>
+                      <PieChart>
+                        <Pie data={orderChartData.statusData} cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value">
+                          {orderChartData.statusData.map((entry, idx) => (<Cell key={idx} fill={entry.color} />))}
+                        </Pie>
+                        <Tooltip contentStyle={{ borderRadius: 10, fontSize: 11 }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-1">
+                      {orderChartData.statusData.map((d) => (
+                        <div key={d.name} className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} />
+                          <span className="text-[10px] text-[#888] dark:text-[#A89070]">{d.name} ({d.value})</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-white dark:bg-[#2D1206] border border-[#EBEBEB] dark:border-[#3a2010] shadow-sm p-5 flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-[#1A1A1A] dark:text-[#FAF7F4] text-sm">Zahlungsarten</h3>
+                      <div className="w-7 h-7 bg-violet-50 dark:bg-violet-900/20 rounded-lg flex items-center justify-center">
+                        <ShoppingBag className="w-3.5 h-3.5 text-violet-500" />
+                      </div>
+                    </div>
+                    <ResponsiveContainer width="100%" height={120}>
+                      <PieChart>
+                        <Pie data={orderChartData.paymentData} cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value">
+                          {orderChartData.paymentData.map((entry, idx) => (<Cell key={idx} fill={entry.color} />))}
+                        </Pie>
+                        <Tooltip contentStyle={{ borderRadius: 10, fontSize: 11 }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-1">
+                      {orderChartData.paymentData.map((d) => (
+                        <div key={d.name} className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} />
+                          <span className="text-[10px] text-[#888] dark:text-[#A89070]">{d.name} ({d.value})</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Orders Filters */}
             <Card className="mb-8 rounded-2xl border-[#EBEBEB] shadow-sm">
               <CardHeader>
@@ -1832,7 +2027,7 @@ export function Admin({ onClose }: AdminProps) {
                     <div className="flex items-center gap-2 border border-gray-300 dark:border-[#3a2010] rounded-lg px-4 py-2 bg-white dark:bg-[#2D1206] hover:bg-gray-50 dark:hover:bg-[#3a1a08] transition-colors">
                       <Upload className="w-4 h-4 text-gray-500 dark:text-[#A89070] shrink-0" />
                       <span className="text-sm text-gray-600 dark:text-[#D4C0A0] truncate">
-                        {importFile ? importFile.name : ".xlsx / .xls auswählen"}
+                        {importFile ? importFile?.name : ".xlsx / .xls auswählen"}
                       </span>
                     </div>
                     <input
@@ -1856,29 +2051,29 @@ export function Admin({ onClose }: AdminProps) {
                 </div>
 
                 {importResult && (
-                  <div className={`mt-4 rounded-lg p-3 text-sm ${importResult.success ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
-                    {importResult.success ? (
+                  <div className={`mt-4 rounded-lg p-3 text-sm ${importResult?.success ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
+                    {importResult?.success ? (
                       <div className="space-y-1">
-                        <p className="font-medium text-green-800">Import abgeschlossen ({importResult.parsed} verarbeitet)</p>
+                        <p className="font-medium text-green-800">Import abgeschlossen ({importResult?.parsed} verarbeitet)</p>
                         <div className="flex gap-4 text-green-700 flex-wrap">
-                          <span>✅ Neu: <strong>{importResult.inserted}</strong></span>
-                          <span>🔄 Aktualisiert: <strong>{importResult.updated}</strong></span>
-                          <span>🗑 Gelöscht: <strong>{importResult.deleted ?? 0}</strong></span>
-                          <span>⏭ Übersprungen: <strong>{importResult.skipped}</strong></span>
+                          <span>✅ Neu: <strong>{importResult?.inserted}</strong></span>
+                          <span>🔄 Aktualisiert: <strong>{importResult?.updated}</strong></span>
+                          <span>🗑 Gelöscht: <strong>{importResult?.deleted ?? 0}</strong></span>
+                          <span>⏭ Übersprungen: <strong>{importResult?.skipped}</strong></span>
                         </div>
-                        {importResult.errors && importResult.errors.length > 0 && (
+                        {(importResult?.errors?.length ?? 0) > 0 && (
                           <details className="mt-2">
                             <summary className="cursor-pointer text-yellow-700 font-medium">
-                              {importResult.errors.length} Warnungen anzeigen
+                              {importResult?.errors?.length} Warnungen anzeigen
                             </summary>
                             <ul className="mt-1 space-y-0.5 text-yellow-700 text-xs">
-                              {importResult.errors.map((e, i) => <li key={i}>{e}</li>)}
+                              {importResult?.errors?.map((e, i) => <li key={i}>{e}</li>)}
                             </ul>
                           </details>
                         )}
                       </div>
                     ) : (
-                      <p className="text-red-700 font-medium">Fehler: {importResult.error}</p>
+                      <p className="text-red-700 font-medium">Fehler: {importResult?.error}</p>
                     )}
                   </div>
                 )}
@@ -1900,7 +2095,7 @@ export function Admin({ onClose }: AdminProps) {
                     <div className="flex items-center gap-2 border border-gray-300 dark:border-[#3a2010] rounded-lg px-4 py-2 bg-white dark:bg-[#2D1206] hover:bg-gray-50 dark:hover:bg-[#3a1a08] transition-colors">
                       <Upload className="w-4 h-4 text-gray-500 dark:text-[#A89070] shrink-0" />
                       <span className="text-sm text-gray-600 dark:text-[#D4C0A0] truncate">
-                        {addFile ? addFile.name : ".xlsx / .xls auswählen"}
+                        {addFile ? addFile?.name : ".xlsx / .xls auswählen"}
                       </span>
                     </div>
                     <input
@@ -1924,29 +2119,29 @@ export function Admin({ onClose }: AdminProps) {
                 </div>
 
                 {addResult && (
-                  <div className={`mt-4 rounded-lg p-3 text-sm ${addResult.success ? "bg-blue-50 border border-blue-200" : "bg-red-50 border border-red-200"}`}>
-                    {addResult.success ? (
+                  <div className={`mt-4 rounded-lg p-3 text-sm ${addResult?.success ? "bg-blue-50 border border-blue-200" : "bg-red-50 border border-red-200"}`}>
+                    {addResult?.success ? (
                       <div className="space-y-1">
-                        <p className="font-medium text-blue-800">Abgeschlossen ({addResult.parsed} verarbeitet)</p>
+                        <p className="font-medium text-blue-800">Abgeschlossen ({addResult?.parsed} verarbeitet)</p>
                         <div className="flex gap-4 text-blue-700 flex-wrap">
-                          <span>✅ Neu: <strong>{addResult.inserted}</strong></span>
-                          <span>🔄 Aktualisiert: <strong>{addResult.updated}</strong></span>
-                          <span>⏭ Übersprungen: <strong>{addResult.skipped}</strong></span>
+                          <span>✅ Neu: <strong>{addResult?.inserted}</strong></span>
+                          <span>🔄 Aktualisiert: <strong>{addResult?.updated}</strong></span>
+                          <span>⏭ Übersprungen: <strong>{addResult?.skipped}</strong></span>
                           <span className="text-green-700">🛡 Gelöscht: <strong>0</strong></span>
                         </div>
-                        {addResult.errors && addResult.errors.length > 0 && (
+                        {(addResult?.errors?.length ?? 0) > 0 && (
                           <details className="mt-2">
                             <summary className="cursor-pointer text-yellow-700 font-medium">
-                              {addResult.errors.length} Warnungen anzeigen
+                              {addResult?.errors?.length} Warnungen anzeigen
                             </summary>
                             <ul className="mt-1 space-y-0.5 text-yellow-700 text-xs">
-                              {addResult.errors.map((e, i) => <li key={i}>{e}</li>)}
+                              {addResult?.errors?.map((e, i) => <li key={i}>{e}</li>)}
                             </ul>
                           </details>
                         )}
                       </div>
                     ) : (
-                      <p className="text-red-700 font-medium">Fehler: {addResult.error}</p>
+                      <p className="text-red-700 font-medium">Fehler: {addResult?.error}</p>
                     )}
                   </div>
                 )}
@@ -1984,12 +2179,14 @@ export function Admin({ onClose }: AdminProps) {
             {/* Products Header Actions */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Produktverwaltung</h2>
-              <div className="flex items-center space-x-2">
-                <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-full w-9 h-9 p-0" title="Kategorie hinzufügen">
+              <div className="flex flex-col items-end gap-2">
+                <Button onClick={() => { setEditingCategory(null); setIsCategoryModalOpen(true) }} variant="outline" className="border-[#8B5E3C]/40 text-[#8B5E3C] bg-white hover:bg-[#8B5E3C]/5 rounded-xl gap-2">
                   <FolderPlus className="w-4 h-4" />
+                  Kategorie erstellen
                 </Button>
-                <Button onClick={showAddProductModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-full w-9 h-9 p-0" title="Produkt hinzufügen">
+                <Button onClick={showAddProductModal} className="bg-[#8B5E3C] hover:bg-[#6B4226] text-white rounded-xl gap-2">
                   <PackagePlus className="w-4 h-4" />
+                  Produkt hinzufügen
                 </Button>
               </div>
             </div>

@@ -382,7 +382,8 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
 
   const getShippingCost = () => shippingCost
 
-  const getFinalTotal = () => getTotalPrice() + shippingCost
+  const getFinalTotal = () => Math.ceil((getTotalPrice() + shippingCost + getMwst()) / 0.5) * 0.5
+  const getMwst = () => Math.round(getTotalPrice() * 0.081 / 0.05) * 0.05
 
   // Recalculate shipping when cart or country changes
   useEffect(() => {
@@ -606,7 +607,7 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
 
 
     const total = getFinalTotal()
-    const paypalEmail = paymentSettings.paypal_email || "info@usfh.ch"
+    const paypalEmail = paymentSettings.paypal_email || "info@leder-shop.ch"
     const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${paypalEmail}&amount=${total.toFixed(2)}&currency_code=CHF&item_name=Leder-Shop Order&custom=${orderId}&return=${window.location.origin}/success&cancel_return=${window.location.origin}/cancel`
 
     setOrderStatus("processing")
@@ -1925,12 +1926,16 @@ export function CheckoutPage({ cart, onBackToStore, onClearCart, onAddToCart, on
                     <span>{getTotalPrice().toFixed(2)} CHF</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>
-                      Versand
+                    <span>MwSt. 8.1%:</span>
+                    <span>{getMwst().toFixed(2)} CHF</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <span>Versand:</span>
                       {shippingInfo.zone && shippingInfo.range && (
-                        <span className="text-xs text-gray-500 ml-1">({shippingInfo.zone} · {shippingInfo.range})</span>
-                      )}:
-                    </span>
+                        <p className="text-xs text-gray-500 mt-0.5">{shippingInfo.zone} · {shippingInfo.range}</p>
+                      )}
+                    </div>
                     <span>
                       {shippingCost === 0
                         ? <Badge className="bg-green-100 text-green-700">Kostenlos</Badge>
