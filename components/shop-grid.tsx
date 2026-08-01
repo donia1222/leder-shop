@@ -819,6 +819,7 @@ export default function ShopGrid() {
                     const isActive = activeCategory === cat.slug
                     const isChildActive = children.some(c => c.slug === activeCategory)
                     const count = products.filter(p => p.category === cat.slug).length
+                    const totalCount = count + children.reduce((sum, child) => sum + products.filter(p => p.category === child.slug).length, 0)
                     return (
                       <li key={cat.slug}>
                         <button
@@ -830,9 +831,7 @@ export default function ShopGrid() {
                           }`}
                         >
                           <span className="truncate flex-1">{cat.name.replace(/\s*\d{4}$/, "")}</span>
-                          {!hasChildren && (
-                            <span className={`text-[10px] font-bold ml-2 px-1.5 py-0.5 rounded-full flex-shrink-0 ${isActive ? "bg-white/25 text-white" : "bg-[#F0F0F0] dark:bg-[#1a0b04] text-[#888] dark:text-[#A89070]"}`}>{count}</span>
-                          )}
+                          <span className={`text-[10px] font-bold ml-2 px-1.5 py-0.5 rounded-full flex-shrink-0 ${isActive || isChildActive ? "bg-white/25 text-white" : "bg-[#F0F0F0] dark:bg-[#1a0b04] text-[#888] dark:text-[#A89070]"}`}>{totalCount}</span>
                         </button>
                         {/* Subcategorías siempre visibles */}
                         {hasChildren && (
