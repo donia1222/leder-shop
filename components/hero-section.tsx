@@ -4,7 +4,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { MarqueeBanner } from "./marquee-banner"
 
-const HERO_IMAGE = "/logo.png"
+const HERO_IMAGE_LIGHT = "/dia.png"
+const HERO_IMAGE_DARK = "/noche.png"
 
 interface Category { id: number; slug: string; name: string }
 interface Product { id: number; category?: string; image_url?: string; image_urls?: (string | null)[] }
@@ -68,10 +69,19 @@ export function HeroSection() {
           <div className="grid lg:grid-cols-2 gap-6 items-center">
 
             {/* Mobile image — above text */}
-            <div className="lg:hidden w-full flex justify-center py-4" style={{ opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
-              <img src={HERO_IMAGE} alt="Premium Lederartikel"
-                className="w-64 h-64  mt-10 object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer"
+            <div className="lg:hidden w-full flex flex-col items-center py-4" style={{ opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
+              <img src={HERO_IMAGE_LIGHT} alt="Leder-Shop — Premium Lederartikel"
+                className="dark:hidden w-64 h-64 mt-10 object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer"
               />
+              <img src={HERO_IMAGE_DARK} alt="Leder-Shop — Premium Lederartikel"
+                className="hidden dark:block w-64 h-64 mt-10 object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer"
+              />
+              <span
+                className="mt-3 font-black uppercase text-[#2D1206] dark:text-[#FAF7F4] text-2xl"
+                style={{ letterSpacing: "0.2em" }}
+              >
+                Leder-Shop
+              </span>
             </div>
 
             {/* LEFT: Text */}
@@ -143,8 +153,15 @@ export function HeroSection() {
 
             {/* RIGHT: Single image (desktop only) */}
             <div className="hidden lg:flex items-center justify-center h-full py-6">
-              <div className="relative" style={{ width: "410px", height: "460px", opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
-                <img src={HERO_IMAGE} alt="Premium Leder" className="w-full h-full object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer" />
+              <div className="relative flex flex-col items-center" style={{ width: "410px", opacity: logoOpacity, transition: "opacity 0.1s ease-out" }}>
+                <img src={HERO_IMAGE_LIGHT} alt="Leder-Shop — Premium Leder" className="dark:hidden w-full object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer" style={{ height: "400px" }} />
+                <img src={HERO_IMAGE_DARK} alt="Leder-Shop — Premium Leder" className="hidden dark:block w-full object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer" style={{ height: "400px" }} />
+                <span
+                  className="mt-2 font-black uppercase text-[#2D1206] dark:text-[#FAF7F4] text-3xl"
+                  style={{ letterSpacing: "0.22em" }}
+                >
+                  Leder-Shop
+                </span>
               </div>
             </div>
 

@@ -130,7 +130,7 @@ export function SplashScreen() {
             {/* Logo */}
             <div style={{ animation: "splashText 0.5s ease 0.4s both" }}>
               <img
-                src="/logo.png"
+                src="/noche.png"
                 alt="Leder-Shop"
                 style={{ height: 72, width: "auto", objectFit: "contain", marginBottom: 20, filter: "drop-shadow(0 4px 16px rgba(196,154,108,0.4))" }}
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none" }}

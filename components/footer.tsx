@@ -363,7 +363,8 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
             <div>
               {/* Logo + name */}
               <div className="flex items-center gap-3 mb-6">
-                <img src="/logo.png" alt="Logo" className="h-14 w-auto object-contain flex-shrink-0" />
+                <img src="/dia.png" alt="Leder-Shop" className="dark:hidden h-20 w-auto object-contain flex-shrink-0" />
+                <img src="/noche.png" alt="Leder-Shop" className="hidden dark:block h-20 w-auto object-contain flex-shrink-0" />
                 <div
                   className="px-3 py-1.5 rounded-xl"
                   style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
