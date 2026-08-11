@@ -77,8 +77,8 @@ export function HeroSection() {
                 className="hidden dark:block w-64 h-64 mt-10 object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer"
               />
               <span
-                className="mt-3 font-black uppercase text-[#2D1206] dark:text-[#FAF7F4] text-2xl"
-                style={{ letterSpacing: "0.2em" }}
+                className="font-script mt-1 text-[#2D1206] dark:text-[#FAF7F4] text-5xl leading-tight"
+                style={{ letterSpacing: "0.02em" }}
               >
                 Leder-Shop
               </span>
@@ -157,8 +157,8 @@ export function HeroSection() {
                 <img src={HERO_IMAGE_LIGHT} alt="Leder-Shop — Premium Leder" className="dark:hidden w-full object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer" style={{ height: "400px" }} />
                 <img src={HERO_IMAGE_DARK} alt="Leder-Shop — Premium Leder" className="hidden dark:block w-full object-contain transition-transform duration-500 ease-out hover:scale-110 cursor-pointer" style={{ height: "400px" }} />
                 <span
-                  className="mt-2 font-black uppercase text-[#2D1206] dark:text-[#FAF7F4] text-3xl"
-                  style={{ letterSpacing: "0.22em" }}
+                  className="font-script text-[#2D1206] dark:text-[#FAF7F4] text-6xl leading-tight"
+                  style={{ letterSpacing: "0.02em" }}
                 >
                   Leder-Shop
                 </span>

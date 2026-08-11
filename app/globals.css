@@ -105,3 +105,9 @@ body {
 /* CSS variable for dashed box inner ring — transparent in dark mode */
 :root { --box-inset: rgba(255,255,255,0.7); }
 .dark { --box-inset: transparent; }
+
+/* Script-Schrift (Palace Script MT, Fallback: Pinyon Script) */
+.font-script {
+  font-family: "Palace Script MT", var(--font-script), "Pinyon Script", cursive;
+  font-weight: 400;
+}

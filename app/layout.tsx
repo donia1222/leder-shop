@@ -1,5 +1,14 @@
 import type { Metadata, Viewport } from 'next'
+import { Pinyon_Script } from 'next/font/google'
 import './globals.css'
+
+// Ersatz für "Palace Script MT" (keine Web-Schrift) – wird im CSS-Stack dahinter genutzt
+const scriptFont = Pinyon_Script({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-script',
+})
 import { Analytics } from '@vercel/analytics/next';
 import { CookieBanner } from '@/components/cookie-banner'
 import { ThemeProvider } from 'next-themes'
@@ -37,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning className={scriptFont.variable}>
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           {children}
