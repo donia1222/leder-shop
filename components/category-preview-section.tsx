@@ -258,7 +258,7 @@ export function CategoryPreviewSection() {
             <span className="inline-flex items-center gap-1.5 self-start bg-[#C49A6C]/20 text-[#C49A6C] border border-[#C49A6C]/40 text-[11px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
               🧵 Handwerk & Tradition
             </span>
-            <h2 className="text-white font-black text-4xl leading-[1.1]" style={{ letterSpacing: "-0.02em" }}>
+            <h2 className="font-script text-white text-5xl leading-[1.15]">
               Echtes Leder,<br />
               <span className="text-[#C49A6C]">echte Handarbeit</span>
             </h2>

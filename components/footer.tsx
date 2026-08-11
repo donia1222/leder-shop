@@ -369,7 +369,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
                   className="px-3 py-1.5 rounded-xl"
                   style={{ border: "2px dashed #8B5E3C", boxShadow: "inset 0 0 0 3px var(--box-inset), 0 0 0 1px #C49A6C33" }}
                 >
-                  <div className="font-black text-[#2D1206] dark:text-[#C49A6C] text-lg leading-tight tracking-tight">Leder-Shop</div>
+                  <div className="font-script text-4xl text-[#2D1206] dark:text-[#C49A6C] leading-tight">Leder-Shop</div>
                   <div className="text-xs text-[#8B5E3C] uppercase tracking-widest mt-1">Handgemachte Lederartikel</div>
                 </div>
               </div>
@@ -394,7 +394,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
 
             {/* Service */}
             <div>
-              <h3 className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base mb-5 uppercase tracking-widest">Service</h3>
+              <h3 className="font-script text-3xl text-[#1A1A1A] dark:text-[#FAF7F4] mb-5">Service</h3>
               <ul className="space-y-3">
                 <li>
                   <a href="mailto:info@leder-shop.ch" className="text-sm font-medium text-[#444] dark:text-[#C49A6C] hover:text-[#8B5E3C] transition-colors">Kontakt</a>
@@ -452,7 +452,7 @@ Falls Sie eine beschädigte oder falsche Ware erhalten haben, wenden Sie sich bi
 
             {/* Firma */}
             <div>
-              <h3 className="font-black text-[#1A1A1A] dark:text-[#FAF7F4] text-base mb-5 uppercase tracking-widest">Firma</h3>
+              <h3 className="font-script text-3xl text-[#1A1A1A] dark:text-[#FAF7F4] mb-5">Firma</h3>
               <ul className="space-y-3">
                 <li>
                   <Dialog open={openModal === "ueberuns"} onOpenChange={(open) => setOpenModal(open ? "ueberuns" : null)}>

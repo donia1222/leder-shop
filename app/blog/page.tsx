@@ -226,7 +226,7 @@ export default function BlogPage() {
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-2">
         <div className="flex items-center gap-3 mb-1">
           <div className="w-1 h-7 bg-[#8B5E3C] rounded-full" />
-          <h1 className="text-3xl font-black text-[#6B4226] dark:text-[#C49A6C] tracking-tight">Aktuelles & Tipps</h1>
+          <h1 className="font-script text-5xl text-[#6B4226] dark:text-[#C49A6C] leading-tight">Aktuelles & Tipps</h1>
         </div>
         <p className="text-sm text-[#888] dark:text-[#A89070] ml-4">Neuigkeiten, Pflegetipps und Wissenswertes rund um echtes Leder.</p>
       </div>

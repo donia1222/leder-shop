@@ -182,7 +182,7 @@ export function HeroSection() {
               >
                 <span className="text-xs font-black text-[#2D1206] dark:text-[#C49A6C] uppercase tracking-[0.25em]">Sortiment</span>
               </div>
-              <h2 className="text-3xl font-black text-[#1A1A1A] dark:text-[#FAF7F4] tracking-tight">Unsere Leder-Kategorien</h2>
+              <h2 className="font-script text-5xl text-[#1A1A1A] dark:text-[#FAF7F4] leading-tight">Unsere Leder-Kategorien</h2>
             </div>
             <button
               onClick={() => router.push("/shop")}

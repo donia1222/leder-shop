@@ -918,7 +918,7 @@ export default function ShopGrid() {
             <div className="hidden lg:flex items-start gap-3 mb-3">
               <div className="w-1 self-stretch bg-[#8B5E3C] rounded-full flex-shrink-0" />
               <div>
-                <p className="font-black text-[#8B5E3C] text-2xl leading-tight">Unsere Kategorien</p>
+                <p className="font-script text-[#8B5E3C] text-4xl leading-tight">Unsere Kategorien</p>
                 <p className="text-sm text-[#888] dark:text-[#A89070] mt-1">Lederartikel & Accessoires</p>
               </div>
             </div>

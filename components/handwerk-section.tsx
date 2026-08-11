@@ -117,7 +117,7 @@ export function HandwerkSection() {
 
           <div className="relative z-10">
             <p className="text-[#C49A6C] text-xs font-black uppercase tracking-[0.3em] mb-4">Unser Versprechen</p>
-            <blockquote className="text-white text-2xl md:text-3xl font-black leading-snug max-w-2xl mx-auto mb-6">
+            <blockquote className="font-script text-white text-4xl md:text-5xl leading-snug max-w-2xl mx-auto mb-6">
               „Wir fertigen keine Produkte.<br />
               <span className="text-[#C49A6C]">Wir erschaffen Begleiter fürs Leben."</span>
             </blockquote>

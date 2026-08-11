@@ -118,8 +118,8 @@ export default function GaleriePage() {
           <div className="w-8 h-px bg-[#C49A6C]" />
         </div>
         <h1
-          className="font-black text-white tracking-tight mb-3"
-          style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", letterSpacing: "-0.02em" }}
+          className="font-script text-white mb-3 leading-tight"
+          style={{ fontSize: "clamp(2.6rem, 6vw, 4.5rem)" }}
         >
           Unsere Galerie
         </h1>
